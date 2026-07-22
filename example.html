@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StackDNA — Secuencia el ADN de tu stack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08080c;
+    --bg-elevated:#0f0f16;
+    --surface:#15151f;
+    --surface-2:#1b1b28;
+    --border:rgba(139,92,246,0.16);
+    --border-strong:rgba(167,139,250,0.35);
+    --purple:#7c3aed;
+    --purple-2:#9f6bf2;
+    --purple-glow:#a78bfa;
+    --purple-soft:#c4b5fd;
+    --white:#f5f3ff;
+    --text:#e7e4f0;
+    --text-dim:#9995a8;
+    --text-faint:#615d70;
+    --font-display:'Space Grotesk', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+    --font-body:'Inter', sans-serif;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    overflow-x:hidden;
+    line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+
+  ::selection{background:var(--purple); color:var(--white);}
+
+  :focus-visible{
+    outline:2px solid var(--purple-glow);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- background texture ---------- */
+  .bg-noise{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:64px 64px;
+    opacity:0.25;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 70%);
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(8,8,12,0.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px;
+    max-width:1180px; margin:0 auto;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--font-display);
+    font-weight:700; font-size:19px; letter-spacing:-0.02em;
+    color:var(--white);
+  }
+  .logo-mark{
+    width:22px; height:22px; position:relative; flex-shrink:0;
+  }
+  .logo-mark svg{width:100%; height:100%;}
+  .nav-links{display:flex; gap:36px; align-items:center;}
+  .nav-links a{
+    font-size:14px; color:var(--text-dim); font-weight:500;
+    transition:color .2s ease;
+  }
+  .nav-links a:hover{color:var(--white);}
+  .nav-cta{
+    font-family:var(--font-mono);
+    font-size:13px; font-weight:500;
+    background:var(--purple); color:var(--white);
+    padding:9px 18px; border-radius:6px;
+    border:1px solid var(--purple-2);
+    transition:all .2s ease;
+    white-space:nowrap;
+  }
+  .nav-cta:hover{background:var(--purple-2); box-shadow:0 0 24px rgba(124,58,237,0.5);}
+  .nav-toggle{display:none; background:none; border:none; color:var(--white); font-size:24px; cursor:pointer;}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 24px; border-radius:7px;
+    font-weight:600; font-size:14.5px;
+    cursor:pointer; border:1px solid transparent;
+    transition:all .2s ease;
+    font-family:var(--font-body);
+  }
+  .btn-primary{
+    background:var(--purple); color:var(--white);
+    border-color:var(--purple-2);
+  }
+  .btn-primary:hover{background:var(--purple-2); box-shadow:0 0 30px rgba(124,58,237,0.55); transform:translateY(-1px);}
+  .btn-ghost{
+    background:transparent; color:var(--text);
+    border-color:var(--border-strong);
+    font-family:var(--font-mono); font-size:13.5px;
+  }
+  .btn-ghost:hover{border-color:var(--purple-glow); color:var(--white); background:rgba(124,58,237,0.08);}
+
+  section{position:relative; z-index:1;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding:140px 0 80px;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr;
+    gap:40px; align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--font-mono); font-size:12.5px;
+    color:var(--purple-soft);
+    background:rgba(124,58,237,0.1);
+    border:1px solid var(--border-strong);
+    padding:6px 12px; border-radius:100px;
+    margin-bottom:24px;
+  }
+  .eyebrow::before{
+    content:''; width:6px; height:6px; border-radius:50%;
+    background:var(--purple-glow);
+    box-shadow:0 0 8px var(--purple-glow);
+  }
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(38px, 5vw, 62px);
+    font-weight:700; line-height:1.04; letter-spacing:-0.03em;
+    color:var(--white);
+    margin-bottom:22px;
+  }
+  h1 .accent{
+    background:linear-gradient(120deg, var(--purple-glow), var(--purple-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero-sub{
+    font-size:17px; color:var(--text-dim); max-width:480px;
+    margin-bottom:34px; line-height:1.65;
+  }
+  .hero-actions{display:flex; gap:14px; margin-bottom:44px; flex-wrap:wrap;}
+
+  .terminal{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:10px;
+    font-family:var(--font-mono); font-size:13px;
+    max-width:460px; overflow:hidden;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  }
+  .terminal-head{
+    display:flex; gap:6px; padding:11px 14px;
+    border-bottom:1px solid var(--border);
+    background:var(--bg-elevated);
+  }
+  .terminal-head span{width:9px; height:9px; border-radius:50%; background:#3a3a48;}
+  .terminal-body{padding:16px 18px; color:var(--text-dim);}
+  .terminal-body .prompt{color:var(--purple-soft);}
+  .terminal-body .cmd{color:var(--white);}
+  .terminal-body .out{display:block; margin-top:10px; color:var(--text-faint);}
+  .terminal-body .ok{color:#7ee787;}
+
+  /* ---------- helix ---------- */
+  .helix-stage{
+    display:flex; align-items:center; justify-content:center;
+    perspective:1000px; height:480px;
+  }
+  .helix{
+    position:relative;
+    width:200px; height:400px;
+    transform-style:preserve-3d;
+    animation:spin 14s linear infinite;
+  }
+  @keyframes spin{ from{transform:rotateY(0deg);} to{transform:rotateY(360deg);} }
+  .rung{
+    position:absolute; left:50%; top:50%;
+    width:180px; height:2px;
+    transform-style:preserve-3d;
+    margin-left:-90px;
+  }
+  .rung .bar{
+    position:absolute; inset:0;
+    background:linear-gradient(90deg, var(--purple-glow), transparent 45%, transparent 55%, var(--purple-2));
+    opacity:0.55;
+  }
+  .rung .node{
+    position:absolute; top:50%; width:11px; height:11px; border-radius:50%;
+    transform:translateY(-50%);
+    box-shadow:0 0 10px currentColor;
+  }
+  .rung .node.a{left:-4px; background:var(--purple-glow); color:var(--purple-glow);}
+  .rung .node.b{right:-4px; background:var(--white); color:var(--purple-2);}
+  .rung .label{
+    position:absolute; font-family:var(--font-mono); font-size:9.5px;
+    color:var(--text-faint); white-space:nowrap; top:-14px; left:14px;
+    letter-spacing:0.04em;
+  }
+
+  /* ---------- section headers ---------- */
+  .section-pad{padding:110px 0;}
+  .section-head{max-width:640px; margin-bottom:64px;}
+  .section-tag{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--purple-soft);
+    text-transform:uppercase; letter-spacing:0.12em; margin-bottom:14px; display:block;
+  }
+  h2{
+    font-family:var(--font-display); font-size:clamp(28px,3.6vw,40px);
+    font-weight:700; letter-spacing:-0.02em; color:var(--white); margin-bottom:16px;
+  }
+  .section-desc{color:var(--text-dim); font-size:16px; line-height:1.7;}
+
+  hr.divider{
+    border:none; height:1px; background:var(--border); margin:0;
+  }
+
+  /* ---------- about ---------- */
+  .about{background:var(--bg-elevated); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+  .about-grid{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;}
+  .about-text p{color:var(--text-dim); font-size:15.5px; line-height:1.75; margin-bottom:18px;}
+  .about-text p strong{color:var(--white); font-weight:600;}
+
+  .process{display:flex; flex-direction:column; gap:0;}
+  .process-step{
+    display:flex; gap:20px; padding:22px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .process-step:last-child{border-bottom:none;}
+  .process-num{
+    font-family:var(--font-mono); font-size:13px; color:var(--purple-glow);
+    font-weight:600; padding-top:2px; flex-shrink:0; width:28px;
+  }
+  .process-step h3{
+    font-family:var(--font-display); font-size:16px; color:var(--white);
+    font-weight:600; margin-bottom:5px;
+  }
+  .process-step p{color:var(--text-dim); font-size:14px; line-height:1.6;}
+
+  /* ---------- features ---------- */
+  .features-grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:14px; overflow:hidden;
+  }
+  .feature-card{
+    background:var(--bg);
+    padding:34px 28px;
+    transition:background .25s ease;
+  }
+  .feature-card:hover{background:var(--surface);}
+  .feature-icon{
+    width:38px; height:38px; margin-bottom:20px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:9px;
+    background:rgba(124,58,237,0.12);
+    border:1px solid var(--border-strong);
+  }
+  .feature-icon svg{width:19px; height:19px;}
+  .feature-card h3{
+    font-family:var(--font-display); font-size:17.5px; color:var(--white);
+    font-weight:600; margin-bottom:10px;
+  }
+  .feature-card p{color:var(--text-dim); font-size:14px; line-height:1.65;}
+  .feature-tag{
+    display:inline-block; margin-top:16px;
+    font-family:var(--font-mono); font-size:10.5px; color:var(--purple-soft);
+    background:rgba(124,58,237,0.1); padding:3px 9px; border-radius:100px;
+    letter-spacing:0.03em;
+  }
+
+  /* ---------- team ---------- */
+  .team{background:var(--bg-elevated); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
+  .team-grid{display:grid; grid-template-columns:repeat(4, 1fr); gap:24px;}
+  .team-card{
+    background:var(--bg); border:1px solid var(--border); border-radius:12px;
+    padding:26px; text-align:left;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .team-card:hover{border-color:var(--border-strong); transform:translateY(-3px);}
+  .team-avatar{
+    width:52px; height:52px; border-radius:10px; margin-bottom:16px;
+    background:linear-gradient(135deg, var(--purple), var(--surface-2));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; color:var(--white); font-size:17px;
+  }
+  .team-card h3{font-size:15.5px; color:var(--white); font-weight:600; margin-bottom:3px;}
+  .team-role{font-family:var(--font-mono); font-size:11.5px; color:var(--purple-soft); margin-bottom:12px; display:block;}
+  .team-card p{color:var(--text-dim); font-size:13px; line-height:1.6;}
+
+  /* ---------- pricing ---------- */
+  .pricing-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;}
+  .price-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:36px 30px; display:flex; flex-direction:column;
+    position:relative;
+  }
+  .price-card.featured{
+    border-color:var(--purple-2);
+    background:linear-gradient(180deg, rgba(124,58,237,0.1), var(--surface) 40%);
+    box-shadow:0 0 0 1px var(--purple-2), 0 20px 50px rgba(124,58,237,0.15);
+  }
+  .price-badge{
+    position:absolute; top:-12px; left:30px;
+    font-family:var(--font-mono); font-size:10.5px; font-weight:600;
+    background:var(--purple); color:var(--white);
+    padding:4px 12px; border-radius:100px; letter-spacing:0.03em;
+  }
+  .price-plan{font-family:var(--font-mono); font-size:13px; color:var(--purple-soft); margin-bottom:14px;}
+  .price-amount{
+    font-family:var(--font-display); font-size:40px; font-weight:700; color:var(--white);
+    margin-bottom:6px; letter-spacing:-0.02em;
+  }
+  .price-amount span{font-size:15px; color:var(--text-dim); font-weight:500;}
+  .price-desc{color:var(--text-dim); font-size:13.5px; margin-bottom:28px; line-height:1.5;}
+  .price-list{display:flex; flex-direction:column; gap:12px; margin-bottom:32px; flex:1;}
+  .price-list li{
+    display:flex; align-items:flex-start; gap:10px;
+    font-size:13.5px; color:var(--text);
+  }
+  .price-list li svg{width:15px; height:15px; flex-shrink:0; margin-top:2px; color:var(--purple-glow);}
+  .price-card .btn{width:100%; justify-content:center;}
+
+  /* ---------- faq ---------- */
+  .faq-list{border-top:1px solid var(--border);}
+  .faq-item{border-bottom:1px solid var(--border);}
+  .faq-q{
+    width:100%; background:none; border:none; text-align:left; cursor:pointer;
+    padding:24px 0; display:flex; justify-content:space-between; align-items:center;
+    color:var(--white); font-family:var(--font-display); font-size:16.5px; font-weight:600;
+    gap:20px;
+  }
+  .faq-q .plus{
+    font-family:var(--font-mono); font-size:18px; color:var(--purple-glow);
+    transition:transform .25s ease; flex-shrink:0;
+  }
+  .faq-item.open .faq-q .plus{transform:rotate(45deg);}
+  .faq-a{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+  }
+  .faq-a p{color:var(--text-dim); font-size:14.5px; line-height:1.7; padding-bottom:24px; max-width:680px;}
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    background:var(--bg-elevated);
+    border-top:1px solid var(--border);
+    padding:110px 0;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .final-cta::before{
+    content:'';
+    position:absolute; top:50%; left:50%; width:600px; height:600px;
+    background:radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%);
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+  }
+  .final-cta h2{margin-bottom:18px;}
+  .final-cta p{color:var(--text-dim); max-width:520px; margin:0 auto 36px; font-size:16px;}
+  .final-actions{display:flex; gap:14px; justify-content:center; position:relative; z-index:1;}
+
+  /* ---------- footer ---------- */
+  footer{padding:50px 0 40px; border-top:1px solid var(--border);}
+  .footer-grid{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:40px; flex-wrap:wrap;
+  }
+  .footer-brand p{color:var(--text-faint); font-size:13px; margin-top:12px; max-width:280px; line-height:1.6;}
+  .footer-links{display:flex; gap:64px; flex-wrap:wrap;}
+  .footer-col h4{
+    font-family:var(--font-mono); font-size:12px; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;
+  }
+  .footer-col a{
+    display:block; color:var(--text-dim); font-size:13.5px; margin-bottom:10px;
+    transition:color .2s ease;
+  }
+  .footer-col a:hover{color:var(--white);}
+  .footer-bottom{
+    display:flex; justify-content:space-between; margin-top:50px; padding-top:24px;
+    border-top:1px solid var(--border);
+    font-size:12.5px; color:var(--text-faint); font-family:var(--font-mono);
+    flex-wrap:wrap; gap:12px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .helix-stage{height:320px;}
+    .about-grid{grid-template-columns:1fr; gap:36px;}
+    .features-grid{grid-template-columns:1fr 1fr;}
+    .team-grid{grid-template-columns:1fr 1fr;}
+    .pricing-grid{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+    .nav-toggle{display:block;}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 20px;}
+    .features-grid{grid-template-columns:1fr;}
+    .team-grid{grid-template-columns:1fr;}
+    .hero-actions{flex-direction:column; align-items:stretch;}
+    .final-actions{flex-direction:column;}
+    .footer-grid{flex-direction:column;}
+    .footer-links{gap:32px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-noise"></div>
+
+<header>
+  <nav class="wrap">
+    <div class="logo">
+      <span class="logo-mark">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M6 2C6 6 18 6 18 10C18 14 6 14 6 18C6 22 18 22 18 22" stroke="url(#g1)" stroke-width="2" stroke-linecap="round"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+        </svg>
+      </span>
+      StackDNA
+    </div>
+    <div class="nav-links">
+      <a href="#producto">Producto</a>
+      <a href="#features">Features</a>
+      <a href="#team">Equipo</a>
+      <a href="#precios">Precios</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="#precios" class="nav-cta">$ npx stackdna init</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero" id="producto">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">CLI + Dashboard para equipos de desarrollo</span>
+        <h1>Secuencia el <span class="accent">ADN</span> de tu stack antes de que te sorprenda</h1>
+        <p class="hero-sub">StackDNA escanea tu repositorio y genera el perfil genético completo de tu proyecto: dependencias, arquitectura, vulnerabilidades y licencias, en un mapa que puedes leer en segundos.</p>
+        <div class="hero-actions">
+          <a href="#precios" class="btn btn-primary">Empezar gratis</a>
+          <a href="#producto" class="btn btn-ghost">Ver documentación →</a>
+        </div>
+        <div class="terminal">
+          <div class="terminal-head"><span></span><span></span><span></span></div>
+          <div class="terminal-body">
+            <div><span class="prompt">$</span> <span class="cmd">npx stackdna scan ./mi-proyecto</span></div>
+            <span class="out">↳ 214 paquetes secuenciados</span>
+            <span class="out">↳ 3 vulnerabilidades críticas detectadas</span>
+            <span class="out">↳ 2 licencias incompatibles</span>
+            <span class="out ok">✓ genoma.stackdna generado en 4.2s</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="helix-stage" aria-hidden="true">
+        <div class="helix" id="helix"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about section-pad">
+    <div class="wrap about-grid">
+      <div>
+        <span class="section-tag">Qué es StackDNA</span>
+        <h2>Cada stack tiene una secuencia. Nosotros la leemos.</h2>
+        <div class="about-text">
+          <p>Un repositorio crece capa sobre capa: frameworks, librerías, servicios, versiones. Con el tiempo nadie recuerda por qué está ahí cada pieza, ni qué tan segura es. <strong>StackDNA convierte esa complejidad en un mapa navegable.</strong></p>
+          <p>No es un linter ni un dashboard más. Es un motor de secuenciación que recorre tu código, tus manifiestos de dependencias y tu historial de commits para construir el genoma real de tu proyecto, capa por capa.</p>
+          <p>Funciona con Node, Python, Go, Rust y Java. Se instala como CLI, corre en tu CI y expone un dashboard web para que todo el equipo lea el mismo genoma.</p>
+        </div>
+      </div>
+
+      <div>
+        <span class="section-tag">Cómo funciona</span>
+        <div class="process">
+          <div class="process-step">
+            <span class="process-num">01</span>
+            <div><h3>Escanear</h3><p>El CLI recorre el repositorio y detecta manifiestos, lockfiles y estructura de carpetas.</p></div>
+          </div>
+          <div class="process-step">
+            <span class="process-num">02</span>
+            <div><h3>Secuenciar</h3><p>Cada dependencia se mapea a una capa del stack: frontend, backend, datos o infraestructura.</p></div>
+          </div>
+          <div class="process-step">
+            <span class="process-num">03</span>
+            <div><h3>Analizar</h3><p>Se cruza contra bases de CVEs, licencias SPDX y patrones de arquitectura conocidos.</p></div>
+          </div>
+          <div class="process-step">
+            <span class="process-num">04</span>
+            <div><h3>Reportar</h3><p>Se genera el genoma: un mapa visual y un reporte accionable, listo para PR o auditoría.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section-pad" id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Features</span>
+        <h2>Todo lo que necesitas saber sobre tu stack, en un solo lugar</h2>
+        <p class="section-desc">Seis capacidades diseñadas para equipos que ya no quieren descubrir problemas de arquitectura en producción.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="12" cy="18" r="3"/><path d="M8.5 7.5L11 16.5M15.5 7.5L13 16.5"/></svg></div>
+          <h3>Mapeo de dependencias</h3>
+          <p>Visualiza cada paquete, su versión y sus relaciones directas e indirectas en un árbol interactivo.</p>
+          <span class="feature-tag">core</span>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>Detección de vulnerabilidades</h3>
+          <p>Cruza tu genoma contra bases CVE en tiempo real y prioriza por severidad y superficie de ataque real.</p>
+          <span class="feature-tag">seguridad</span>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg></div>
+          <h3>Auditoría de licencias</h3>
+          <p>Identifica licencias incompatibles con tu política antes de que lleguen a un merge.</p>
+          <span class="feature-tag">compliance</span>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+          <h3>Arquitectura visual</h3>
+          <p>Genera un diagrama vivo de tus capas: frontend, backend, datos e infraestructura, actualizado en cada scan.</p>
+          <span class="feature-tag">core</span>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M7 3v6M17 3v6M4 9h16M4 9c0 7 4 12 8 12s8-5 8-12"/></svg></div>
+          <h3>Comparación entre repos</h3>
+          <p>Compara el genoma de dos proyectos o dos versiones del mismo, y ve exactamente qué mutó.</p>
+          <span class="feature-tag">equipos</span>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M4 4h16v6H4zM4 14h10v6H4z"/></svg></div>
+          <h3>Integración CI/CD</h3>
+          <p>Corre StackDNA en cada pull request y bloquea merges cuando el genoma empeora.</p>
+          <span class="feature-tag">automatización</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team section-pad" id="team">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Equipo</span>
+        <h2>Construido por developers que auditaron demasiados repos rotos</h2>
+        <p class="section-desc">Un equipo pequeño enfocado en una sola cosa: que entender un stack ajeno deje de ser arqueología.</p>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">LM</div>
+          <h3>Lucía Márquez</h3>
+          <span class="team-role">Co-fundadora · CEO</span>
+          <p>Ex infraestructura en equipos de plataforma. Diseñó el motor de secuenciación original.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">DR</div>
+          <h3>Diego Ramírez</h3>
+          <span class="team-role">Co-fundador · CTO</span>
+          <p>Diez años construyendo herramientas de análisis estático para equipos grandes.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">AS</div>
+          <h3>Ana Solís</h3>
+          <span class="team-role">Lead de Seguridad</span>
+          <p>Responsable del motor de detección de vulnerabilidades y la base de datos de CVEs.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">TK</div>
+          <h3>Tomás Kuri</h3>
+          <span class="team-role">Lead de Producto</span>
+          <p>Diseña la experiencia del CLI y el dashboard para que leer un genoma tome segundos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section-pad" id="precios">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">Precios</span>
+        <h2>Empieza gratis, escala cuando tu equipo lo necesite</h2>
+        <p class="section-desc">Sin tarjeta para el plan gratuito. Cancela cuando quieras.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <span class="price-plan">Free</span>
+          <div class="price-amount">$0<span>/mes</span></div>
+          <p class="price-desc">Para proyectos personales y exploración inicial.</p>
+          <ul class="price-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> 1 repositorio</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Escaneos manuales ilimitados</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Mapeo de dependencias</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Dashboard básico</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Instalar CLI</a>
+        </div>
+        <div class="price-card featured">
+          <span class="price-badge">Más usado</span>
+          <span class="price-plan">Team</span>
+          <div class="price-amount">$29<span>/dev · mes</span></div>
+          <p class="price-desc">Para equipos que necesitan CI/CD y auditoría continua.</p>
+          <ul class="price-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Repositorios ilimitados</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Integración CI/CD</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Detección de vulnerabilidades</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Comparación entre repos</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Auditoría de licencias</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Empezar prueba de 14 días</a>
+        </div>
+        <div class="price-card">
+          <span class="price-plan">Enterprise</span>
+          <div class="price-amount">A medida</div>
+          <p class="price-desc">Para organizaciones con cientos de repositorios y requisitos de compliance.</p>
+          <ul class="price-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Todo lo de Team</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> SSO y control de acceso</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Despliegue on-premise</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg> Soporte dedicado</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Hablar con ventas</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-pad" id="faq">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="section-tag">FAQ</span>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item">
+          <button class="faq-q">¿StackDNA envía mi código a un servidor externo?<span class="plus">+</span></button>
+          <div class="faq-a"><p>No. El escaneo corre localmente o en tu propio pipeline de CI. Solo el reporte generado (metadatos, no código fuente) se sincroniza con el dashboard si tú lo activas.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">¿Qué lenguajes y frameworks soporta?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Node.js, Python, Go, Rust y Java de forma nativa, con soporte experimental para Ruby y PHP. Cubrimos los principales gestores de paquetes de cada ecosistema.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">¿Puedo bloquear un merge si el genoma empeora?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Sí, en el plan Team puedes definir reglas de calidad de genoma (vulnerabilidades críticas, licencias prohibidas) que fallan el check de CI automáticamente.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">¿Cómo se compara con herramientas como Snyk o Dependabot?<span class="plus">+</span></button>
+          <div class="faq-a"><p>Esas herramientas se enfocan en vulnerabilidades puntuales. StackDNA construye el mapa completo de arquitectura y dependencias, y usa ese mapa como base para la auditoría, no al revés.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">¿Necesito tarjeta de crédito para el plan Free?<span class="plus">+</span></button>
+          <div class="faq-a"><p>No. El plan Free no pide tarjeta y no expira. Solo se limita a un repositorio activo.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>Tu stack ya tiene una historia. Léela.</h2>
+      <p>Instala el CLI en menos de un minuto y obtén el primer genoma de tu repositorio hoy mismo.</p>
+      <div class="final-actions">
+        <a href="#precios" class="btn btn-primary">Empezar gratis</a>
+        <a href="#producto" class="btn btn-ghost">$ npx stackdna init</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">
+          <span class="logo-mark">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M6 2C6 6 18 6 18 10C18 14 6 14 6 18C6 22 18 22 18 22" stroke="url(#g2)" stroke-width="2" stroke-linecap="round"/>
+              <defs><linearGradient id="g2" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
+            </svg>
+          </span>
+          StackDNA
+        </div>
+        <p>El perfil genético de tu stack: dependencias, arquitectura y seguridad en un solo mapa.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Producto</h4>
+          <a href="#features">Features</a>
+          <a href="#precios">Precios</a>
+          <a href="#">Documentación</a>
+          <a href="#">Changelog</a>
+        </div>
+        <div class="footer-col">
+          <h4>Compañía</h4>
+          <a href="#team">Equipo</a>
+          <a href="#">Blog</a>
+          <a href="#">Carreras</a>
+        </div>
+        <div class="footer-col">
+          <h4>Recursos</h4>
+          <a href="#faq">FAQ</a>
+          <a href="#">GitHub</a>
+          <a href="#">Estado del sistema</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 StackDNA. Todos los derechos reservados.</span>
+      <span>Hecho para developers, no para dashboards.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Build DNA helix rungs
+  (function(){
+    const helix = document.getElementById('helix');
+    const layers = ['frontend','backend','database','infra','frontend','backend','database','infra','frontend','backend','database','infra'];
+    const count = 12;
+    const totalHeight = 380;
+    for(let i=0;i<count;i++){
+      const rung = document.createElement('div');
+      rung.className = 'rung';
+      const y = (i/(count-1)) * totalHeight - totalHeight/2;
+      const rotY = (i / count) * 360;
+      rung.style.transform = `translateY(${y}px) rotateY(${rotY}deg)`;
+      rung.innerHTML = `
+        <div class="bar"></div>
+        <span class="node a"></span>
+        <span class="node b"></span>
+        <span class="label">${layers[i % layers.length]}</span>
+      `;
+      helix.appendChild(rung);
+    }
+  })();
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const btn = item.querySelector('.faq-q');
+    const ans = item.querySelector('.faq-a');
+    btn.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(other=>{
+        if(other!==item){
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+        }
+      });
+      if(isOpen){
+        item.classList.remove('open');
+        ans.style.maxHeight = null;
+      }else{
+        item.classList.add('open');
+        ans.style.maxHeight = ans.scrollHeight + 'px';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

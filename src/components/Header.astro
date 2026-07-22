@@ -1,0 +1,21 @@
+---
+import Logo from './Logo.astro';
+
+const links = [
+	{ href: '#producto', label: 'Producto' },
+	{ href: '#features', label: 'Features' },
+	{ href: '#team', label: 'Equipo' },
+	{ href: '#precios', label: 'Precios' },
+	{ href: '#faq', label: 'FAQ' },
+];
+---
+
+<header class="site-header">
+	<nav class="site-nav" aria-label="Navegacion principal">
+		<Logo id="header" />
+		<div class="nav-links">
+			{links.map((link) => <a href={link.href}>{link.label}</a>)}
+		</div>
+		<a href="#precios" class="nav-cta">$ npx stackdna init</a>
+	</nav>
+</header>

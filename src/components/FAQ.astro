@@ -1,0 +1,60 @@
+---
+const faqs = [
+	['StackDNA envia mi codigo a un servidor externo?', 'No. El escaneo corre localmente o en tu propio pipeline de CI. Solo el reporte generado, metadatos y no codigo fuente, se sincroniza con el dashboard si tu lo activas.'],
+	['Que lenguajes y frameworks soporta?', 'Node.js, Python, Go, Rust y Java de forma nativa, con soporte experimental para Ruby y PHP. Cubrimos los principales gestores de paquetes de cada ecosistema.'],
+	['Puedo bloquear un merge si el genoma empeora?', 'Si, en el plan Team puedes definir reglas de calidad de genoma, vulnerabilidades criticas o licencias prohibidas que fallan el check de CI automaticamente.'],
+	['Como se compara con herramientas como Snyk o Dependabot?', 'Esas herramientas se enfocan en vulnerabilidades puntuales. StackDNA construye el mapa completo de arquitectura y dependencias, y usa ese mapa como base para la auditoria, no al reves.'],
+	['Necesito tarjeta de credito para el plan Free?', 'No. El plan Free no pide tarjeta y no expira. Solo se limita a un repositorio activo.'],
+];
+---
+
+<section class="section-pad" id="faq">
+	<div class="wrap">
+		<div class="section-head">
+			<span class="section-tag">FAQ</span>
+			<h2>Preguntas frecuentes</h2>
+		</div>
+		<div class="faq-list" data-faq-list>
+			{faqs.map(([question, answer], index) => {
+				const answerId = `faq-answer-${index}`;
+				return (
+					<div class="faq-item">
+						<button class="faq-q" type="button" aria-expanded="false" aria-controls={answerId}>
+							<span>{question}</span><span class="plus" aria-hidden="true">+</span>
+						</button>
+						<div class="faq-a" id={answerId}>
+							<p>{answer}</p>
+						</div>
+					</div>
+				);
+			})}
+		</div>
+	</div>
+</section>
+
+<script>
+	document.querySelectorAll('[data-faq-list] .faq-item').forEach((item) => {
+		const btn = item.querySelector('.faq-q');
+		const ans = item.querySelector('.faq-a');
+
+		if (!(btn instanceof HTMLButtonElement) || !(ans instanceof HTMLElement)) return;
+
+		btn.addEventListener('click', () => {
+			const isOpen = item.classList.contains('open');
+
+			document.querySelectorAll('[data-faq-list] .faq-item.open').forEach((other) => {
+				if (other === item) return;
+
+				const otherButton = other.querySelector('.faq-q');
+				const otherAnswer = other.querySelector('.faq-a');
+				other.classList.remove('open');
+				if (otherButton instanceof HTMLButtonElement) otherButton.setAttribute('aria-expanded', 'false');
+				if (otherAnswer instanceof HTMLElement) otherAnswer.style.maxHeight = '';
+			});
+
+			item.classList.toggle('open', !isOpen);
+			btn.setAttribute('aria-expanded', String(!isOpen));
+			ans.style.maxHeight = isOpen ? '' : `${ans.scrollHeight}px`;
+		});
+	});
+</script>

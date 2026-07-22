@@ -1,0 +1,32 @@
+---
+import Logo from './Logo.astro';
+
+const columns = [
+	{ title: 'Producto', links: [{ href: '#features', label: 'Features' }, { href: '#precios', label: 'Precios' }, { href: '#producto', label: 'Documentacion' }, { href: '#producto', label: 'Changelog' }] },
+	{ title: 'Compania', links: [{ href: '#team', label: 'Equipo' }, { href: '#producto', label: 'Blog' }, { href: '#producto', label: 'Carreras' }] },
+	{ title: 'Recursos', links: [{ href: '#faq', label: 'FAQ' }, { href: '#producto', label: 'GitHub' }, { href: '#producto', label: 'Estado del sistema' }] },
+];
+---
+
+<footer class="site-footer">
+	<div class="wrap">
+		<div class="footer-grid">
+			<div class="footer-brand">
+				<Logo id="footer" />
+				<p>El perfil genetico de tu stack: dependencias, arquitectura y seguridad en un solo mapa.</p>
+			</div>
+			<div class="footer-links">
+				{columns.map((column) => (
+					<div class="footer-col">
+						<h4>{column.title}</h4>
+						{column.links.map((link) => <a href={link.href}>{link.label}</a>)}
+					</div>
+				))}
+			</div>
+		</div>
+		<div class="footer-bottom">
+			<span>© 2026 StackDNA. Todos los derechos reservados.</span>
+			<span>Hecho para developers, no para dashboards.</span>
+		</div>
+	</div>
+</footer>

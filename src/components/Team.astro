@@ -1,0 +1,28 @@
+---
+const team = [
+	['LM', 'Lucia Marquez', 'Co-fundadora - CEO', 'Ex infraestructura en equipos de plataforma. Diseno el motor de secuenciacion original.'],
+	['DR', 'Diego Ramirez', 'Co-fundador - CTO', 'Diez anos construyendo herramientas de analisis estatico para equipos grandes.'],
+	['AS', 'Ana Solis', 'Lead de Seguridad', 'Responsable del motor de deteccion de vulnerabilidades y la base de datos de CVEs.'],
+	['TK', 'Tomas Kuri', 'Lead de Producto', 'Disena la experiencia del CLI y el dashboard para que leer un genoma tome segundos.'],
+];
+---
+
+<section class="team section-pad" id="team">
+	<div class="wrap">
+		<div class="section-head">
+			<span class="section-tag">Equipo</span>
+			<h2>Construido por developers que auditaron demasiados repos rotos</h2>
+			<p class="section-desc">Un equipo pequeno enfocado en una sola cosa: que entender un stack ajeno deje de ser arqueologia.</p>
+		</div>
+		<div class="team-grid">
+			{team.map(([initials, name, role, bio]) => (
+				<article class="team-card">
+					<div class="team-avatar" aria-hidden="true">{initials}</div>
+					<h3>{name}</h3>
+					<span class="team-role">{role}</span>
+					<p>{bio}</p>
+				</article>
+			))}
+		</div>
+	</div>
+</section>

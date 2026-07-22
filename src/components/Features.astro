@@ -1,0 +1,67 @@
+---
+const features = [
+	{
+		title: 'Mapeo de dependencias',
+		description: 'Visualiza cada paquete, su version y sus relaciones directas e indirectas en un arbol interactivo.',
+		tag: 'core',
+		icon: 'network',
+	},
+	{
+		title: 'Deteccion de vulnerabilidades',
+		description: 'Cruza tu genoma contra bases CVE en tiempo real y prioriza por severidad y superficie de ataque real.',
+		tag: 'seguridad',
+		icon: 'shield',
+	},
+	{
+		title: 'Auditoria de licencias',
+		description: 'Identifica licencias incompatibles con tu politica antes de que lleguen a un merge.',
+		tag: 'compliance',
+		icon: 'license',
+	},
+	{
+		title: 'Arquitectura visual',
+		description: 'Genera un diagrama vivo de tus capas: frontend, backend, datos e infraestructura, actualizado en cada scan.',
+		tag: 'core',
+		icon: 'bars',
+	},
+	{
+		title: 'Comparacion entre repos',
+		description: 'Compara el genoma de dos proyectos o dos versiones del mismo, y ve exactamente que muto.',
+		tag: 'equipos',
+		icon: 'compare',
+	},
+	{
+		title: 'Integracion CI/CD',
+		description: 'Corre StackDNA en cada pull request y bloquea merges cuando el genoma empeora.',
+		tag: 'automatizacion',
+		icon: 'pipeline',
+	},
+];
+---
+
+<section class="section-pad" id="features">
+	<div class="wrap">
+		<div class="section-head">
+			<span class="section-tag">Features</span>
+			<h2>Todo lo que necesitas saber sobre tu stack, en un solo lugar</h2>
+			<p class="section-desc">Seis capacidades disenadas para equipos que ya no quieren descubrir problemas de arquitectura en produccion.</p>
+		</div>
+		<div class="features-grid">
+			{features.map((feature) => (
+				<article class="feature-card">
+					<div class="feature-icon" aria-hidden="true">
+						{feature.icon === 'network' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="12" cy="18" r="3"></circle><path d="M8.5 7.5L11 16.5M15.5 7.5L13 16.5"></path></svg>}
+						{feature.icon === 'shield' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z"></path><path d="M9 12l2 2 4-4"></path></svg>}
+						{feature.icon === 'license' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"></rect><path d="M8 9h8M8 13h5"></path></svg>}
+						{feature.icon === 'bars' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"></path></svg>}
+						{feature.icon === 'compare' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M7 3v6M17 3v6M4 9h16M4 9c0 7 4 12 8 12s8-5 8-12"></path></svg>}
+						{feature.icon === 'pipeline' && <svg viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="1.8"><path d="M4 4h16v6H4zM4 14h10v6H4z"></path></svg>}
+					</div>
+					<h3>{feature.title}</h3>
+					<p>{feature.description}</p>
+					<span class="feature-tag">{feature.tag}</span>
+				</article>
+			))}
+		</div>
+	</div>
+</section>

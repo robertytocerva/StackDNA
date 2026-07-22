@@ -1,0 +1,57 @@
+---
+const plans = [
+	{
+		name: 'Free',
+		price: '$0',
+		period: '/mes',
+		description: 'Para proyectos personales y exploracion inicial.',
+		items: ['1 repositorio', 'Escaneos manuales ilimitados', 'Mapeo de dependencias', 'Dashboard basico'],
+		cta: 'Instalar CLI',
+		featured: false,
+	},
+	{
+		name: 'Team',
+		price: '$29',
+		period: '/dev - mes',
+		description: 'Para equipos que necesitan CI/CD y auditoria continua.',
+		items: ['Repositorios ilimitados', 'Integracion CI/CD', 'Deteccion de vulnerabilidades', 'Comparacion entre repos', 'Auditoria de licencias'],
+		cta: 'Empezar prueba de 14 dias',
+		featured: true,
+	},
+	{
+		name: 'Enterprise',
+		price: 'A medida',
+		period: '',
+		description: 'Para organizaciones con cientos de repositorios y requisitos de compliance.',
+		items: ['Todo lo de Team', 'SSO y control de acceso', 'Despliegue on-premise', 'Soporte dedicado'],
+		cta: 'Hablar con ventas',
+		featured: false,
+	},
+];
+---
+
+<section class="section-pad" id="precios">
+	<div class="wrap">
+		<div class="section-head">
+			<span class="section-tag">Precios</span>
+			<h2>Empieza gratis, escala cuando tu equipo lo necesite</h2>
+			<p class="section-desc">Sin tarjeta para el plan gratuito. Cancela cuando quieras.</p>
+		</div>
+		<div class="pricing-grid">
+			{plans.map((plan) => (
+				<article class:list={['price-card', { featured: plan.featured }]}>
+					{plan.featured && <span class="price-badge">Mas usado</span>}
+					<span class="price-plan">{plan.name}</span>
+					<div class="price-amount">{plan.price}{plan.period && <span>{plan.period}</span>}</div>
+					<p class="price-desc">{plan.description}</p>
+					<ul class="price-list">
+						{plan.items.map((item) => (
+							<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 13l4 4L19 7"></path></svg>{item}</li>
+						))}
+					</ul>
+					<a href="#producto" class:list={['btn', plan.featured ? 'btn-primary' : 'btn-ghost']}>{plan.cta}</a>
+				</article>
+			))}
+		</div>
+	</div>
+</section>

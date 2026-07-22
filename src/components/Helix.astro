@@ -1,0 +1,32 @@
+<div class="helix-stage" aria-hidden="true">
+	<div class="helix" id="helix"></div>
+</div>
+
+<script>
+	(function () {
+		const helix = document.getElementById('helix');
+		if (!helix) return;
+
+		const layers = ['frontend', 'backend', 'database', 'infra', 'frontend', 'backend', 'database', 'infra', 'frontend', 'backend', 'database', 'infra'];
+		const count = 12;
+		const totalHeight = 380;
+
+		for (let i = 0; i < count; i++) {
+			const rung = document.createElement('div');
+			const y = (i / (count - 1)) * totalHeight - totalHeight / 2;
+			const rotY = (i / count) * 360;
+
+			rung.className = 'rung';
+			rung.style.setProperty('--rung-y', `${y}px`);
+			rung.style.setProperty('--rung-rot', `${rotY}deg`);
+			rung.innerHTML = `
+				<div class="bar"></div>
+				<span class="node a"></span>
+				<span class="node b"></span>
+				<span class="label">${layers[i % layers.length]}</span>
+			`;
+
+			helix.appendChild(rung);
+		}
+	})();
+</script>
