@@ -1,0 +1,308 @@
+---
+import hljs from 'highlight.js/lib/core';
+import java from 'highlight.js/lib/languages/java';
+import javascript from 'highlight.js/lib/languages/javascript';
+import python from 'highlight.js/lib/languages/python';
+
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('python', python);
+
+type SupportedLanguage = 'python' | 'javascript' | 'java';
+
+interface Props {
+	code: string;
+	output: string;
+	language: SupportedLanguage;
+	title: string;
+}
+
+const { code, output, language, title } = Astro.props;
+const languageLabels: Record<SupportedLanguage, string> = {
+	python: 'Python',
+	javascript: 'JavaScript',
+	java: 'Java',
+};
+const highlightedCode = hljs.highlight(code, { language }).value;
+const codeLines = highlightedCode.split('\n');
+---
+
+<article class="code-block" data-code-block>
+	<header class="code-header">
+		<div class="code-title">
+			<span class="code-file-icon" aria-hidden="true">{`{ }`}</span>
+			<span>{title}</span>
+		</div>
+		<div class="code-tools">
+			<span class="language-badge">{languageLabels[language]}</span>
+			<button class="copy-button" type="button" aria-label={`Copiar código: ${title}`} data-copy-code>
+				<svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+					<rect x="8" y="8" width="11" height="11" rx="2"></rect>
+					<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path>
+				</svg>
+				<span data-copy-label>Copiar</span>
+			</button>
+		</div>
+	</header>
+
+	<div class="code-scroller" tabindex="0" aria-label={`Código de ejemplo: ${title}`}>
+		<code class="code-content">
+			{codeLines.map((line, index) => (
+				<span class="code-line">
+					<span class="line-number" aria-hidden="true">{index + 1}</span>
+					<span class="line-text" set:html={line || '&nbsp;'}></span>
+				</span>
+			))}
+		</code>
+	</div>
+
+	<div class="output-panel">
+		<div class="output-heading"><span class="output-caret" aria-hidden="true">›</span> Output</div>
+		<pre><code>{output}</code></pre>
+	</div>
+
+	<template data-code-source>{code}</template>
+</article>
+
+<script>
+	document.querySelectorAll<HTMLElement>('[data-code-block]').forEach((block) => {
+		if (block.dataset.copyBound === 'true') return;
+		block.dataset.copyBound = 'true';
+
+		const button = block.querySelector<HTMLButtonElement>('[data-copy-code]');
+		const label = block.querySelector<HTMLElement>('[data-copy-label]');
+		const source = block.querySelector<HTMLTemplateElement>('[data-code-source]');
+
+		button?.addEventListener('click', async () => {
+			if (!button || !source) return;
+
+			try {
+				await navigator.clipboard.writeText(source.content.textContent ?? '');
+				button.classList.add('is-copied');
+				if (label) label.textContent = '¡Copiado!';
+				window.setTimeout(() => {
+					button.classList.remove('is-copied');
+					if (label) label.textContent = 'Copiar';
+				}, 2000);
+			} catch {
+				if (label) label.textContent = 'No disponible';
+			}
+		});
+	});
+</script>
+
+<style>
+	.code-block {
+		overflow: hidden;
+		border: 1px solid rgba(167, 139, 250, 0.16);
+		border-radius: 9px;
+		background: #0b0b11;
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+	}
+
+	.code-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		min-height: 46px;
+		padding: 8px 11px 8px 13px;
+		border-bottom: 1px solid rgba(167, 139, 250, 0.11);
+		background: #11111a;
+	}
+
+	.code-title,
+	.code-tools,
+	.copy-button,
+	.language-badge {
+		display: inline-flex;
+		align-items: center;
+	}
+
+	.code-title {
+		min-width: 0;
+		gap: 8px;
+		color: var(--text-dim);
+		font-size: 11px;
+	}
+
+	.code-title > span:last-child {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.code-file-icon {
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		font-weight: 600;
+	}
+
+	.code-tools {
+		gap: 8px;
+		flex: 0 0 auto;
+	}
+
+	.language-badge {
+		min-height: 23px;
+		padding: 3px 7px;
+		border: 1px solid rgba(167, 139, 250, 0.2);
+		border-radius: 4px;
+		background: rgba(124, 58, 237, 0.1);
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 9px;
+	}
+
+	.copy-button {
+		gap: 5px;
+		min-height: 25px;
+		padding: 4px 7px;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		background: transparent;
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+	}
+
+	.copy-button:hover,
+	.copy-button:focus-visible {
+		border-color: var(--border-strong);
+		background: rgba(124, 58, 237, 0.1);
+		color: var(--text);
+	}
+
+	.copy-button.is-copied {
+		color: #7ee787;
+	}
+
+	.copy-icon {
+		width: 13px;
+		height: 13px;
+	}
+
+	.code-scroller {
+		overflow-x: auto;
+		padding: 14px 0;
+		outline: 0;
+		background: #0b0b11;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		line-height: 1.7;
+		scrollbar-color: #343044 transparent;
+		scrollbar-width: thin;
+	}
+
+	.code-scroller:focus-visible {
+		box-shadow: inset 0 0 0 2px var(--purple-glow);
+	}
+
+	.code-content {
+		display: block;
+		min-width: max-content;
+		color: #d4d0e2;
+	}
+
+	.code-line {
+		display: flex;
+		min-height: 1.7em;
+		padding-right: 18px;
+	}
+
+	.line-number {
+		width: 37px;
+		padding-right: 12px;
+		flex: 0 0 auto;
+		color: #454155;
+		text-align: right;
+		user-select: none;
+	}
+
+	.line-text {
+		white-space: pre;
+	}
+
+	.code-block :global(.hljs-keyword),
+	.code-block :global(.hljs-selector-tag),
+	.code-block :global(.hljs-built_in) {
+		color: #c4b5fd;
+	}
+
+	.code-block :global(.hljs-string),
+	.code-block :global(.hljs-attr) {
+		color: #a5d6ff;
+	}
+
+	.code-block :global(.hljs-number),
+	.code-block :global(.hljs-literal) {
+		color: #ffab70;
+	}
+
+	.code-block :global(.hljs-title),
+	.code-block :global(.hljs-title.function_),
+	.code-block :global(.hljs-function) {
+		color: #d2a8ff;
+	}
+
+	.code-block :global(.hljs-comment) {
+		color: #615d70;
+		font-style: italic;
+	}
+
+	.output-panel {
+		padding: 11px 14px 13px;
+		border-top: 1px solid rgba(167, 139, 250, 0.11);
+		background: #101019;
+	}
+
+	.output-heading {
+		margin-bottom: 7px;
+		color: #7ee787;
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.04em;
+	}
+
+	.output-caret {
+		margin-right: 5px;
+		font-size: 16px;
+		line-height: 0;
+		vertical-align: -1px;
+	}
+
+	.output-panel pre {
+		margin: 0;
+		color: #9be9a5;
+		font-family: var(--font-mono);
+		font-size: 11px;
+		line-height: 1.55;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	[data-code-source] {
+		display: none;
+	}
+
+	@media (max-width: 560px) {
+		.code-header {
+			align-items: flex-start;
+		}
+
+		.code-tools {
+			gap: 4px;
+		}
+
+		.language-badge {
+			display: none;
+		}
+
+		.code-scroller {
+			font-size: 10px;
+		}
+	}
+</style>
