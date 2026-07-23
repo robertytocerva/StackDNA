@@ -1,0 +1,312 @@
+---
+import type { HttpMethod } from '../../data/services';
+
+interface Props {
+	totalServices: number;
+	methodCounts: Record<HttpMethod, number>;
+}
+
+const { totalServices, methodCounts } = Astro.props;
+---
+
+<section class="api-hero" aria-labelledby="api-tester-title">
+	<div class="wrap api-hero-grid">
+		<div class="api-hero-copy">
+			<span class="api-eyebrow"><span class="api-eyebrow-dot"></span> STACKDNA / API TESTER</span>
+			<h1 id="api-tester-title">Despliega, prueba y <span class="accent">muta</span> tus APIs.</h1>
+			<p>
+				Una consola visual para inspeccionar endpoints, ajustar payloads y leer la respuesta de cada
+				servicio sin salir de tu mapa de stack.
+			</p>
+		</div>
+
+		<div class="api-signal" aria-label={`${totalServices} servicios API indexados`}>
+			<div class="api-signal-ring api-signal-ring-one"></div>
+			<div class="api-signal-ring api-signal-ring-two"></div>
+			<div class="api-signal-core"><span>DNA</span><small>HTTP</small></div>
+			<span class="api-signal-label api-signal-label-top">SEQUENCE / 002</span>
+			<span class="api-signal-label api-signal-label-bottom">{String(totalServices).padStart(2, '0')} ENDPOINTS</span>
+		</div>
+	</div>
+
+	<div class="wrap api-hero-metrics" aria-label="Resumen de servicios">
+		<div class="api-metric"><strong>{String(totalServices).padStart(2, '0')}</strong><span>servicios<br />indexados</span></div>
+		<div class="api-metric"><strong>{String(methodCounts.GET).padStart(2, '0')}</strong><span>secuencias<br />GET</span></div>
+		<div class="api-metric"><strong>{String(methodCounts.POST).padStart(2, '0')}</strong><span>mutaciones<br />POST</span></div>
+		<div class="api-metric api-metric-note"><span><b>LOCAL SIMULATION</b><br />CORS-safe request flow</span></div>
+	</div>
+</section>
+
+<style>
+	.api-hero {
+		position: relative;
+		overflow: hidden;
+		padding: 112px 0 0;
+		border-bottom: 1px solid var(--border);
+		background: linear-gradient(180deg, rgba(124, 58, 237, 0.045), transparent 72%);
+	}
+
+	.api-hero::before {
+		position: absolute;
+		top: -330px;
+		right: 2%;
+		width: 660px;
+		height: 660px;
+		border: 1px solid rgba(167, 139, 250, 0.08);
+		border-radius: 50%;
+		box-shadow: 0 0 110px rgba(124, 58, 237, 0.1), inset 0 0 100px rgba(124, 58, 237, 0.06);
+		content: '';
+		pointer-events: none;
+	}
+
+	.api-hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 310px;
+		align-items: center;
+		gap: 70px;
+		min-height: 365px;
+	}
+
+	.api-hero-copy {
+		position: relative;
+		z-index: 1;
+		max-width: 700px;
+	}
+
+	.api-eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		margin-bottom: 24px;
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.14em;
+	}
+
+	.api-eyebrow-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--purple-glow);
+		box-shadow: 0 0 14px var(--purple-glow);
+	}
+
+	.api-hero h1 {
+		max-width: 720px;
+		margin-bottom: 21px;
+		font-size: clamp(42px, 6vw, 72px);
+		line-height: 0.98;
+	}
+
+	.api-hero h1 .accent {
+		background: linear-gradient(120deg, var(--purple-glow), var(--purple-2));
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	.api-hero-copy p {
+		max-width: 550px;
+		color: var(--text-dim);
+		font-size: 16px;
+		line-height: 1.7;
+	}
+
+	.api-signal {
+		position: relative;
+		display: grid;
+		width: 260px;
+		height: 260px;
+		place-items: center;
+		justify-self: center;
+		border: 1px solid var(--border);
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(124, 58, 237, 0.16), rgba(15, 15, 22, 0.2) 50%, transparent 70%);
+		box-shadow: 0 0 80px rgba(124, 58, 237, 0.12);
+	}
+
+	.api-signal-ring {
+		position: absolute;
+		border: 1px solid rgba(167, 139, 250, 0.24);
+		border-radius: 50%;
+		transform: rotate(-30deg);
+	}
+
+	.api-signal-ring-one {
+		width: 196px;
+		height: 106px;
+	}
+
+	.api-signal-ring-two {
+		width: 106px;
+		height: 196px;
+		transform: rotate(30deg);
+	}
+
+	.api-signal-core {
+		display: grid;
+		width: 78px;
+		height: 78px;
+		place-items: center;
+		align-content: center;
+		border: 1px solid var(--purple-2);
+		border-radius: 50%;
+		background: var(--surface);
+		box-shadow: 0 0 35px rgba(124, 58, 237, 0.4), inset 0 0 18px rgba(167, 139, 250, 0.12);
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		letter-spacing: 0.16em;
+	}
+
+	.api-signal-core small {
+		margin-top: 4px;
+		color: var(--text-faint);
+		font-size: 8px;
+		letter-spacing: 0.12em;
+	}
+
+	.api-signal-label {
+		position: absolute;
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+		letter-spacing: 0.1em;
+	}
+
+	.api-signal-label-top {
+		top: 35px;
+		right: 18px;
+	}
+
+	.api-signal-label-bottom {
+		bottom: 37px;
+		left: 19px;
+		color: var(--purple-soft);
+	}
+
+	.api-hero-metrics {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		margin-top: 28px;
+		border-top: 1px solid var(--border);
+	}
+
+	.api-metric {
+		display: flex;
+		align-items: center;
+		gap: 11px;
+		min-height: 76px;
+		padding: 14px 20px 14px 0;
+		border-right: 1px solid var(--border);
+	}
+
+	.api-metric + .api-metric {
+		padding-left: 20px;
+	}
+
+	.api-metric:last-child {
+		border-right: 0;
+	}
+
+	.api-metric strong {
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 25px;
+		font-weight: 500;
+		letter-spacing: -0.08em;
+	}
+
+	.api-metric span {
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+		line-height: 1.45;
+		text-transform: uppercase;
+	}
+
+	.api-metric-note {
+		justify-content: flex-end;
+		text-align: right;
+	}
+
+	.api-metric-note b {
+		color: #7ee787;
+		font-size: 9px;
+		font-weight: 500;
+	}
+
+	@media (max-width: 800px) {
+		.api-hero-grid {
+			grid-template-columns: 1fr;
+			gap: 42px;
+			min-height: 0;
+		}
+
+		.api-signal {
+			width: 210px;
+			height: 210px;
+			justify-self: start;
+		}
+
+		.api-signal-ring-one {
+			width: 158px;
+			height: 86px;
+		}
+
+		.api-signal-ring-two {
+			width: 86px;
+			height: 158px;
+		}
+
+		.api-hero-metrics {
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		.api-metric:nth-child(2) {
+			border-right: 0;
+		}
+
+		.api-metric:nth-child(n + 3) {
+			border-top: 1px solid var(--border);
+		}
+
+		.api-metric-note {
+			justify-content: flex-start;
+			text-align: left;
+		}
+	}
+
+	@media (max-width: 560px) {
+		.api-hero {
+			padding-top: 94px;
+		}
+
+		.api-hero h1 {
+			font-size: clamp(39px, 12vw, 58px);
+		}
+
+		.api-hero-copy p {
+			font-size: 15px;
+		}
+
+		.api-metric,
+		.api-metric + .api-metric {
+			gap: 8px;
+			padding-inline: 0 11px;
+		}
+
+		.api-metric + .api-metric {
+			padding-left: 11px;
+		}
+
+		.api-metric strong {
+			font-size: 21px;
+		}
+
+		.api-metric span {
+			font-size: 8px;
+		}
+	}
+</style>
