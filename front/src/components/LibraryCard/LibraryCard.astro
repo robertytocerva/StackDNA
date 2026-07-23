@@ -1,0 +1,261 @@
+---
+import CodeBlock from '../CodeBlock/CodeBlock.astro';
+import type { LibraryEntry } from '../../data/libraries';
+
+interface Props {
+	libraryData: LibraryEntry;
+}
+
+const { libraryData } = Astro.props;
+const { library, snippets, language, languageIcon } = libraryData;
+const categoryLabels: Record<LibraryEntry['library']['category'], string> = {
+	utilities: 'Utilities',
+	data: 'Data',
+	networking: 'Networking',
+	datetime: 'Date & time',
+	math: 'Math',
+	system: 'System',
+};
+---
+
+<article
+	class="library-card"
+	role="article"
+	data-library-card
+	data-library-id={libraryData.id}
+	data-language={language}
+	data-category={library.category}
+>
+	<header class="library-card-header">
+		<div class="library-identity">
+			<div class="library-icon" aria-hidden="true">{languageIcon}</div>
+			<div class="library-heading">
+				<div class="library-name-row">
+					<h3>{library.name}</h3>
+					{library.isPopular && <span class="popular-badge"><span>✦</span> Popular</span>}
+				</div>
+				<p>{library.description}</p>
+			</div>
+		</div>
+		<a class="docs-link" href={library.docsUrl} target="_blank" rel="noreferrer" aria-label={`Abrir documentación de ${library.name}`}>
+			Docs <span aria-hidden="true">↗</span>
+		</a>
+	</header>
+
+	<div class="library-meta">
+		<span class="install-chip"><span class="meta-symbol" aria-hidden="true">$</span><code>{library.installCommand === 'built-in' ? 'Built-in' : library.installCommand}</code></span>
+		<span class="category-chip"><span class="meta-symbol" aria-hidden="true">#</span>{categoryLabels[library.category]}</span>
+	</div>
+
+	<div class="snippet-list">
+		{snippets.map((snippet) => (
+			<CodeBlock
+				code={snippet.code}
+				output={snippet.output}
+				language={snippet.language}
+				title={snippet.title}
+			/>
+		))}
+	</div>
+
+	<footer class="library-card-footer">
+		<span>{snippets.length} ejemplos prácticos</span>
+	</footer>
+</article>
+
+<style>
+	.library-card {
+		position: relative;
+		display: flex;
+		min-width: 0;
+		flex-direction: column;
+		padding: 22px;
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		background: linear-gradient(160deg, rgba(27, 27, 40, 0.76), rgba(15, 15, 22, 0.92));
+		box-shadow: 0 16px 42px rgba(0, 0, 0, 0.16), inset 0 1px rgba(255, 255, 255, 0.025);
+		transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+	}
+
+	.library-card::before {
+		position: absolute;
+		top: 0;
+		left: 22px;
+		width: 54px;
+		height: 2px;
+		background: linear-gradient(90deg, var(--purple-glow), transparent);
+		content: '';
+	}
+
+	.library-card:hover {
+		border-color: var(--border-strong);
+		box-shadow: 0 20px 48px rgba(0, 0, 0, 0.23), 0 0 30px rgba(124, 58, 237, 0.06);
+		transform: translateY(-3px);
+	}
+
+	.library-card-header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 18px;
+	}
+
+	.library-identity {
+		display: flex;
+		min-width: 0;
+		gap: 13px;
+	}
+
+	.library-icon {
+		display: grid;
+		width: 42px;
+		height: 42px;
+		flex: 0 0 auto;
+		place-items: center;
+		border: 1px solid var(--border-strong);
+		border-radius: 10px;
+		background: rgba(124, 58, 237, 0.1);
+		font-size: 22px;
+	}
+
+	.library-heading {
+		min-width: 0;
+	}
+
+	.library-name-row {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		flex-wrap: wrap;
+	}
+
+	.library-name-row h3 {
+		color: var(--white);
+		font-family: var(--font-display);
+		font-size: 19px;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+
+	.library-heading p {
+		max-width: 450px;
+		margin-top: 4px;
+		color: var(--text-dim);
+		font-size: 12px;
+		line-height: 1.5;
+	}
+
+	.popular-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 3px 7px;
+		border: 1px solid rgba(167, 139, 250, 0.23);
+		border-radius: 100px;
+		background: rgba(124, 58, 237, 0.13);
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 9px;
+	}
+
+	.popular-badge span {
+		color: var(--purple-glow);
+	}
+
+	.docs-link {
+		padding-top: 4px;
+		flex: 0 0 auto;
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		transition: color 0.2s ease;
+	}
+
+	.docs-link:hover {
+		color: var(--white);
+	}
+
+	.library-meta {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 18px 0;
+		flex-wrap: wrap;
+	}
+
+	.install-chip,
+	.category-chip {
+		display: inline-flex;
+		min-height: 25px;
+		align-items: center;
+		gap: 6px;
+		padding: 4px 8px;
+		border: 1px solid var(--border);
+		border-radius: 5px;
+		background: rgba(8, 8, 12, 0.28);
+		color: var(--text-dim);
+		font-family: var(--font-mono);
+		font-size: 9px;
+	}
+
+	.install-chip code {
+		color: var(--text);
+		font: inherit;
+	}
+
+	.meta-symbol {
+		color: var(--purple-soft);
+	}
+
+	.category-chip {
+		border-color: rgba(126, 231, 135, 0.14);
+		color: #a5d6a9;
+	}
+
+	.snippet-list {
+		display: grid;
+		gap: 12px;
+	}
+
+	.library-card-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-top: 18px;
+		padding-top: 14px;
+		border-top: 1px solid var(--border);
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+	}
+
+	.library-card-footer a {
+		color: var(--purple-soft);
+		transition: color 0.2s ease;
+	}
+
+	.library-card-footer a:hover {
+		color: var(--white);
+	}
+
+	@media (max-width: 560px) {
+		.library-card {
+			padding: 18px;
+		}
+
+		.library-card-header {
+			display: block;
+		}
+
+		.docs-link {
+			display: inline-block;
+			margin: 13px 0 0 55px;
+		}
+
+		.library-card-footer {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+	}
+</style>

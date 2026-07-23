@@ -1,0 +1,179 @@
+---
+interface Props {
+	value?: string;
+	placeholder?: string;
+	resultCount?: number;
+}
+
+const {
+	value = '',
+	placeholder = 'Buscar librería, lenguaje o función...',
+	resultCount = 0,
+} = Astro.props;
+
+const resultLabel = resultCount === 1 ? 'resultado encontrado' : 'resultados encontrados';
+---
+
+<div class="search-bar" data-search-component>
+	<label class="search-label" for="library-search">Buscar en la biblioteca</label>
+	<div class="search-control">
+		<svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+			<circle cx="11" cy="11" r="6.5"></circle>
+			<path d="m16 16 4.5 4.5"></path>
+		</svg>
+		<input
+			id="library-search"
+			class="search-input"
+			type="search"
+			role="searchbox"
+			value={value}
+			placeholder={placeholder}
+			autocomplete="off"
+			spellcheck="false"
+			data-library-search
+		/>
+		<button class="clear-search" type="button" aria-label="Limpiar búsqueda" data-clear-search hidden>
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+				<path d="M6 6l12 12M18 6 6 18"></path>
+			</svg>
+		</button>
+	</div>
+	<div class="search-footer">
+		<span class="search-status" aria-live="polite" data-results-count>{resultCount} {resultLabel}</span>
+		<span class="search-hint"><span aria-hidden="true">↵</span> búsqueda instantánea</span>
+	</div>
+</div>
+
+<style>
+	.search-bar {
+		position: relative;
+	}
+
+	.search-label {
+		display: block;
+		margin-bottom: 10px;
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.search-control {
+		position: relative;
+		display: flex;
+		align-items: center;
+		min-height: 66px;
+		border: 1px solid var(--border-strong);
+		border-radius: 10px;
+		background: rgba(15, 15, 22, 0.82);
+		box-shadow: 0 16px 48px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.03);
+		transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+	}
+
+	.search-control:focus-within {
+		border-color: var(--purple-glow);
+		background: rgba(21, 21, 31, 0.96);
+		box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12), 0 18px 52px rgba(0, 0, 0, 0.3);
+	}
+
+	.search-icon {
+		width: 23px;
+		height: 23px;
+		margin-left: 21px;
+		flex: 0 0 auto;
+		color: var(--purple-soft);
+	}
+
+	.search-input {
+		width: 100%;
+		min-width: 0;
+		padding: 0 18px;
+		border: 0;
+		outline: 0;
+		background: transparent;
+		color: var(--white);
+		font-family: var(--font-body);
+		font-size: 17px;
+	}
+
+	.search-input::placeholder {
+		color: var(--text-faint);
+	}
+
+	.search-input::-webkit-search-cancel-button {
+		display: none;
+	}
+
+	.clear-search {
+		display: grid;
+		width: 34px;
+		height: 34px;
+		margin-right: 15px;
+		flex: 0 0 auto;
+		place-items: center;
+		border: 1px solid var(--border);
+		border-radius: 7px;
+		background: var(--surface-2);
+		color: var(--text-dim);
+		cursor: pointer;
+		transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	}
+
+	.clear-search:hover {
+		border-color: var(--border-strong);
+		color: var(--white);
+		transform: rotate(90deg);
+	}
+
+	.clear-search svg {
+		width: 15px;
+		height: 15px;
+	}
+
+	.search-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-top: 10px;
+		padding: 0 3px;
+	}
+
+	.search-status {
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 11px;
+	}
+
+	.search-hint {
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 10px;
+	}
+
+	.search-hint span {
+		display: inline-grid;
+		width: 17px;
+		height: 17px;
+		margin-right: 4px;
+		place-items: center;
+		border: 1px solid var(--border);
+		border-radius: 4px;
+		color: var(--text-dim);
+	}
+
+	@media (max-width: 560px) {
+		.search-control {
+			min-height: 60px;
+		}
+
+		.search-input {
+			font-size: 15px;
+		}
+
+		.search-hint {
+			display: none;
+		}
+	}
+</style>
