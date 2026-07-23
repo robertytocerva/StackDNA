@@ -1,0 +1,351 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1.1 Crear estructura de carpetas, package.json y tsconfig.json": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773251080
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773268150
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784775175434
+      }
+    ],
+    "1.2 Implementar carga y validación de variables de entorno": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773251600
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784775181328
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784776316520
+      }
+    ],
+    "1.3 Configurar pool de conexiones PostgreSQL": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773251934
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784775182484
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784776317521
+      }
+    ],
+    "1.4 Crear bootstrap de la aplicación Express": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252087
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784776323693
+      }
+    ],
+    "2.1 Implementar el motor de migraciones": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252205
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784776324587
+      }
+    ],
+    "2.2 Crear scripts SQL de migración": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252297
+      },
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784776325037
+      }
+    ],
+    "2.3 Crear repositorio de migraciones": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252403
+      }
+    ],
+    "3. Checkpoint - Verificar infraestructura base": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252509
+      }
+    ],
+    "4.1 Definir tipos TypeScript del dominio": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252604
+      }
+    ],
+    "4.2 Implementar utilidad de generación de slugs": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252701
+      }
+    ],
+    "4.3 Escribir property test para generación de slugs": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252787
+      }
+    ],
+    "4.4 Implementar helpers de paginación": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773252962
+      }
+    ],
+    "4.5 Escribir property test para paginación": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253056
+      }
+    ],
+    "4.6 Implementar logger": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253147
+      }
+    ],
+    "5.1 Implementar repositorio de tecnologías": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253240
+      }
+    ],
+    "5.2 Implementar repositorio de caché": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253338
+      }
+    ],
+    "6.1 Implementar servicio de caché": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253440
+      }
+    ],
+    "6.2 Escribir property test para caché hit": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253547
+      }
+    ],
+    "6.3 Implementar interfaz de conector y configuración de rate limiter": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253642
+      }
+    ],
+    "6.4 Escribir property test para retry con backoff exponencial": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253794
+      }
+    ],
+    "6.5 Implementar conector de APIs.guru": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253896
+      }
+    ],
+    "6.6 Implementar conector de npm Registry": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773253990
+      }
+    ],
+    "6.7 Implementar conector de PyPI": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254100
+      }
+    ],
+    "6.8 Implementar conector de GitHub": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254204
+      }
+    ],
+    "6.9 Crear index de conectores": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254304
+      }
+    ],
+    "7. Checkpoint - Verificar conectores y caché": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254412
+      }
+    ],
+    "8.1 Implementar servicio de tecnologías": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254516
+      }
+    ],
+    "8.2 Escribir property test para búsqueda por texto": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254620
+      }
+    ],
+    "8.3 Escribir property test para filtros AND": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254731
+      }
+    ],
+    "8.4 Escribir property test para limit acotado": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254834
+      }
+    ],
+    "8.5 Escribir property test para ordenamiento": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773254928
+      }
+    ],
+    "8.6 Implementar servicio de seeding": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255034
+      }
+    ],
+    "9.1 Implementar middleware de validación con Zod": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255140
+      }
+    ],
+    "9.2 Escribir property test para validación": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255248
+      }
+    ],
+    "9.3 Implementar controlador y rutas de tecnologías": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255374
+      }
+    ],
+    "9.4 Implementar controlador y rutas de health check": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255487
+      }
+    ],
+    "9.5 Crear router principal e integrar rutas": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255598
+      }
+    ],
+    "10.1 Implementar middleware global de errores": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255741
+      }
+    ],
+    "10.2 Escribir property test para estructura de errores": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255854
+      }
+    ],
+    "10.3 Implementar middleware de rutas no encontradas": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773255948
+      }
+    ],
+    "10.4 Definir clases de error personalizadas": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773256055
+      }
+    ],
+    "11.1 Crear script ejecutable de seeding": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773256224
+      }
+    ],
+    "12. Checkpoint final - Verificar integración completa": [
+      {
+        "executionId": "a27ae88c-f723-4227-80e5-03025e246be1",
+        "chatSessionId": "sess_68170556-3ee1-440b-b4e9-12ae7dcae999",
+        "timestamp": 1784773256339
+      }
+    ]
+  }
+}
