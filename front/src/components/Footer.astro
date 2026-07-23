@@ -1,10 +1,11 @@
 ---
 import Logo from './Logo.astro';
 
+const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const columns = [
-	{ title: 'Producto', links: [{ href: '#features', label: 'Features' }, { href: '#precios', label: 'Precios' }, { href: '#producto', label: 'Documentacion' }, { href: '#producto', label: 'Changelog' }] },
-	{ title: 'Compania', links: [{ href: '#team', label: 'Equipo' }, { href: '#producto', label: 'Blog' }, { href: '#producto', label: 'Carreras' }] },
-	{ title: 'Recursos', links: [{ href: '#faq', label: 'FAQ' }, { href: '#producto', label: 'GitHub' }, { href: '#producto', label: 'Estado del sistema' }] },
+	{ title: 'Producto', links: [{ href: homeHref('#features'), label: 'Features' }, { href: homeHref('#precios'), label: 'Precios' }, { href: homeHref('#producto'), label: 'Documentacion' }, { href: '/librerias', label: 'Librerias' }, { href: '/servicios', label: 'API Tester' }] },
+	{ title: 'Compania', links: [{ href: homeHref('#team'), label: 'Equipo' }, { href: homeHref('#producto'), label: 'Blog' }, { href: homeHref('#producto'), label: 'Carreras' }] },
+	{ title: 'Recursos', links: [{ href: homeHref('#faq'), label: 'FAQ' }, { href: homeHref('#producto'), label: 'GitHub' }, { href: homeHref('#producto'), label: 'Estado del sistema' }] },
 ];
 ---
 

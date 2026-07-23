@@ -1,12 +1,15 @@
 ---
 import Logo from './Logo.astro';
 
+const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const links = [
-	{ href: '#producto', label: 'Producto' },
-	{ href: '#features', label: 'Features' },
-	{ href: '#team', label: 'Equipo' },
-	{ href: '#precios', label: 'Precios' },
-	{ href: '#faq', label: 'FAQ' },
+	{ href: homeHref('#producto'), label: 'Producto' },
+	{ href: homeHref('#features'), label: 'Features' },
+	{ href: homeHref('#team'), label: 'Equipo' },
+	{ href: homeHref('#precios'), label: 'Precios' },
+	{ href: homeHref('#faq'), label: 'FAQ' },
+	{ href: '/librerias', label: 'Librerías' },
+	{ href: '/servicios', label: 'API Tester' },
 ];
 ---
 
@@ -16,6 +19,6 @@ const links = [
 		<div class="nav-links">
 			{links.map((link) => <a href={link.href}>{link.label}</a>)}
 		</div>
-		<a href="#precios" class="nav-cta">$ npx stackdna init</a>
+		<a href={homeHref('#precios')} class="nav-cta">$ npx stackdna init</a>
 	</nav>
 </header>

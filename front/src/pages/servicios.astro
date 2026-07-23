@@ -1,0 +1,61 @@
+---
+import Footer from '../components/Footer.astro';
+import SiteHeader from '../components/Header.astro';
+import ApiTesterHeader from '../components/ApiTester/Header.astro';
+import Filters from '../components/ApiTester/Filters.astro';
+import Grid from '../components/ApiTester/Grid.astro';
+import Layout from '../layouts/Layout.astro';
+import { initialServices, type HttpMethod } from '../data/services';
+import '../styles/servicios.css';
+
+const methodCounts: Record<HttpMethod, number> = {
+	GET: 0,
+	POST: 0,
+	PUT: 0,
+	DELETE: 0,
+};
+
+initialServices.forEach((service) => {
+	methodCounts[service.method] += 1;
+});
+---
+
+<Layout
+	title="API Tester — StackDNA"
+	description="Inspecciona, prueba y muta endpoints de tus servicios desde la consola API Tester de StackDNA."
+>
+	<div class="bg-noise" aria-hidden="true"></div>
+	<SiteHeader />
+	<main class="api-page" data-api-tester>
+		<ApiTesterHeader totalServices={initialServices.length} methodCounts={methodCounts} />
+
+		<section class="api-workbench wrap" aria-labelledby="api-workbench-title">
+			<div class="api-workbench-shell">
+				<div class="api-workbench-heading">
+					<div>
+						<span class="section-tag">Workbench local</span>
+						<h2 id="api-workbench-title">Lee el pulso de cada endpoint.</h2>
+						<p>
+							Edita el request, ejecuta una simulación segura y conserva la respuesta junto a la
+							secuencia que la generó.
+						</p>
+					</div>
+					<div class="api-workbench-code" aria-hidden="true">
+						<span>STATE / READY</span>
+						<strong>{String(initialServices.length).padStart(2, '0')} nodes</strong>
+					</div>
+				</div>
+
+				<Filters services={initialServices} />
+				<Grid services={initialServices} />
+			</div>
+		</section>
+	</main>
+	<Footer />
+</Layout>
+
+<script>
+	import { initApiTester } from '../scripts/apiTester';
+
+	initApiTester();
+</script>
