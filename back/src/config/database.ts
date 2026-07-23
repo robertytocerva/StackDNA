@@ -1,7 +1,9 @@
 import pg from 'pg';
-import { config } from './index.js';
+import { loadAndValidateEnv } from './env.js';
 
 const { Pool } = pg;
+
+const env = loadAndValidateEnv();
 
 /**
  * Configura el pool de conexiones PostgreSQL.
@@ -15,14 +17,15 @@ function createPool(): pg.Pool {
     connectionTimeoutMillis: 30000,
   };
 
-  if (config.database.url) {
-    poolConfig.connectionString = config.database.url;
+  if (env.DATABASE_URL) {
+    poolConfig.connectionString = env.DATABASE_URL;
+    poolConfig.ssl = { rejectUnauthorized: false };
   } else {
-    poolConfig.host = config.database.host;
-    poolConfig.port = config.database.port;
-    poolConfig.database = config.database.name;
-    poolConfig.user = config.database.user;
-    poolConfig.password = config.database.password;
+    poolConfig.host = env.DB_HOST;
+    poolConfig.port = env.DB_PORT;
+    poolConfig.database = env.DB_NAME;
+    poolConfig.user = env.DB_USER;
+    poolConfig.password = env.DB_PASSWORD;
   }
 
   return new Pool(poolConfig);
