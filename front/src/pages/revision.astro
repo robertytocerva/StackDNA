@@ -1,5 +1,6 @@
 ---
 import Header from '../components/Landing/Header.astro';
+import RepositoryAnalysis from '../components/RepoAnalyzer/RepositoryAnalysis.astro';
 import RepositorySearch from '../components/RepositorySearch/RepositorySearch.astro';
 import Layout from '../layouts/Layout.astro';
 import '../styles/revision.css';
@@ -11,12 +12,19 @@ import '../styles/revision.css';
 >
 	<div class="bg-noise" aria-hidden="true"></div>
 	<Header />
-	<main class="revision-page">
+	<main class="revision-page" data-repo-analyzer>
 		<section class="revision-hero wrap" aria-labelledby="revision-title">
 			<div class="revision-search-wrap">
 				<h1 id="revision-title" class="sr-only">Analizador de repositorios de GitHub</h1>
 				<RepositorySearch />
 			</div>
 		</section>
+		<RepositoryAnalysis />
 	</main>
 </Layout>
+
+<script>
+	import { initRepoAnalyzer } from '../scripts/repoAnalyzer';
+
+	initRepoAnalyzer();
+</script>

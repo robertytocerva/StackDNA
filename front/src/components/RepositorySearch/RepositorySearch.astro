@@ -6,22 +6,24 @@ interface Props {
 const { placeholder = 'https://github.com/usuario/repositorio' } = Astro.props;
 ---
 
-<form class="repo-search" role="search" aria-label="Analizar repositorio de GitHub">
+<form class="repo-search" role="search" aria-label="Analizar repositorio de GitHub" data-repo-form>
 	<label class="repo-search-label" for="repository-url">Repositorio de GitHub</label>
 	<div class="repo-search-control">
 		<input
 			id="repository-url"
 			class="repo-search-input"
-			type="url"
-			name="repositoryUrl"
+			type="text"
+			name="repoUrl"
 			placeholder={placeholder}
 			autocomplete="url"
 			spellcheck="false"
 			inputmode="url"
-			pattern="https://github\.com/.+/.+"
+			pattern="(https://github\.com/.+/.+|[^/\s]+/[^/\s]+)"
 			aria-describedby="repository-public-note"
+			data-repo-input
+			required
 		/>
-		<button class="repo-search-button" type="submit" aria-label="Iniciar busqueda">
+		<button class="repo-search-button" type="submit" aria-label="Iniciar busqueda" data-repo-submit>
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<circle cx="11" cy="11" r="6.8"></circle>
 				<path d="m16 16 4.5 4.5"></path>

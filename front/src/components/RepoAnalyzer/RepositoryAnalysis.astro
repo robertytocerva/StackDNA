@@ -1,0 +1,16 @@
+<section class="analysis-workbench wrap" aria-labelledby="analysis-title" data-analysis-workbench hidden>
+	<div class="analysis-status" data-analysis-loading hidden>
+		<div class="analysis-loader" aria-hidden="true"></div>
+		<div>
+			<h2 id="analysis-title">Analizando repositorio</h2>
+			<p>Estamos leyendo metadata, dependencias, vulnerabilidades y arquitectura. Puede tomar unos segundos.</p>
+		</div>
+	</div>
+
+	<div class="analysis-error" role="alert" data-analysis-error hidden>
+		<span class="analysis-error-code">ERROR</span>
+		<p data-analysis-error-text>No se pudo analizar el repositorio.</p>
+	</div>
+
+	<div class="analysis-result" data-analysis-result hidden></div>
+</section>
