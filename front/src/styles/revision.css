@@ -1,0 +1,130 @@
+.revision-page {
+	min-height: 100vh;
+	padding: 132px 0 96px;
+}
+
+.revision-hero {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	padding-top: clamp(28px, 8vh, 96px);
+}
+
+.revision-search-wrap {
+	width: min(760px, 100%);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+}
+
+.repo-search {
+	width: 100%;
+	text-align: center;
+}
+
+.repo-search-label {
+	display: block;
+	margin-bottom: 14px;
+	color: var(--purple-soft);
+	font-family: var(--font-mono);
+	font-size: 12px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+}
+
+.repo-search-control {
+	display: grid;
+	grid-template-columns: 1fr 62px;
+	align-items: center;
+	min-height: 66px;
+	overflow: hidden;
+	border: 1px solid var(--border-strong);
+	border-radius: 12px;
+	background: rgba(15, 15, 22, 0.88);
+	box-shadow: 0 20px 70px rgba(0, 0, 0, 0.32), inset 0 1px rgba(255, 255, 255, 0.04);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.repo-search-control:focus-within {
+	border-color: var(--purple-glow);
+	background: rgba(21, 21, 31, 0.98);
+	box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.12), 0 22px 76px rgba(0, 0, 0, 0.36);
+}
+
+.repo-search-input {
+	width: 100%;
+	min-width: 0;
+	height: 100%;
+	padding: 0 24px;
+	border: 0;
+	outline: 0;
+	background: transparent;
+	color: var(--white);
+	font-family: var(--font-body);
+	font-size: 16px;
+}
+
+.repo-search-input::placeholder {
+	color: var(--text-faint);
+}
+
+.repo-search-button {
+	display: grid;
+	width: 46px;
+	height: 46px;
+	margin-right: 10px;
+	place-items: center;
+	border: 1px solid var(--purple-2);
+	border-radius: 9px;
+	background: var(--purple);
+	color: var(--white);
+	cursor: pointer;
+	transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.repo-search-button:hover {
+	background: var(--purple-2);
+	box-shadow: 0 0 26px rgba(124, 58, 237, 0.5);
+	transform: translateY(-1px);
+}
+
+.repo-search-button svg {
+	width: 22px;
+	height: 22px;
+}
+
+.repo-search-note {
+	margin-top: 13px;
+	color: var(--text-dim);
+	font-family: var(--font-mono);
+	font-size: 12px;
+}
+
+@media (max-width: 560px) {
+	.revision-page {
+		padding-top: 112px;
+	}
+
+	.repo-search-control {
+		grid-template-columns: 1fr 54px;
+		min-height: 60px;
+	}
+
+	.repo-search-input {
+		padding-inline: 17px;
+		font-size: 14px;
+	}
+
+	.repo-search-button {
+		width: 40px;
+		height: 40px;
+		margin-right: 8px;
+	}
+}
