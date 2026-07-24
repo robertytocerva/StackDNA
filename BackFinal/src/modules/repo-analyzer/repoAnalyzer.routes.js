@@ -5,7 +5,7 @@ const repoAnalyzerController = require('./repoAnalyzer.controller');
 
 const analyzeLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
-  limit: 5,
+  limit: 15,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   validate: false,
