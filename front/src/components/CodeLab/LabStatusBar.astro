@@ -1,0 +1,94 @@
+---
+/**
+ * LabStatusBar - Footer status bar showing language, runtime, execution state, and timing.
+ */
+---
+
+<footer class="lab-statusbar" aria-label="Barra de estado del editor">
+	<div class="statusbar-left">
+		<span class="status-indicator" data-status-dot aria-hidden="true"></span>
+		<span class="status-text" data-status-text>Listo</span>
+		<span class="status-separator" aria-hidden="true">|</span>
+		<span class="status-lang" data-status-lang>Python</span>
+	</div>
+	<div class="statusbar-right">
+		<span class="status-runtime" data-status-runtime>Pyodide (WebAssembly)</span>
+		<span class="status-separator" aria-hidden="true">|</span>
+		<span class="status-time" data-status-time>—</span>
+	</div>
+</footer>
+
+<style>
+	.lab-statusbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 4px 14px;
+		border-top: 1px solid var(--border);
+		background: var(--surface);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		color: var(--text-faint);
+		flex-shrink: 0;
+		min-height: 26px;
+	}
+
+	.statusbar-left,
+	.statusbar-right {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.status-indicator {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: #86efac;
+		box-shadow: 0 0 6px rgba(134, 239, 172, 0.5);
+		transition: all 0.3s ease;
+	}
+
+	.status-indicator.running {
+		background: #fbbf24;
+		box-shadow: 0 0 6px rgba(251, 191, 36, 0.5);
+		animation: pulse-dot 1s infinite;
+	}
+
+	.status-indicator.error {
+		background: #ef4444;
+		box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+	}
+
+	@keyframes pulse-dot {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0.4; }
+	}
+
+	.status-text {
+		color: var(--text-dim);
+	}
+
+	.status-separator {
+		color: var(--border-strong);
+	}
+
+	.status-lang {
+		color: var(--purple-glow);
+		font-weight: 500;
+	}
+
+	.status-runtime {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.status-runtime {
+			display: inline;
+		}
+	}
+
+	.status-time {
+		color: var(--text-dim);
+	}
+</style>

@@ -1,0 +1,261 @@
+---
+/**
+ * LabEditor - CodeMirror editor area with toolbar.
+ * Includes run button, language indicator, and the textarea that CodeMirror wraps.
+ */
+---
+
+<section class="lab-editor" aria-label="Editor de código">
+	<!-- Toolbar -->
+	<div class="editor-toolbar">
+		<div class="toolbar-left">
+			<span class="toolbar-dna" aria-hidden="true" data-dna-label>ATCG·PY</span>
+			<span class="toolbar-lang" data-lang-label>Python</span>
+			<span class="toolbar-runtime" data-runtime-label>Pyodide (WebAssembly)</span>
+		</div>
+		<div class="toolbar-right">
+			<button class="btn-clear" type="button" data-clear-editor aria-label="Limpiar editor">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/>
+				</svg>
+				Limpiar
+			</button>
+			<button class="btn-run" type="button" data-run-code aria-label="Ejecutar código">
+				<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+					<path d="M8 5v14l11-7z"/>
+				</svg>
+				Ejecutar
+			</button>
+		</div>
+	</div>
+
+	<!-- Editor Container -->
+	<div class="editor-container" data-editor-container>
+		<textarea id="code-editor" data-code-editor spellcheck="false" aria-label="Editor de código fuente"></textarea>
+	</div>
+</section>
+
+<style>
+	.lab-editor {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-width: 0;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	.editor-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 8px 14px;
+		border-bottom: 1px solid var(--border);
+		background: var(--surface);
+		flex-shrink: 0;
+	}
+
+	.toolbar-left {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		min-width: 0;
+	}
+
+	.toolbar-dna {
+		padding: 2px 7px;
+		border-radius: 3px;
+		background: rgba(124, 58, 237, 0.14);
+		color: var(--purple-glow);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+	}
+
+	.toolbar-lang {
+		color: var(--white);
+		font-family: var(--font-display);
+		font-size: 13px;
+		font-weight: 600;
+	}
+
+	.toolbar-runtime {
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.toolbar-runtime {
+			display: inline;
+		}
+	}
+
+	.toolbar-right {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		flex-shrink: 0;
+	}
+
+	.btn-clear,
+	.btn-run {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 6px 12px;
+		border-radius: 5px;
+		border: 1px solid var(--border);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		font-weight: 500;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.btn-clear {
+		background: transparent;
+		color: var(--text-dim);
+	}
+
+	.btn-clear:hover {
+		border-color: var(--border-strong);
+		color: var(--white);
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.btn-run {
+		background: var(--purple);
+		border-color: var(--purple-2);
+		color: var(--white);
+	}
+
+	.btn-run:hover {
+		background: var(--purple-2);
+		box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+	}
+
+	.btn-run:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+		box-shadow: none;
+	}
+
+	.editor-container {
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+		position: relative;
+	}
+
+	/* CodeMirror dark theme override */
+	.editor-container :global(.CodeMirror) {
+		height: 100%;
+		background: var(--bg);
+		color: var(--text);
+		font-family: var(--font-mono);
+		font-size: 13px;
+		line-height: 1.6;
+	}
+
+	.editor-container :global(.CodeMirror-gutters) {
+		background: var(--bg-elevated);
+		border-right: 1px solid var(--border);
+	}
+
+	.editor-container :global(.CodeMirror-linenumber) {
+		color: var(--text-faint);
+		font-size: 11px;
+	}
+
+	.editor-container :global(.CodeMirror-cursor) {
+		border-left-color: var(--purple-glow);
+	}
+
+	.editor-container :global(.CodeMirror-selected) {
+		background: rgba(124, 58, 237, 0.2) !important;
+	}
+
+	.editor-container :global(.CodeMirror-activeline-background) {
+		background: rgba(124, 58, 237, 0.06);
+	}
+
+	.editor-container :global(.CodeMirror-matchingbracket) {
+		color: var(--purple-soft) !important;
+		border-bottom: 1px solid var(--purple-glow);
+	}
+
+	/* Syntax highlighting tokens */
+	.editor-container :global(.cm-keyword) {
+		color: #c084fc;
+	}
+
+	.editor-container :global(.cm-def) {
+		color: #67e8f9;
+	}
+
+	.editor-container :global(.cm-variable) {
+		color: var(--text);
+	}
+
+	.editor-container :global(.cm-variable-2) {
+		color: #93c5fd;
+	}
+
+	.editor-container :global(.cm-string) {
+		color: #86efac;
+	}
+
+	.editor-container :global(.cm-string-2) {
+		color: #86efac;
+	}
+
+	.editor-container :global(.cm-number) {
+		color: #fdba74;
+	}
+
+	.editor-container :global(.cm-comment) {
+		color: var(--text-faint);
+		font-style: italic;
+	}
+
+	.editor-container :global(.cm-operator) {
+		color: #f9a8d4;
+	}
+
+	.editor-container :global(.cm-builtin) {
+		color: #67e8f9;
+	}
+
+	.editor-container :global(.cm-atom) {
+		color: #fdba74;
+	}
+
+	.editor-container :global(.cm-meta) {
+		color: var(--purple-soft);
+	}
+
+	.editor-container :global(.cm-property) {
+		color: #93c5fd;
+	}
+
+	.editor-container :global(.cm-type) {
+		color: #67e8f9;
+	}
+
+	#code-editor {
+		width: 100%;
+		height: 100%;
+		resize: none;
+		background: var(--bg);
+		color: var(--text);
+		border: none;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		padding: 12px;
+		outline: none;
+	}
+</style>

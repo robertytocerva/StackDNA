@@ -1,0 +1,249 @@
+---
+/**
+ * LabSidebar - Sidebar listing code examples grouped by library.
+ * Renders language tabs and collapsible library groups with snippet buttons.
+ */
+import { LANGUAGES, EXAMPLES, type LanguageKey } from '../../data/codeExamples';
+
+const languageKeys = Object.keys(LANGUAGES) as LanguageKey[];
+---
+
+<aside class="lab-sidebar" aria-label="Panel de ejemplos">
+	<!-- Language Tabs -->
+	<nav class="lang-tabs" role="tablist" aria-label="Seleccionar lenguaje">
+		{languageKeys.map((key, idx) => (
+			<button
+				class:list={['lang-tab', { active: idx === 0 }]}
+				role="tab"
+				aria-selected={idx === 0 ? 'true' : 'false'}
+				aria-controls="sidebar-examples"
+				data-lang={key}
+				id={`tab-${key}`}
+			>
+				<span class="lang-tab-icon">{LANGUAGES[key].icon}</span>
+				<span class="lang-tab-name">{LANGUAGES[key].name}</span>
+			</button>
+		))}
+	</nav>
+
+	<!-- Examples List -->
+	<div class="sidebar-examples" id="sidebar-examples" role="tabpanel" aria-labelledby="tab-python">
+		{languageKeys.map((langKey, langIdx) => (
+			<div
+				class:list={['lang-group', { hidden: langIdx !== 0 }]}
+				data-lang-group={langKey}
+			>
+				{EXAMPLES[langKey].map((lib) => (
+					<div class="lib-section" data-lib={lib.name}>
+						<div class="lib-header">
+							<span class="lib-icon">{lib.icon}</span>
+							<span class="lib-name">{lib.name}</span>
+							{lib.isBuiltIn && <span class="lib-badge">built-in</span>}
+						</div>
+						<div class="lib-snippets">
+							{lib.snippets.map((snippet) => (
+								<button
+									class="snippet-btn"
+									data-snippet-id={snippet.id}
+									data-lang={langKey}
+									aria-label={`Cargar ejemplo: ${snippet.title}`}
+								>
+									<span class="snippet-title">{snippet.title}</span>
+									<span class="snippet-category">{snippet.category}</span>
+								</button>
+							))}
+						</div>
+					</div>
+				))}
+			</div>
+		))}
+	</div>
+</aside>
+
+<style>
+	.lab-sidebar {
+		display: flex;
+		flex-direction: column;
+		width: 260px;
+		min-width: 260px;
+		height: 100%;
+		border-right: 1px solid var(--border);
+		background: var(--bg-elevated);
+		overflow: hidden;
+	}
+
+	.lang-tabs {
+		display: flex;
+		gap: 0;
+		border-bottom: 1px solid var(--border);
+		flex-shrink: 0;
+	}
+
+	.lang-tab {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 5px;
+		padding: 10px 6px;
+		background: transparent;
+		border: none;
+		border-bottom: 2px solid transparent;
+		color: var(--text-dim);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.lang-tab:hover {
+		color: var(--white);
+		background: rgba(124, 58, 237, 0.05);
+	}
+
+	.lang-tab.active {
+		color: var(--purple-glow);
+		border-bottom-color: var(--purple);
+		background: rgba(124, 58, 237, 0.08);
+	}
+
+	.lang-tab-icon {
+		font-size: 14px;
+	}
+
+	.lang-tab-name {
+		display: none;
+	}
+
+	@media (min-width: 900px) {
+		.lang-tab-name {
+			display: inline;
+		}
+	}
+
+	.sidebar-examples {
+		flex: 1;
+		overflow-y: auto;
+		padding: 12px 0;
+	}
+
+	.sidebar-examples::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.sidebar-examples::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.sidebar-examples::-webkit-scrollbar-thumb {
+		background: var(--border-strong);
+		border-radius: 2px;
+	}
+
+	.lang-group {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.lang-group.hidden {
+		display: none;
+	}
+
+	.lib-section {
+		padding: 0 12px;
+		margin-bottom: 8px;
+	}
+
+	.lib-header {
+		display: flex;
+		align-items: center;
+		gap: 7px;
+		padding: 6px 8px;
+		margin-bottom: 2px;
+		border-radius: 5px;
+		color: var(--text);
+		font-family: var(--font-display);
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	.lib-icon {
+		font-size: 13px;
+		flex-shrink: 0;
+	}
+
+	.lib-name {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.lib-badge {
+		padding: 1px 6px;
+		border-radius: 3px;
+		background: rgba(124, 58, 237, 0.15);
+		color: var(--purple-glow);
+		font-family: var(--font-mono);
+		font-size: 9px;
+		font-weight: 500;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		flex-shrink: 0;
+	}
+
+	.lib-snippets {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		padding-left: 8px;
+	}
+
+	.snippet-btn {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		width: 100%;
+		padding: 7px 10px;
+		border: none;
+		border-radius: 5px;
+		background: transparent;
+		color: var(--text-dim);
+		font-family: var(--font-body);
+		font-size: 12px;
+		text-align: left;
+		cursor: pointer;
+		transition: all 0.15s ease;
+	}
+
+	.snippet-btn:hover {
+		background: rgba(124, 58, 237, 0.1);
+		color: var(--white);
+	}
+
+	.snippet-btn.active {
+		background: rgba(124, 58, 237, 0.16);
+		color: var(--purple-soft);
+	}
+
+	.snippet-title {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.snippet-category {
+		padding: 1px 5px;
+		border-radius: 3px;
+		background: rgba(255, 255, 255, 0.04);
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+		flex-shrink: 0;
+	}
+</style>

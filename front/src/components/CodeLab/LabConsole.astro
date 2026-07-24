@@ -1,0 +1,238 @@
+---
+/**
+ * LabConsole - Console output panel with Output/Errors tabs.
+ * Shows execution results with timestamps and aria-live for screen readers.
+ */
+---
+
+<section class="lab-console" aria-label="Consola de salida">
+	<!-- Console Tabs -->
+	<div class="console-header">
+		<div class="console-tabs" role="tablist" aria-label="Pestañas de consola">
+			<button
+				class="console-tab active"
+				role="tab"
+				aria-selected="true"
+				aria-controls="console-output"
+				data-console-tab="output"
+				id="tab-output"
+			>
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<polyline points="4 17 10 11 4 5"/>
+					<line x1="12" y1="19" x2="20" y2="19"/>
+				</svg>
+				Output
+			</button>
+			<button
+				class="console-tab"
+				role="tab"
+				aria-selected="false"
+				aria-controls="console-errors"
+				data-console-tab="errors"
+				id="tab-errors"
+			>
+				<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="15" y1="9" x2="9" y2="15"/>
+					<line x1="9" y1="9" x2="15" y2="15"/>
+				</svg>
+				Errors
+				<span class="error-count" data-error-count hidden>0</span>
+			</button>
+		</div>
+		<button class="console-clear" type="button" data-clear-console aria-label="Limpiar consola">
+			<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+				<path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/>
+			</svg>
+			Limpiar
+		</button>
+	</div>
+
+	<!-- Console Output -->
+	<div
+		class="console-body"
+		id="console-output"
+		role="tabpanel"
+		aria-labelledby="tab-output"
+		aria-live="polite"
+		data-console-panel="output"
+	>
+		<div class="console-welcome">
+			<span class="console-prompt" aria-hidden="true">›</span>
+			<span>Listo para ejecutar. Selecciona un ejemplo o escribe tu código.</span>
+		</div>
+	</div>
+
+	<!-- Errors Panel -->
+	<div
+		class="console-body hidden"
+		id="console-errors"
+		role="tabpanel"
+		aria-labelledby="tab-errors"
+		aria-live="assertive"
+		data-console-panel="errors"
+	>
+		<div class="console-welcome">
+			<span class="console-prompt" aria-hidden="true">›</span>
+			<span>Sin errores.</span>
+		</div>
+	</div>
+</section>
+
+<style>
+	.lab-console {
+		display: flex;
+		flex-direction: column;
+		height: 200px;
+		min-height: 120px;
+		border-top: 1px solid var(--border);
+		background: var(--bg);
+	}
+
+	.console-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 12px;
+		border-bottom: 1px solid var(--border);
+		background: var(--surface);
+		flex-shrink: 0;
+	}
+
+	.console-tabs {
+		display: flex;
+		gap: 0;
+	}
+
+	.console-tab {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 8px 12px;
+		background: transparent;
+		border: none;
+		border-bottom: 2px solid transparent;
+		color: var(--text-dim);
+		font-family: var(--font-mono);
+		font-size: 11px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+	}
+
+	.console-tab:hover {
+		color: var(--white);
+	}
+
+	.console-tab.active {
+		color: var(--purple-glow);
+		border-bottom-color: var(--purple);
+	}
+
+	.error-count {
+		padding: 0 5px;
+		border-radius: 8px;
+		background: #ef4444;
+		color: #fff;
+		font-size: 9px;
+		font-weight: 700;
+		min-width: 16px;
+		text-align: center;
+		line-height: 16px;
+	}
+
+	.error-count[hidden] {
+		display: none;
+	}
+
+	.console-clear {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 4px 8px;
+		border: none;
+		border-radius: 4px;
+		background: transparent;
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 10px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+	}
+
+	.console-clear:hover {
+		color: var(--text-dim);
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	.console-body {
+		flex: 1;
+		overflow-y: auto;
+		padding: 10px 14px;
+		font-family: var(--font-mono);
+		font-size: 12px;
+		line-height: 1.7;
+	}
+
+	.console-body.hidden {
+		display: none;
+	}
+
+	.console-body::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.console-body::-webkit-scrollbar-thumb {
+		background: var(--border-strong);
+		border-radius: 2px;
+	}
+
+	.console-welcome {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: var(--text-faint);
+		font-style: italic;
+	}
+
+	.console-prompt {
+		color: var(--purple-glow);
+		font-style: normal;
+	}
+
+	/* Dynamic line styles (applied via JS) */
+	.lab-console :global(.console-line) {
+		display: flex;
+		align-items: flex-start;
+		gap: 8px;
+		padding: 2px 0;
+	}
+
+	.lab-console :global(.console-line .line-time) {
+		color: var(--text-faint);
+		font-size: 10px;
+		flex-shrink: 0;
+		min-width: 52px;
+	}
+
+	.lab-console :global(.console-line .line-content) {
+		color: #86efac;
+		word-break: break-word;
+	}
+
+	.lab-console :global(.console-line.error .line-content) {
+		color: #fca5a5;
+	}
+
+	.lab-console :global(.console-line.warn .line-content) {
+		color: #fde68a;
+	}
+
+	.lab-console :global(.console-line.info .line-content) {
+		color: #93c5fd;
+	}
+
+	.lab-console :global(.console-line.system .line-content) {
+		color: var(--purple-soft);
+		font-style: italic;
+	}
+</style>

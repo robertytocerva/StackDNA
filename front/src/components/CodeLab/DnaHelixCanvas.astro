@@ -1,0 +1,92 @@
+---
+/**
+ * DnaHelixCanvas - Animated double helix canvas for the Code Lab header.
+ * Renders a continuously rotating DNA strand using Canvas 2D.
+ */
+---
+
+<div class="dna-canvas-wrap" aria-hidden="true">
+	<canvas id="dna-helix-canvas" width="120" height="40"></canvas>
+</div>
+
+<script>
+	function initDNAHelix() {
+		const canvas = document.getElementById('dna-helix-canvas') as HTMLCanvasElement | null;
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const W = canvas.width;
+		const H = canvas.height;
+		const pairs = 8;
+		const speed = 0.02;
+		let phase = 0;
+
+		const purple = '#a78bfa';
+		const purpleDim = 'rgba(124, 58, 237, 0.4)';
+		const white = '#f5f3ff';
+		const whiteDim = 'rgba(245, 243, 255, 0.3)';
+
+		function draw() {
+			ctx!.clearRect(0, 0, W, H);
+			const centerY = H / 2;
+			const amplitude = H * 0.32;
+			const spacing = W / (pairs + 1);
+
+			for (let i = 0; i < pairs; i++) {
+				const x = spacing * (i + 1);
+				const angle = phase + i * 0.8;
+				const y1 = centerY + Math.sin(angle) * amplitude;
+				const y2 = centerY - Math.sin(angle) * amplitude;
+				const depth = Math.cos(angle);
+
+				// Connector line
+				ctx!.beginPath();
+				ctx!.moveTo(x, y1);
+				ctx!.lineTo(x, y2);
+				ctx!.strokeStyle = depth > 0 ? 'rgba(167,139,250,0.2)' : 'rgba(167,139,250,0.08)';
+				ctx!.lineWidth = 1;
+				ctx!.stroke();
+
+				// Top strand node
+				const r1 = 2.2 + depth * 0.8;
+				ctx!.beginPath();
+				ctx!.arc(x, y1, Math.max(r1, 1.2), 0, Math.PI * 2);
+				ctx!.fillStyle = depth > 0 ? purple : purpleDim;
+				ctx!.fill();
+
+				// Bottom strand node
+				const r2 = 2.2 - depth * 0.8;
+				ctx!.beginPath();
+				ctx!.arc(x, y2, Math.max(r2, 1.2), 0, Math.PI * 2);
+				ctx!.fillStyle = depth > 0 ? whiteDim : white;
+				ctx!.fill();
+			}
+
+			phase += speed;
+			requestAnimationFrame(draw);
+		}
+
+		draw();
+	}
+
+	// Initialize after DOM ready
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initDNAHelix);
+	} else {
+		initDNAHelix();
+	}
+</script>
+
+<style>
+	.dna-canvas-wrap {
+		display: flex;
+		align-items: center;
+		height: 40px;
+		flex-shrink: 0;
+	}
+
+	#dna-helix-canvas {
+		display: block;
+	}
+</style>
