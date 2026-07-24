@@ -94,3 +94,15 @@
 		text-align: left;
 	}
 }
+
+.security-notice {
+	width: 100%;
+	padding: 12px 20px;
+	background-color: rgba(255, 193, 7, 0.1);
+	border: 1px solid rgba(255, 193, 7, 0.4);
+	border-radius: 8px;
+	color: #ffc107;
+	font-size: 0.875rem;
+	text-align: center;
+	margin: 16px 0;
+}

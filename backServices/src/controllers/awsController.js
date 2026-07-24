@@ -9,6 +9,16 @@ const callECR = require("../services/ecrRead");
 const callAppConfig = require("../services/appconfigRead");
 const callXRay = require("../services/xrayRead");
 const callCognito = require("../services/cognitoPools");
+const callS3 = require("../services/s3Read");
+const callEC2 = require("../services/ec2Read");
+const callLambda = require("../services/lambdaRead");
+const callDynamoDB = require("../services/dynamodbRead");
+const callAPIGateway = require("../services/apigatewayRead");
+const callSNS = require("../services/snsRead");
+const callSQS = require("../services/sqsRead");
+const callIAM = require("../services/iamRead");
+const callCloudWatch = require("../services/cloudwatchRead");
+const callSecretsManager = require("../services/secretsmanagerRead");
 
 const SERVICE_MAP = {
     sts: callSTS,
@@ -20,7 +30,17 @@ const SERVICE_MAP = {
     ecr: callECR,
     appconfig: callAppConfig,
     xray: callXRay,
-    cognito: callCognito
+    cognito: callCognito,
+    s3: callS3,
+    ec2: callEC2,
+    lambda: callLambda,
+    dynamodb: callDynamoDB,
+    apigateway: callAPIGateway,
+    sns: callSNS,
+    sqs: callSQS,
+    iam: callIAM,
+    cloudwatch: callCloudWatch,
+    secretsmanager: callSecretsManager
 };
 
 function redact(value) {

@@ -45,6 +45,13 @@ AWS_SERVICES.forEach((service) => {
 				</div>
 
 				<Filters services={AWS_SERVICES} />
+
+				<div class="security-notice" role="note">
+					⚠️ Tus credenciales AWS no se almacenan en nuestros servidores.
+					Se usan únicamente durante esta petición y se descartan de inmediato.
+					Nunca uses credenciales de cuentas de producción.
+				</div>
+
 				<Grid services={AWS_SERVICES} />
 			</div>
 		</section>

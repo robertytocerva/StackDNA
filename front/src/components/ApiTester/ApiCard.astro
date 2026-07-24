@@ -34,11 +34,6 @@ const editorId = `payload-${service.id}`;
 			<code>{service.endpoint}</code>
 		</div>
 
-		<div class="security-notice" role="note">
-			<span aria-hidden="true">⚠️</span>
-			<p>Tus credenciales AWS no se almacenan en nuestros servidores. Se usan únicamente durante esta petición y se descartan de inmediato. Nunca uses tus keys de producción en herramientas de terceros.</p>
-		</div>
-
 		<div class="api-editor-container">
 			<div class="api-field-heading">
 				<label for={editorId}>Request payload</label>
@@ -88,9 +83,6 @@ const editorId = `payload-${service.id}`;
 	.api-url-box { display: flex; align-items: flex-start; gap: 11px; min-width: 0; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: rgba(8, 8, 12, 0.52); }
 	.api-url-label { padding-top: 1px; color: var(--text-faint); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; }
 	.api-url-box code { min-width: 0; color: var(--purple-soft); font-family: var(--font-mono); font-size: 10px; line-height: 1.5; word-break: break-all; }
-	.security-notice { display: flex; gap: 9px; padding: 11px; border: 1px solid rgba(255, 191, 92, 0.2); border-radius: 6px; background: rgba(255, 191, 92, 0.06); color: #e9c985; }
-	.security-notice span { flex: 0 0 auto; }
-	.security-notice p { font-size: 11px; line-height: 1.5; }
 	.api-field-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 7px; }
 	.api-field-heading label { color: var(--text); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; text-transform: uppercase; }
 	.api-field-heading span { color: var(--text-faint); font-family: var(--font-mono); font-size: 9px; }

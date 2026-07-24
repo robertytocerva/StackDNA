@@ -23,7 +23,17 @@ const VALID_SERVICES = [
     "ecr",
     "appconfig",
     "xray",
-    "cognito"
+    "cognito",
+    "s3",
+    "ec2",
+    "lambda",
+    "dynamodb",
+    "apigateway",
+    "sns",
+    "sqs",
+    "iam",
+    "cloudwatch",
+    "secretsmanager"
 ];
 
 function sanitizeLog(body = {}) {
