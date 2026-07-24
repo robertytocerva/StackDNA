@@ -1,0 +1,83 @@
+---
+---
+
+<section class="equipo-hero" id="equipo-hero" data-scroll-section>
+	<div class="wrap equipo-hero-inner">
+		<span class="eyebrow" data-scroll-item>Las 5 personas detras del codigo</span>
+		<h1 data-scroll-item>
+			Conoce al <span class="accent">equipo</span> que construye StackDNA
+		</h1>
+		<p class="equipo-hero-sub" data-scroll-item>
+			Cinco desarrolladores, un mismo motor de secuenciacion. Desplazate para conocer a cada
+			persona detras del producto.
+		</p>
+		<div class="equipo-hero-scroll" data-scroll-item aria-hidden="true">
+			<span>Desplazate para conocer al equipo</span>
+			<span class="scroll-line"></span>
+		</div>
+	</div>
+</section>
+
+<style>
+	.equipo-hero {
+		position: relative;
+		display: flex;
+		min-height: 100vh;
+		align-items: center;
+		padding: 140px 0 80px;
+		overflow: hidden;
+	}
+
+	.equipo-hero::before {
+		position: absolute;
+		top: -240px;
+		right: -160px;
+		width: 620px;
+		height: 620px;
+		border-radius: 50%;
+		background: radial-gradient(circle, rgba(124, 58, 237, 0.22), transparent 70%);
+		content: '';
+		pointer-events: none;
+	}
+
+	.equipo-hero-inner {
+		position: relative;
+		z-index: 1;
+		max-width: 760px;
+	}
+
+	.equipo-hero h1 {
+		font-size: clamp(38px, 5.4vw, 64px);
+	}
+
+	.equipo-hero-sub {
+		max-width: 560px;
+		margin-bottom: 40px;
+		color: var(--text-dim);
+		font-size: 17px;
+		line-height: 1.65;
+	}
+
+	.equipo-hero-scroll {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 11.5px;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.scroll-line {
+		width: 44px;
+		height: 1px;
+		background: linear-gradient(90deg, var(--purple-glow), transparent);
+	}
+
+	@media (max-width: 560px) {
+		.equipo-hero {
+			padding-top: 120px;
+		}
+	}
+</style>

@@ -1,0 +1,46 @@
+---
+import DeveloperSection from '../components/Equipo/DeveloperSection.astro';
+import EquipoHero from '../components/Equipo/EquipoHero.astro';
+import Header from '../components/Landing/Header.astro';
+import Layout from '../layouts/Layout.astro';
+import { developers } from '../data/team';
+---
+
+<Layout
+	title="Equipo — StackDNA"
+	description="Conoce a los 5 desarrolladores que disenan, construyen y mantienen StackDNA."
+>
+	<div class="bg-noise" aria-hidden="true"></div>
+	<Header />
+	<main class="equipo-page" data-fullpage>
+		<EquipoHero />
+		{developers.map((developer, index) => (
+			<DeveloperSection developer={developer} index={index} />
+		))}
+	</main>
+</Layout>
+
+<style>
+	.equipo-page[data-fullpage] {
+		position: relative;
+		height: 100vh;
+		overflow: hidden;
+	}
+
+	.equipo-page[data-fullpage] :global([data-scroll-section]) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100vh;
+		min-height: 100vh;
+	}
+</style>
+
+<script>
+	import { initEquipoScroll } from '../scripts/equipoScroll';
+	import { hydrateTeamFromGithub } from '../scripts/teamGithub';
+
+	hydrateTeamFromGithub().finally(() => {
+		initEquipoScroll();
+	});
+</script>
