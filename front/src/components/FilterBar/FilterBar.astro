@@ -53,7 +53,7 @@ const categoryLabels: Record<LibraryCategory, string> = {
 					aria-pressed={selectedLanguage === language.value}
 					data-filter-language={language.value}
 				>
-					<span class="chip-icon" aria-hidden="true">{language.icon}</span>
+					<img class="chip-icon" src={language.icon} alt="" loading="lazy" aria-hidden="true" />
 					<span>{language.label}</span>
 				</button>
 			))}
@@ -173,8 +173,9 @@ const categoryLabels: Record<LibraryCategory, string> = {
 	}
 
 	.chip-icon {
-		font-size: 14px;
-		line-height: 1;
+		width: 15px;
+		height: 15px;
+		object-fit: contain;
 	}
 
 	@media (max-width: 600px) {

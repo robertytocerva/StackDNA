@@ -13,7 +13,7 @@ const initialFilters = useLibraryFilter(libraries, '', 'all', 'all');
 const languageOptions = initialFilters.availableLanguages.map((language) => ({
 	value: language,
 	label: language,
-	icon: libraries.find((item) => item.language === language)?.languageIcon ?? '◈',
+	icon: libraries.find((item) => item.language === language)?.languageIcon ?? '/favicon.svg',
 }));
 const totalLanguages = new Set(libraries.map((item) => item.language)).size;
 const totalLibraries = libraries.length;
@@ -77,7 +77,7 @@ const groupedLibraries = initialFilters.filteredData.reduce<Record<string, Libra
 						<LanguageSection
 							language={language}
 							libraries={languageLibraries}
-							languageIcon={languageLibraries[0]?.languageIcon ?? '◈'}
+							languageIcon={languageLibraries[0]?.languageIcon ?? '/favicon.svg'}
 						/>
 					))}
 					<div class="empty-state" data-empty-state hidden>

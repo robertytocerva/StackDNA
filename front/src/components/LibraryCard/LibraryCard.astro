@@ -28,7 +28,9 @@ const categoryLabels: Record<LibraryEntry['library']['category'], string> = {
 >
 	<header class="library-card-header">
 		<div class="library-identity">
-			<div class="library-icon" aria-hidden="true">{languageIcon}</div>
+			<div class="library-icon" aria-hidden="true">
+				<img src={languageIcon} alt="" loading="lazy" />
+			</div>
 			<div class="library-heading">
 				<div class="library-name-row">
 					<h3>{library.name}</h3>
@@ -115,7 +117,12 @@ const categoryLabels: Record<LibraryEntry['library']['category'], string> = {
 		border: 1px solid var(--border-strong);
 		border-radius: 10px;
 		background: rgba(124, 58, 237, 0.1);
-		font-size: 22px;
+	}
+
+	.library-icon img {
+		width: 26px;
+		height: 26px;
+		object-fit: contain;
 	}
 
 	.library-heading {

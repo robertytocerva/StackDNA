@@ -15,7 +15,9 @@ const { language, libraries, languageIcon } = Astro.props;
 	<header class="language-section-header">
 		<div class="language-title-wrap">
 			<span class="language-index" aria-hidden="true">//</span>
-			<span class="language-icon" aria-hidden="true">{languageIcon}</span>
+			<span class="language-icon" aria-hidden="true">
+				<img src={languageIcon} alt="" loading="lazy" />
+			</span>
 			<div>
 				<h2 id={`language-${language}`}>{language}</h2>
 				<p>Biblioteca de {language}</p>
@@ -67,7 +69,12 @@ const { language, libraries, languageIcon } = Astro.props;
 		border: 1px solid var(--border-strong);
 		border-radius: 9px;
 		background: rgba(124, 58, 237, 0.08);
-		font-size: 21px;
+	}
+
+	.language-icon img {
+		width: 25px;
+		height: 25px;
+		object-fit: contain;
 	}
 
 	.language-title-wrap h2 {
