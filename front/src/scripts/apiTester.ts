@@ -219,56 +219,68 @@ function wait(milliseconds: number): Promise<void> {
 }
 
 async function sendRequest(root: HTMLElement, state: ApiTesterState, id: string): Promise<void> {
+
 	const service = getService(state, id);
 	const card = getCard(root, id);
-	const editor = card?.querySelector<HTMLTextAreaElement>('[data-service-editor]');
-	const sendButton = card?.querySelector<HTMLButtonElement>('[data-send-request]');
+	const editor = card?.querySelector<HTMLTextAreaElement>("[data-service-editor]");
+	const sendButton = card?.querySelector<HTMLButtonElement>("[data-send-request]");
+
 	if (!service || !card || !editor) return;
 
 	service.editorContent = editor.value;
 	service.response = null;
 	service.responseType = null;
 	service.isLoading = true;
+
 	if (sendButton) sendButton.disabled = true;
+
 	updateResponseBox(card, service);
 
 	try {
-		const config = parseRequest(service.editorContent);
-		await wait(800);
 
-		if (!getService(state, id)) return;
+		const payload = parseRequest(editor.value);
 
-		if (Math.random() > 0.2) {
-			service.response = JSON.stringify(
-				{
-					status: 200,
-					message: 'Simulación exitosa',
-					data: config.body ?? 'No body',
-				},
-				null,
-				2,
-			);
-			service.responseType = 'success';
-		} else {
-			service.response = JSON.stringify(
-				{
-					status: 403,
-					message: 'Forbidden - Simulación de error',
-					error: 'Access Denied',
-				},
-				null,
-				2,
-			);
-			service.responseType = 'error';
-		}
-	} catch (error) {
-		service.response = `Error parseando el JSON o en la petición:\n${error instanceof Error ? error.message : 'Error desconocido'}`;
-		service.responseType = 'error';
-	} finally {
-		service.isLoading = false;
-		if (sendButton) sendButton.disabled = false;
-		updateResponseBox(card, service);
+		const response = await fetch("http://localhost:3000/execute", {
+
+			method: "POST",
+
+			headers: {
+
+				"Content-Type": "application/json"
+
+			},
+
+			body: JSON.stringify(payload)
+
+		});
+
+		const data = await response.json();
+
+		service.response = JSON.stringify(data, null, 2);
+
+		service.responseType = response.ok ? "success" : "error";
+
 	}
+	catch (error) {
+
+		service.response =
+			error instanceof Error
+				? error.message
+				: "Error desconocido";
+
+		service.responseType = "error";
+
+	}
+	finally {
+
+		service.isLoading = false;
+
+		if (sendButton) sendButton.disabled = false;
+
+		updateResponseBox(card, service);
+
+	}
+
 }
 
 function createCustomService(state: ApiTesterState): ApiServiceState {

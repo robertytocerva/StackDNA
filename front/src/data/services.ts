@@ -39,7 +39,119 @@ export const initialServices: ServiceDefinition[] = [
 	{ id: 's20', name: 'IAM Policy', method: 'DELETE', url: 'https://iam.amazonaws.com/' },
 ];
 
-export function getDefaultRequestJson(service: Pick<ServiceDefinition, 'method' | 'url'>): string {
+export function getDefaultRequestJson(
+	service: Pick<ServiceDefinition, 'id' | 'method' | 'url'>,
+): string {
+
+	// Plantillas personalizadas para servicios AWS
+
+if (service.id === 's1') {
+	return JSON.stringify({
+		service: 'apigateway',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS'
+	}, null, 4);
+}
+
+if (service.id === 's2') {
+	return JSON.stringify({
+		service: 'lambda',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		functionName: 'PON_AQUI_EL_NOMBRE_DE_LA_FUNCION',
+		payload: {}
+	}, null, 4);
+}
+
+if (service.id === 's3') {
+	return JSON.stringify({
+		service: 'dynamodb',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		tableName: 'PON_AQUI_EL_NOMBRE_DE_LA_TABLA'
+	}, null, 4);
+}
+
+if (service.id === 's4') {
+	return JSON.stringify({
+		service: 's3',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS'
+	}, null, 4);
+}
+
+if (service.id === 's5') {
+	return JSON.stringify({
+		service: 'sqs',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		queueUrl: 'PON_AQUI_LA_URL_DE_LA_COLA',
+		messageBody: 'Mensaje de prueba desde StackDNA'
+	}, null, 4);
+}
+
+if (service.id === 's6') {
+	return JSON.stringify({
+		service: 'sns',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		topicArn: 'PON_AQUI_EL_TOPIC_ARN',
+		message: 'Mensaje de prueba desde StackDNA'
+	}, null, 4);
+}
+
+if (service.id === 's7') {
+	return JSON.stringify({
+		service: 'cognito',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		userPoolId: 'PON_AQUI_EL_USER_POOL_ID'
+	}, null, 4);
+}
+
+if (service.id === 's9') {
+	return JSON.stringify({
+		service: 'eventbridge',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		eventBusName: 'default',
+		source: 'stackdna.test',
+		detailType: 'StackDNATestEvent',
+		detail: {}
+	}, null, 4);
+}
+
+if (service.id === 's10') {
+	return JSON.stringify({
+		service: 'stepfunctions',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		stateMachineArn: 'PON_AQUI_EL_STATE_MACHINE_ARN',
+		input: {}
+	}, null, 4);
+}
+
+if (service.id === 's18') {
+	return JSON.stringify({
+		service: 'secretsmanager',
+		accessKeyId: 'PON_AQUI_TU_ACCESS_KEY_ID',
+		secretAccessKey: 'PON_AQUI_TU_SECRET_ACCESS_KEY',
+		region: 'PON_AQUI_LA_REGION_DE_AWS',
+		secretId: 'PON_AQUI_EL_SECRET_ID'
+	}, null, 4);
+}
+
+	// Plantilla genérica para servicios aún no implementados
+
 	const request = {
 		method: service.method,
 		url: service.url,
@@ -48,7 +160,9 @@ export function getDefaultRequestJson(service: Pick<ServiceDefinition, 'method' 
 			'x-api-key': '<tu-api-key>',
 			'Content-Type': 'application/json',
 		},
-		...(service.method !== 'GET' ? { body: { data: 'tu_payload_aqui' } } : {}),
+		...(service.method !== 'GET'
+			? { body: { data: 'tu_payload_aqui' } }
+			: {}),
 	};
 
 	return JSON.stringify(request, null, 2);
