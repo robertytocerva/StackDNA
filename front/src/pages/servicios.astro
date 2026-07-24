@@ -5,17 +5,15 @@ import ApiTesterHeader from '../components/ApiTester/Header.astro';
 import Filters from '../components/ApiTester/Filters.astro';
 import Grid from '../components/ApiTester/Grid.astro';
 import Layout from '../layouts/Layout.astro';
-import { initialServices, type HttpMethod } from '../data/services';
+import { AWS_SERVICES, type HttpMethod } from '../data/services';
 import '../styles/servicios.css';
 
 const methodCounts: Record<HttpMethod, number> = {
 	GET: 0,
 	POST: 0,
-	PUT: 0,
-	DELETE: 0,
 };
 
-initialServices.forEach((service) => {
+AWS_SERVICES.forEach((service) => {
 	methodCounts[service.method] += 1;
 });
 ---
@@ -27,7 +25,7 @@ initialServices.forEach((service) => {
 	<div class="bg-noise" aria-hidden="true"></div>
 	<SiteHeader />
 	<main class="api-page" data-api-tester>
-		<ApiTesterHeader totalServices={initialServices.length} methodCounts={methodCounts} />
+		<ApiTesterHeader totalServices={AWS_SERVICES.length} methodCounts={methodCounts} />
 
 		<section class="api-workbench wrap" aria-labelledby="api-workbench-title">
 			<div class="api-workbench-shell">
@@ -42,12 +40,12 @@ initialServices.forEach((service) => {
 					</div>
 					<div class="api-workbench-code" aria-hidden="true">
 						<span>STATE / READY</span>
-						<strong>{String(initialServices.length).padStart(2, '0')} nodes</strong>
+						<strong>{String(AWS_SERVICES.length).padStart(2, '0')} nodes</strong>
 					</div>
 				</div>
 
-				<Filters services={initialServices} />
-				<Grid services={initialServices} />
+				<Filters services={AWS_SERVICES} />
+				<Grid services={AWS_SERVICES} />
 			</div>
 		</section>
 	</main>
