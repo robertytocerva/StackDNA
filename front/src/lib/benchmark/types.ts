@@ -1,6 +1,5 @@
 /**
  * Model interface adapted to the free tier of Artificial Analysis API v2.
- * Only includes fields available at /api/v2/language/models/free
  */
 export interface Model {
   id: string;
@@ -9,6 +8,9 @@ export interface Model {
   provider: string;
   release: string;
   quality: number;
+  coding_index: number | null;
+  agentic_index: number | null;
+  cost_per_task: number | null;
   speed_output: number;
   ttft: number;
   price_input: number;

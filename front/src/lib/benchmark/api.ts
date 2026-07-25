@@ -1,16 +1,8 @@
 import type { Model, FetchResult } from './types';
 
-/**
- * Backend proxy endpoint that fetches from Artificial Analysis API (free tier).
- * The backend handles the API key, caching, and pagination.
- */
 const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3001';
 const MODELS_ENDPOINT = `${BACKEND_URL}/api/benchmark/models`;
 
-/**
- * Fetch models from our backend proxy.
- * The backend returns already-normalized data matching our Model interface.
- */
 export async function fetchModels(): Promise<FetchResult> {
   try {
     const res = await fetch(MODELS_ENDPOINT, {
@@ -32,6 +24,9 @@ export async function fetchModels(): Promise<FetchResult> {
         provider: m.provider || 'Unknown',
         release: m.release || '',
         quality: m.quality ?? 0,
+        coding_index: m.coding_index ?? null,
+        agentic_index: m.agentic_index ?? null,
+        cost_per_task: m.cost_per_task ?? null,
         speed_output: m.speed_output ?? 0,
         ttft: m.ttft ?? 0,
         price_input: m.price_input ?? 0,

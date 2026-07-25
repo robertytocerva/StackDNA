@@ -1,17 +1,46 @@
 /**
  * StackADN — AI Models Benchmark
- * Client script adapted to free tier API (no benchmarks, no context, no capabilities).
+ * Bar chart visualization with 4 categories.
  */
 
 import { fetchModels } from '../lib/benchmark/api';
-import { fmt, formatSeq, getProviderLogo } from '../lib/benchmark/format';
-import type { Model, SortKey } from '../lib/benchmark/types';
+import { fmt, getProviderLogo } from '../lib/benchmark/format';
+import type { Model } from '../lib/benchmark/types';
 
 let allModels: Model[] = [];
-let filteredModels: Model[] = [];
 let activeProvider = 'all';
-let currentSort: SortKey = 'quality';
 let currentSearch = '';
+
+const MAX_BARS = 15;
+
+// Providers considered Open Source / Chinese
+const OSS_CHINESE_PROVIDERS = [
+  'DeepSeek', 'Alibaba', 'Meta', 'Mistral', '01.AI', 'Zhipu', 'MiniMax',
+  'Moonshot', 'Baichuan', 'ByteDance', 'StepFun', 'Nvidia', 'Cohere',
+  'Together', 'Yi', 'THUDM', 'Tencent', 'iFlytek', 'SenseTime',
+  'Kuaishou', 'ByteDance Seed'
+];
+
+// Provider brand colors for bar rendering
+const PROVIDER_COLORS: Record<string, string> = {
+  'OpenAI': '#10a37f',
+  'Anthropic': '#d4a574',
+  'Google': '#4285f4',
+  'Meta': '#0081fb',
+  'DeepSeek': '#4d6bfe',
+  'Mistral': '#f97316',
+  'Alibaba': '#ff6a00',
+  'xAI': '#ffffff',
+  'Cohere': '#39594d',
+  'MiniMax': '#6366f1',
+  'Zhipu': '#4f46e5',
+  'Moonshot': '#8b5cf6',
+  'ByteDance Seed': '#14b8a6',
+};
+
+function getBarColor(provider: string): string {
+  return PROVIDER_COLORS[provider] || 'var(--accent-bright)';
+}
 
 // --- FRESHNESS ---
 function updateFreshness(isLive: boolean) {
@@ -65,12 +94,12 @@ function setProvider(p: string, e: Event) {
   activeProvider = p;
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
   (e.target as HTMLElement).classList.add('active');
-  applyFilters();
+  renderBarCharts();
 }
 
-// --- FILTERS ---
-function applyFilters() {
-  filteredModels = allModels.filter(m => {
+// --- GET FILTERED MODELS ---
+function getFilteredModels(): Model[] {
+  return allModels.filter(m => {
     if (activeProvider !== 'all' && m.provider !== activeProvider) return false;
     if (currentSearch) {
       const q = currentSearch.toLowerCase();
@@ -78,143 +107,227 @@ function applyFilters() {
     }
     return true;
   });
-  filteredModels.sort((a, b) => {
-    switch (currentSort) {
-      case 'speed': return (b.speed_output || 0) - (a.speed_output || 0);
-      case 'price_out': return (a.price_output || 999) - (b.price_output || 999);
-      case 'release': return new Date(b.release || '').getTime() - new Date(a.release || '').getTime();
-      default: return (b.quality || 0) - (a.quality || 0);
-    }
-  });
-  renderStack();
 }
 
-// --- DNA SVG ---
-function buildDnaSvg(): string {
-  let rungs = '';
-  for (let i = 0; i < 8; i++) {
-    const y = i * 20 + 10;
-    const offset = Math.sin(i * 0.78) * 8;
-    rungs += `<line class="strand-rung" x1="${10 - offset}" y1="${y}" x2="${10 + offset}" y2="${y}"/>`;
-    rungs += `<circle class="strand-dot" cx="${10 - offset}" cy="${y}" r="1.2"/>`;
-    rungs += `<circle class="strand-dot" cx="${10 + offset}" cy="${y}" r="1.2"/>`;
-  }
-  return `
-    <svg viewBox="0 0 20 160" preserveAspectRatio="none">
-      <g class="dna-anim">
-        <path class="strand-line" d="M 10 0 Q 18 20, 10 40 T 10 80 T 10 120 T 10 160"/>
-        <path class="strand-line" d="M 10 0 Q 2 20, 10 40 T 10 80 T 10 120 T 10 160"/>
-        ${rungs}
-      </g>
-    </svg>
-  `;
+// --- BAR CHART RENDERING ---
+interface BarChartConfig {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  getValue: (m: Model) => number | null;
+  formatValue: (v: number) => string;
+  filterFn?: (m: Model) => boolean;
+  sortDir: 'desc' | 'asc'; // desc = higher is better, asc = lower is better
+  unit: string;
 }
 
-// --- RENDER STACK ---
-function renderStack() {
+const CHART_CONFIGS: BarChartConfig[] = [
+  {
+    id: 'intelligence',
+    title: 'Inteligencia General',
+    subtitle: 'AA Intelligence Index — Top modelos por calidad general',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>',
+    getValue: m => m.quality,
+    formatValue: v => v.toFixed(1),
+    sortDir: 'desc',
+    unit: 'pts',
+  },
+  {
+    id: 'oss-chinese',
+    title: 'Open Source + Chinos',
+    subtitle: 'Mejores modelos de código abierto y proveedores chinos',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z M3 7l9 6 9-6"/>',
+    getValue: m => m.quality,
+    formatValue: v => v.toFixed(1),
+    filterFn: m => OSS_CHINESE_PROVIDERS.includes(m.provider),
+    sortDir: 'desc',
+    unit: 'pts',
+  },
+  {
+    id: 'agentic',
+    title: 'Mejores Agentes',
+    subtitle: 'AA Agentic Index — Rendimiento en tareas de agente autónomo',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
+    getValue: m => m.agentic_index,
+    formatValue: v => v.toFixed(1),
+    sortDir: 'desc',
+    unit: 'pts',
+  },
+  {
+    id: 'cost-per-task',
+    title: 'Costo por Tarea',
+    subtitle: 'Costo promedio en USD para ejecutar una tarea del Intelligence Index',
+    icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>',
+    getValue: m => m.cost_per_task,
+    formatValue: v => '$' + v.toFixed(3),
+    sortDir: 'asc', // lower cost is better
+    unit: '$/task',
+  },
+];
+
+function renderBarCharts() {
   const container = document.getElementById('stackContainer')!;
   const empty = document.getElementById('emptyState')!;
-  if (!filteredModels.length) {
+  const filtered = getFilteredModels();
+
+  if (!filtered.length) {
     container.innerHTML = '';
     empty.classList.remove('hidden');
     return;
   }
   empty.classList.add('hidden');
 
-  const maxPriceOut = Math.max(...allModels.map(m => m.price_output || 0));
-  const maxSpeed = Math.max(...allModels.map(m => m.speed_output || 0));
+  const sections = CHART_CONFIGS.map(config => {
+    // Apply category-specific filter (like OSS/Chinese) on top of provider filter
+    let pool = [...filtered];
+    if (config.filterFn && activeProvider === 'all') {
+      pool = pool.filter(config.filterFn);
+    }
 
-  container.innerHTML = filteredModels.map((m, idx) => {
-    const seq = formatSeq(idx + 1);
-    const logo = getProviderLogo(m.provider);
+    // Filter out models with null values for this metric
+    pool = pool.filter(m => {
+      const v = config.getValue(m);
+      return v != null && v > 0;
+    });
+
+    // Sort
+    if (config.sortDir === 'desc') {
+      pool.sort((a, b) => (config.getValue(b) || 0) - (config.getValue(a) || 0));
+    } else {
+      pool.sort((a, b) => (config.getValue(a) || 999) - (config.getValue(b) || 999));
+    }
+
+    // Limit to MAX_BARS
+    pool = pool.slice(0, MAX_BARS);
+
+    if (!pool.length) return '';
+
+    // Calculate scale for bar height normalization
+    const values = pool.map(m => config.getValue(m) || 0);
+    const maxVal = Math.max(...values);
+    const minVal = Math.min(...values);
+
+    // Show score inside bar for intelligence-type charts (first two)
+    const showScoreInBar = config.id === 'intelligence' || config.id === 'oss-chinese';
+
+    const bars = pool.map((m, idx) => {
+      const val = config.getValue(m) || 0;
+
+      let heightPct: number;
+      if (config.sortDir === 'desc') {
+        // Higher is better: proportional height from 30% floor to 100%
+        // This ensures even the lowest bar is visible but differences are clear
+        const range = maxVal - minVal;
+        const normalized = range > 0 ? (val - minVal) / range : 1;
+        heightPct = 30 + normalized * 70; // 30% to 100%
+      } else {
+        // Lower is better (cost): cheapest gets tallest bar
+        const range = maxVal - minVal;
+        const normalized = range > 0 ? (maxVal - val) / range : 1;
+        heightPct = 30 + normalized * 70; // cheapest = 100%, most expensive = 30%
+      }
+
+      const color = getBarColor(m.provider);
+      const logo = getProviderLogo(m.provider);
+      const displayVal = showScoreInBar ? val.toFixed(0) : config.formatValue(val);
+
+      return `
+        <div class="bar-col" data-model-id="${m.id}" title="${m.name} — ${config.formatValue(val)}">
+          <div class="bar-track">
+            <div class="bar-fill-v" style="height:${heightPct}%;background:${color}" data-h="${heightPct}">
+              <span class="bar-inner-value">${displayVal}</span>
+            </div>
+          </div>
+          <img class="bar-logo" src="${logo}" alt="${m.provider}" width="18" height="18" />
+          <div class="bar-label">${m.name.length > 14 ? m.name.slice(0, 12) + '…' : m.name}</div>
+        </div>
+      `;
+    }).join('');
+
     return `
-      <article class="stack-card" data-id="${m.id}">
-        <div class="dna-side">
-          <div class="seq-number">${seq}</div>
-          <div class="dna-strand">${buildDnaSvg()}</div>
-        </div>
-        <div class="card-body">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:8px">
-              <img class="provider-logo" src="${logo}" alt="${m.provider}" width="24" height="24" />
-              <div>
-                <h2 class="model-name"><span class="provider">${m.provider}</span>${m.name}</h2>
-                <div class="model-meta">
-                  <span>● ${fmt.date(m.release)}</span>
-                </div>
-              </div>
-            </div>
-            <div class="quality-badge">
-              <div class="quality-score">${m.quality != null ? m.quality.toFixed(1) : '—'}</div>
-              <div class="quality-label">Quality Index</div>
-            </div>
+      <div class="barchart-section" id="chart-${config.id}">
+        <div class="barchart-header">
+          <div class="barchart-icon">
+            <svg style="width:18px;height:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24">${config.icon}</svg>
           </div>
-          <div class="metrics-grid">
-            <div class="metric-box">
-              <div class="metric-label">Throughput</div>
-              <div class="metric-value">${Math.round(m.speed_output || 0)}<span class="unit">tok/s</span></div>
-              <div class="bench-bar" style="margin-top:8px"><div class="bench-fill" data-w="${((m.speed_output || 0) / maxSpeed) * 100}"></div></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-label">TTFT</div>
-              <div class="metric-value">${m.ttft != null ? m.ttft.toFixed(2) : '—'}<span class="unit">s</span></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-label">Precio IN</div>
-              <div class="metric-value"><span class="currency">$</span>${(m.price_input || 0).toFixed(2)}<span class="unit">/M</span></div>
-            </div>
-            <div class="metric-box">
-              <div class="metric-label">Precio OUT</div>
-              <div class="metric-value"><span class="currency">$</span>${(m.price_output || 0).toFixed(2)}<span class="unit">/M</span></div>
-              <div class="bench-bar" style="margin-top:8px"><div class="bench-fill" data-w="${((m.price_output || 0) / maxPriceOut) * 100}"></div></div>
-            </div>
-          </div>
-          <div class="flex justify-between items-center pt-2" style="border-top:1px solid var(--border)">
-            <div class="text-[11px] mono" style="color:var(--fg-muted)">
-              IN: $${(m.price_input || 0).toFixed(2)}/M · OUT: $${(m.price_output || 0).toFixed(2)}/M
-            </div>
-            <button class="expand-btn" data-expand="${m.id}">→ expandir</button>
+          <div>
+            <div class="barchart-title">${config.title}</div>
+            <div class="barchart-subtitle">${config.subtitle}</div>
           </div>
         </div>
-      </article>
+        <div class="barchart-grid">${bars}</div>
+      </div>
     `;
   }).join('');
 
+  container.innerHTML = sections;
+  container.classList.add('visible');
+
+  // Animate bars in
   requestAnimationFrame(() => {
-    document.querySelectorAll('.bench-fill').forEach(el => {
-      const w = parseFloat((el as HTMLElement).dataset.w || '0');
-      setTimeout(() => (el as HTMLElement).style.width = Math.min(100, w) + '%', 50);
+    document.querySelectorAll('.bar-fill-v').forEach((el, i) => {
+      const h = (el as HTMLElement).dataset.h || '0';
+      (el as HTMLElement).style.height = '0%';
+      setTimeout(() => {
+        (el as HTMLElement).style.height = h + '%';
+      }, 50 + i * 30);
     });
   });
-  setTimeout(() => { container.classList.add('visible'); }, 50);
 }
 
-// --- MODAL ---
+// --- MODAL (detail on bar click) ---
 function openModal(id: string) {
   const m = allModels.find(x => x.id === id);
   if (!m) return;
+  const logo = getProviderLogo(m.provider);
   const card = document.getElementById('modalCard')!;
   card.innerHTML = `
     <div class="flex justify-between items-start mb-6">
-      <div>
-        <div class="text-xs mono uppercase tracking-widest mb-2" style="color:var(--accent-bright)">${m.provider}</div>
-        <h2 class="text-3xl font-bold mb-2">${m.name}</h2>
-        <div class="text-sm mono" style="color:var(--fg-muted)">Lanzamiento: ${fmt.date(m.release)}</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="${logo}" alt="${m.provider}" width="36" height="36" style="object-fit:contain" />
+        <div>
+          <div class="text-xs mono uppercase tracking-widest mb-1" style="color:var(--accent-bright)">${m.provider}</div>
+          <h2 class="text-2xl font-bold">${m.name}</h2>
+          <div class="text-xs mono mt-1" style="color:var(--fg-muted)">Lanzamiento: ${fmt.date(m.release)}</div>
+        </div>
       </div>
       <button id="closeModalBtn" class="expand-btn">✕ cerrar</button>
     </div>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <div class="metric-box"><div class="metric-label">Quality Index</div><div class="metric-value" style="font-size:24px;color:var(--accent-bright)">${m.quality?.toFixed(1) || '—'}</div></div>
-      <div class="metric-box"><div class="metric-label">Throughput</div><div class="metric-value">${Math.round(m.speed_output || 0)}<span class="unit">tok/s</span></div></div>
-      <div class="metric-box"><div class="metric-label">TTFT</div><div class="metric-value">${m.ttft?.toFixed(2) || '—'}<span class="unit">s</span></div></div>
-      <div class="metric-box"><div class="metric-label">Latencia total</div><div class="metric-value">${m.ttft ? (m.ttft + 1).toFixed(2) : '—'}<span class="unit">s est.</span></div></div>
+      <div class="metric-box">
+        <div class="metric-label">Intelligence Index</div>
+        <div class="metric-value" style="font-size:22px;color:var(--accent-bright)">${m.quality?.toFixed(1) || '—'}</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Agentic Index</div>
+        <div class="metric-value" style="font-size:22px">${m.agentic_index?.toFixed(1) || '—'}</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Coding Index</div>
+        <div class="metric-value" style="font-size:22px">${m.coding_index?.toFixed(1) || '—'}</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Costo/Tarea</div>
+        <div class="metric-value" style="font-size:22px">${m.cost_per_task ? '$' + m.cost_per_task.toFixed(3) : '—'}</div>
+      </div>
     </div>
-    <div class="mb-6">
-      <h3 class="text-sm mono uppercase tracking-widest mb-3" style="color:var(--fg-dim)">Pricing (por millón de tokens)</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div class="metric-box"><div class="metric-label">Input</div><div class="metric-value">$${(m.price_input || 0).toFixed(4)}</div></div>
-        <div class="metric-box"><div class="metric-label">Output</div><div class="metric-value">$${(m.price_output || 0).toFixed(4)}</div></div>
-        <div class="metric-box"><div class="metric-label">Ratio I/O</div><div class="metric-value">${m.price_input && m.price_output ? (m.price_output / m.price_input).toFixed(1) + '×' : '—'}</div></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="metric-box">
+        <div class="metric-label">Throughput</div>
+        <div class="metric-value">${Math.round(m.speed_output || 0)}<span class="unit">tok/s</span></div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">TTFT</div>
+        <div class="metric-value">${m.ttft ? m.ttft.toFixed(2) : '—'}<span class="unit">s</span></div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Precio Input</div>
+        <div class="metric-value">$${(m.price_input || 0).toFixed(2)}<span class="unit">/M</span></div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Precio Output</div>
+        <div class="metric-value">$${(m.price_output || 0).toFixed(2)}<span class="unit">/M</span></div>
       </div>
     </div>
   `;
@@ -331,11 +444,7 @@ function renderPodiums(models: Model[]) {
 // --- EVENT LISTENERS ---
 document.getElementById('searchInput')!.addEventListener('input', (e) => {
   currentSearch = (e.target as HTMLInputElement).value;
-  applyFilters();
-});
-document.getElementById('sortSelect')!.addEventListener('change', (e) => {
-  currentSort = (e.target as HTMLSelectElement).value as SortKey;
-  applyFilters();
+  renderBarCharts();
 });
 document.getElementById('modalOverlay')!.addEventListener('click', (e) => {
   if ((e.target as HTMLElement).id === 'modalOverlay') closeModal();
@@ -343,10 +452,12 @@ document.getElementById('modalOverlay')!.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
+// Delegated click on bar columns
 document.addEventListener('click', (e) => {
-  const btn = (e.target as HTMLElement).closest('.expand-btn[data-expand]') as HTMLElement | null;
-  if (btn) {
-    openModal(btn.dataset.expand!);
+  const barCol = (e.target as HTMLElement).closest('.bar-col') as HTMLElement | null;
+  if (barCol) {
+    const modelId = barCol.dataset.modelId;
+    if (modelId) openModal(modelId);
   }
 });
 
@@ -368,7 +479,7 @@ async function init() {
   renderStats(allModels);
   renderProviderFilters(allModels);
   renderPodiums(allModels);
-  applyFilters();
+  renderBarCharts();
 }
 
 init();
