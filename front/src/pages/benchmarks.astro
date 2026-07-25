@@ -1,0 +1,49 @@
+---
+import '../styles/benchmarks.css';
+import BenchHeader from '../components/Benchmark/Header.astro';
+import StatGrid from '../components/Benchmark/StatGrid.astro';
+import Podium3D from '../components/Benchmark/Podium3D.astro';
+import StackCard from '../components/Benchmark/StackCard.astro';
+import ModelModal from '../components/Benchmark/ModelModal.astro';
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StackADN // AI Models Benchmark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <BenchHeader />
+
+  <main class="max-w-7xl mx-auto px-6 py-10">
+
+    <section class="mb-10">
+      <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-3" style="letter-spacing:-0.03em">
+        El <span style="background:linear-gradient(135deg,var(--accent-bright),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent">ADN</span> de cada modelo de IA.
+      </h1>
+      <p class="text-base max-w-2xl" style="color:var(--fg-dim)">
+        Comparativa técnica en tiempo real: throughput, latencia, contexto, benchmarks académicos y pricing. 
+        Sin marketing. Solo métricas que importan cuando eliges un modelo para producción.
+      </p>
+    </section>
+
+    <StatGrid />
+    <Podium3D />
+    <StackCard />
+    <ModelModal />
+
+  </main>
+
+  <footer class="border-t mt-16 py-6 px-6 text-center text-xs mono" style="border-color:var(--border);color:var(--fg-muted)">
+    STACKADN · Datos vía artificialanalysis.ai · Construido para ingenieros, no para marketing.
+  </footer>
+
+  <script src="../scripts/benchmarks.ts"></script>
+</body>
+</html>
