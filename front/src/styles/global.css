@@ -927,3 +927,12 @@ h2 {
 		gap: 32px;
 	}
 }
+
+#page-transition-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	background: var(--bg);
+	display: none;
+	pointer-events: none;
+}
