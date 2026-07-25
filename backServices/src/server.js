@@ -4,11 +4,12 @@ const helmet = require("helmet");
 require("dotenv").config();
 
 const executeRoute = require("./routes/execute");
+const codeRoute = require("./routes/code");
 const awsRoute = require("./routes/aws");
 const { globalLimiter } = require("./middleware/rateLimit");
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:4321";
 
 app.disable("x-powered-by");
@@ -23,6 +24,8 @@ app.use(globalLimiter);
 
 // Ruta heredada: se conserva para los consumidores anteriores del backend.
 app.use("/execute", executeRoute);
+// Ejecución de código (Python, Java) vía Wandbox.
+app.use("/code", codeRoute);
 // Nuevo contrato del API Tester: POST /api/aws/call.
 app.use("/api/aws", awsRoute);
 

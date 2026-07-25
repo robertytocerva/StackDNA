@@ -1,559 +1,775 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import DnaHelixCanvas from '../components/CodeLab/DnaHelixCanvas.astro';
-import LabSidebar from '../components/CodeLab/LabSidebar.astro';
-import LabEditor from '../components/CodeLab/LabEditor.astro';
-import LabConsole from '../components/CodeLab/LabConsole.astro';
-import LabStatusBar from '../components/CodeLab/LabStatusBar.astro';
-import '../styles/code-lab.css';
+import Layout from "../layouts/Layout.astro";
+import DnaHelixCanvas from "../components/CodeLab/DnaHelixCanvas.astro";
+import LabSidebar from "../components/CodeLab/LabSidebar.astro";
+import LabEditor from "../components/CodeLab/LabEditor.astro";
+import LabConsole from "../components/CodeLab/LabConsole.astro";
+import LabStatusBar from "../components/CodeLab/LabStatusBar.astro";
+import "../styles/code-lab.css";
 ---
 
 <Layout
-	title="Code Lab — StackDNA"
-	description="Ejecuta código Python, JavaScript y Java directamente en tu navegador con el laboratorio de código de StackDNA."
+  title="Code Lab — StackDNA"
+  description="Ejecuta código Python, JavaScript y Java directamente en tu navegador con el laboratorio de código de StackDNA."
 >
-	<div class="code-lab-page" data-code-lab>
-		<!-- Lab Header -->
-		<header class="lab-header">
-			<div class="lab-header-left">
-				<a href="/" class="lab-brand" aria-label="Volver a StackDNA">
-					<DnaHelixCanvas />
-					<div class="lab-brand-text">
-						<span class="lab-brand-name">StackDNA</span>
-						<span class="lab-brand-sub">Code Lab</span>
-					</div>
-				</a>
-			</div>
-			<div class="lab-header-right">
-				<a href="/" class="lab-nav-link">
-					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-						<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-					</svg>
-					Home
-				</a>
-				<a href="/librerias" class="lab-nav-link">
-					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-						<path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
-						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
-					</svg>
-					Librerías
-				</a>
-				<a href="/servicios" class="lab-nav-link">
-					<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-						<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-					</svg>
-					API Tester
-				</a>
-			</div>
-		</header>
+  <div class="code-lab-page" data-code-lab>
+    <!-- Lab Header -->
+    <header class="lab-header">
+      <div class="lab-header-left">
+        <a href="/" class="lab-brand" aria-label="Volver a StackDNA">
+          <DnaHelixCanvas />
+          <div class="lab-brand-text">
+            <span class="lab-brand-name">StackDNA</span>
+            <span class="lab-brand-sub">Code Lab</span>
+          </div>
+        </a>
+      </div>
+      <div class="lab-header-right">
+        <a href="/" class="lab-nav-link">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+          </svg>
+          Home
+        </a>
+        <a href="/librerias" class="lab-nav-link">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M4 19.5A2.5 2.5 0 016.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"
+            ></path>
+          </svg>
+          Librerías
+        </a>
+        <a href="/servicios" class="lab-nav-link">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            aria-hidden="true"
+          >
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+          </svg>
+          API Tester
+        </a>
+      </div>
+    </header>
 
-		<!-- Main Layout: Sidebar + Workspace -->
-		<div class="lab-main">
-			<LabSidebar />
-			<div class="lab-workspace" style="position:relative;">
-				<LabEditor />
-				<LabConsole />
-				<LabStatusBar />
+    <!-- Main Layout: Sidebar + Workspace -->
+    <div class="lab-main">
+      <LabSidebar />
+      <div class="lab-workspace" style="position:relative;">
+        <LabEditor />
+        <LabConsole />
+        <LabStatusBar />
 
-				<!-- Loading overlay for async runtimes -->
-				<div class="lab-loading-overlay" data-loading-overlay aria-hidden="true">
-					<div class="loading-spinner"></div>
-					<span class="loading-text" data-loading-text>Cargando runtime...</span>
-				</div>
-			</div>
-		</div>
+        <!-- Loading overlay for async runtimes -->
+        <div
+          class="lab-loading-overlay"
+          data-loading-overlay
+          aria-hidden="true"
+        >
+          <div class="loading-spinner"></div>
+          <span class="loading-text" data-loading-text>Cargando runtime...</span
+          >
+        </div>
+      </div>
+    </div>
 
-		<!-- Toast -->
-		<div class="lab-toast" data-toast role="status" aria-live="polite"></div>
-	</div>
+    <!-- Toast -->
+    <div class="lab-toast" data-toast role="status" aria-live="polite"></div>
+  </div>
 
-	<!-- CodeMirror CDN -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-	<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+  <!-- CodeMirror CDN -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css"
+  />
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"
+  ></script>
+  <script
+    is:inline
+    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"
+  ></script>
 </Layout>
 
 <script>
-	import { LANGUAGES, EXAMPLES, type LanguageKey } from '../data/codeExamples';
-
-	// ─── State ───────────────────────────────────────────────
-	let currentLang: LanguageKey = 'python';
-	let codeEditor: any = null; // CodeMirror instance
-	let pyodideInstance: any = null;
-	let pyodideLoading = false;
-
-	// ─── DOM References ──────────────────────────────────────
-	const root = document.querySelector<HTMLElement>('[data-code-lab]')!;
-	const editorTextarea = root.querySelector<HTMLTextAreaElement>('[data-code-editor]')!;
-	const runBtn = root.querySelector<HTMLButtonElement>('[data-run-code]')!;
-	const clearEditorBtn = root.querySelector<HTMLButtonElement>('[data-clear-editor]')!;
-	const clearConsoleBtn = root.querySelector<HTMLButtonElement>('[data-clear-console]')!;
-	const consoleOutput = root.querySelector<HTMLElement>('[data-console-panel="output"]')!;
-	const consoleErrors = root.querySelector<HTMLElement>('[data-console-panel="errors"]')!;
-	const consoleTabs = root.querySelectorAll<HTMLButtonElement>('[data-console-tab]');
-	const langTabs = root.querySelectorAll<HTMLButtonElement>('[data-lang]');
-	const snippetBtns = root.querySelectorAll<HTMLButtonElement>('[data-snippet-id]');
-	const langGroups = root.querySelectorAll<HTMLElement>('[data-lang-group]');
-
-	// Toolbar labels
-	const dnaLabel = root.querySelector<HTMLElement>('[data-dna-label]')!;
-	const langLabel = root.querySelector<HTMLElement>('[data-lang-label]')!;
-	const runtimeLabel = root.querySelector<HTMLElement>('[data-runtime-label]')!;
-
-	// Status bar
-	const statusDot = root.querySelector<HTMLElement>('[data-status-dot]')!;
-	const statusText = root.querySelector<HTMLElement>('[data-status-text]')!;
-	const statusLang = root.querySelector<HTMLElement>('[data-status-lang]')!;
-	const statusRuntime = root.querySelector<HTMLElement>('[data-status-runtime]')!;
-	const statusTime = root.querySelector<HTMLElement>('[data-status-time]')!;
-
-	// Loading overlay
-	const loadingOverlay = root.querySelector<HTMLElement>('[data-loading-overlay]')!;
-	const loadingText = root.querySelector<HTMLElement>('[data-loading-text]')!;
-
-	// Error count badge
-	const errorCountBadge = root.querySelector<HTMLElement>('[data-error-count]')!;
-
-	// Toast
-	const toastEl = root.querySelector<HTMLElement>('[data-toast]')!;
-
-	// ─── CodeMirror Init ─────────────────────────────────────
-	function initEditor() {
-		const CM = (window as any).CodeMirror;
-		if (!CM) {
-			console.error('CodeMirror not loaded');
-			return;
-		}
-
-		codeEditor = CM.fromTextArea(editorTextarea, {
-			mode: LANGUAGES[currentLang].cmMode,
-			theme: 'default',
-			lineNumbers: true,
-			matchBrackets: true,
-			autoCloseBrackets: true,
-			styleActiveLine: true,
-			indentUnit: 4,
-			tabSize: 4,
-			indentWithTabs: true,
-			lineWrapping: false,
-		});
-
-		codeEditor.setValue(LANGUAGES[currentLang].defaultCode);
-		codeEditor.setSize('100%', '100%');
-	}
-
-	// ─── Language Switching ──────────────────────────────────
-	function switchLanguage(lang: LanguageKey) {
-		currentLang = lang;
-		const config = LANGUAGES[lang];
-
-		// Update editor mode
-		if (codeEditor) {
-			codeEditor.setOption('mode', config.cmMode);
-			codeEditor.setValue(config.defaultCode);
-		}
-
-		// Update toolbar
-		dnaLabel.textContent = config.dna;
-		langLabel.textContent = config.name;
-		runtimeLabel.textContent = config.runtime;
-
-		// Update status bar
-		statusLang.textContent = config.name;
-		statusRuntime.textContent = config.runtime;
-
-		// Update tab UI
-		langTabs.forEach((tab) => {
-			const isActive = tab.dataset.lang === lang;
-			tab.classList.toggle('active', isActive);
-			tab.setAttribute('aria-selected', String(isActive));
-		});
-
-		// Show correct lang group in sidebar
-		langGroups.forEach((group) => {
-			group.classList.toggle('hidden', group.dataset.langGroup !== lang);
-		});
-
-		// Update tabpanel aria-labelledby
-		const panel = root.querySelector('#sidebar-examples');
-		if (panel) panel.setAttribute('aria-labelledby', `tab-${lang}`);
-
-		// Clear active snippet
-		snippetBtns.forEach((btn) => btn.classList.remove('active'));
-	}
-
-	// ─── Snippet Loading ─────────────────────────────────────
-	function loadSnippet(snippetId: string) {
-		for (const libs of Object.values(EXAMPLES)) {
-			for (const lib of libs) {
-				for (const snippet of lib.snippets) {
-					if (snippet.id === snippetId) {
-						if (codeEditor) codeEditor.setValue(snippet.code);
-						snippetBtns.forEach((btn) => {
-							btn.classList.toggle('active', btn.dataset.snippetId === snippetId);
-						});
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	// ─── Console Helpers ─────────────────────────────────────
-	let errorCount = 0;
-
-	function getTimestamp(): string {
-		const now = new Date();
-		return now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-	}
-
-	function appendToConsole(text: string, type: 'log' | 'error' | 'warn' | 'info' | 'system' = 'log') {
-		const panel = type === 'error' ? consoleErrors : consoleOutput;
-
-		// Remove welcome message if present
-		const welcome = panel.querySelector('.console-welcome');
-		if (welcome) welcome.remove();
-
-		const line = document.createElement('div');
-		line.className = `console-line ${type}`;
-		line.innerHTML = `<span class="line-time">${getTimestamp()}</span><span class="line-content">${escapeHtml(text)}</span>`;
-		panel.appendChild(line);
-		panel.scrollTop = panel.scrollHeight;
-
-		if (type === 'error') {
-			errorCount++;
-			errorCountBadge.textContent = String(errorCount);
-			errorCountBadge.hidden = false;
-		}
-	}
-
-	function clearConsole() {
-		consoleOutput.innerHTML = '';
-		consoleErrors.innerHTML = '';
-		errorCount = 0;
-		errorCountBadge.hidden = true;
-	}
-
-	function escapeHtml(text: string): string {
-		const div = document.createElement('div');
-		div.textContent = text;
-		return div.innerHTML;
-	}
-
-	// ─── Console Tab Switching ───────────────────────────────
-	function switchConsoleTab(tab: string) {
-		consoleTabs.forEach((t) => {
-			const isActive = t.dataset.consoleTab === tab;
-			t.classList.toggle('active', isActive);
-			t.setAttribute('aria-selected', String(isActive));
-		});
-
-		const panels = root.querySelectorAll<HTMLElement>('[data-console-panel]');
-		panels.forEach((panel) => {
-			panel.classList.toggle('hidden', panel.dataset.consolePanel !== tab);
-		});
-	}
-
-	// ─── Status Helpers ──────────────────────────────────────
-	function setStatus(state: 'ready' | 'running' | 'error', text?: string) {
-		statusDot.classList.remove('running', 'error');
-		if (state === 'running') statusDot.classList.add('running');
-		if (state === 'error') statusDot.classList.add('error');
-		statusText.textContent = text || (state === 'ready' ? 'Listo' : state === 'running' ? 'Ejecutando...' : 'Error');
-	}
-
-	function showLoading(text: string) {
-		loadingText.textContent = text;
-		loadingOverlay.classList.add('visible');
-	}
-
-	function hideLoading() {
-		loadingOverlay.classList.remove('visible');
-	}
-
-	// ─── Toast ───────────────────────────────────────────────
-	let toastTimeout: ReturnType<typeof setTimeout> | undefined;
-
-	function showToast(message: string, type: 'success' | 'error' = 'success') {
-		toastEl.textContent = message;
-		toastEl.className = `lab-toast visible ${type}`;
-		if (toastTimeout) clearTimeout(toastTimeout);
-		toastTimeout = setTimeout(() => {
-			toastEl.classList.remove('visible');
-		}, 3000);
-	}
-
-	// ─── Execution: Python (Pyodide) ─────────────────────────
-	async function loadPyodide(): Promise<any> {
-		if (pyodideInstance) return pyodideInstance;
-		if (pyodideLoading) {
-			// Wait for existing load
-			while (pyodideLoading) {
-				await new Promise((r) => setTimeout(r, 200));
-			}
-			return pyodideInstance;
-		}
-
-		pyodideLoading = true;
-		showLoading('Cargando Pyodide (WebAssembly)...');
-		appendToConsole('Descargando runtime de Python...', 'system');
-
-		try {
-			// Load Pyodide script dynamically
-			if (!(window as any).loadPyodide) {
-				const script = document.createElement('script');
-				script.src = 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js';
-				document.head.appendChild(script);
-				await new Promise<void>((resolve, reject) => {
-					script.onload = () => resolve();
-					script.onerror = () => reject(new Error('Failed to load Pyodide script'));
-				});
-			}
-
-			pyodideInstance = await (window as any).loadPyodide({
-				indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.24.1/full/',
-			});
-
-			appendToConsole('Pyodide cargado correctamente.', 'system');
-			showToast('Python runtime listo');
-		} catch (err: any) {
-			appendToConsole(`Error cargando Pyodide: ${err.message}`, 'error');
-			showToast('Error cargando Python', 'error');
-			throw err;
-		} finally {
-			pyodideLoading = false;
-			hideLoading();
-		}
-
-		return pyodideInstance;
-	}
-
-	async function runPython(code: string) {
-		const pyodide = await loadPyodide();
-
-		// Redirect stdout
-		pyodide.runPython(`
-import sys
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = StringIO()
-`);
-
-		try {
-			pyodide.runPython(code);
-			const stdout = pyodide.runPython('sys.stdout.getvalue()');
-			const stderr = pyodide.runPython('sys.stderr.getvalue()');
-
-			if (stdout) {
-				stdout.split('\n').filter(Boolean).forEach((line: string) => appendToConsole(line));
-			}
-			if (stderr) {
-				stderr.split('\n').filter(Boolean).forEach((line: string) => appendToConsole(line, 'warn'));
-			}
-		} catch (err: any) {
-			appendToConsole(err.message, 'error');
-			throw err;
-		}
-	}
-
-	// ─── Execution: JavaScript (V8 in browser) ───────────────
-	async function runJavaScript(code: string) {
-		// Override console methods to capture output
-		const originalLog = console.log;
-		const originalError = console.error;
-		const originalWarn = console.warn;
-		const outputs: { text: string; type: 'log' | 'error' | 'warn' }[] = [];
-
-		console.log = (...args: any[]) => {
-			outputs.push({ text: args.map(formatArg).join(' '), type: 'log' });
-		};
-		console.error = (...args: any[]) => {
-			outputs.push({ text: args.map(formatArg).join(' '), type: 'error' });
-		};
-		console.warn = (...args: any[]) => {
-			outputs.push({ text: args.map(formatArg).join(' '), type: 'warn' });
-		};
-
-		try {
-			// Use async function wrapper to support top-level await
-			const asyncFn = new Function(`return (async () => { ${code} })();`);
-			await asyncFn();
-
-			outputs.forEach((o) => appendToConsole(o.text, o.type));
-		} catch (err: any) {
-			appendToConsole(err.message, 'error');
-			throw err;
-		} finally {
-			console.log = originalLog;
-			console.error = originalError;
-			console.warn = originalWarn;
-		}
-	}
-
-	function formatArg(arg: any): string {
-		if (arg === null) return 'null';
-		if (arg === undefined) return 'undefined';
-		if (typeof arg === 'object') {
-			try {
-				return JSON.stringify(arg);
-			} catch {
-				return String(arg);
-			}
-		}
-		return String(arg);
-	}
-
-	// ─── Execution: Java (Piston API) ────────────────────────
-	async function runJava(code: string) {
-		appendToConsole('Enviando a Piston API...', 'system');
-
-		try {
-			const response = await fetch('https://emkc.org/api/v2/piston/execute', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					language: 'java',
-					version: '15.0.2',
-					files: [{ name: 'Main.java', content: code }],
-				}),
-			});
-
-			if (!response.ok) {
-				throw new Error(`Piston API respondió con status ${response.status}`);
-			}
-
-			const result = await response.json();
-
-			if (result.run?.stdout) {
-				result.run.stdout.split('\n').filter(Boolean).forEach((line: string) => appendToConsole(line));
-			}
-			if (result.run?.stderr) {
-				result.run.stderr.split('\n').filter(Boolean).forEach((line: string) => appendToConsole(line, 'error'));
-			}
-			if (result.compile?.stderr) {
-				result.compile.stderr.split('\n').filter(Boolean).forEach((line: string) => appendToConsole(line, 'error'));
-				throw new Error('Compilation error');
-			}
-		} catch (err: any) {
-			if (err.message !== 'Compilation error') {
-				appendToConsole(`Error: ${err.message}`, 'error');
-			}
-			throw err;
-		}
-	}
-
-	// ─── Run Code (dispatcher) ───────────────────────────────
-	async function runCode() {
-		if (!codeEditor) return;
-
-		const code = codeEditor.getValue().trim();
-		if (!code) {
-			showToast('El editor está vacío', 'error');
-			return;
-		}
-
-		clearConsole();
-		setStatus('running');
-		runBtn.disabled = true;
-		const start = performance.now();
-
-		appendToConsole(`Ejecutando ${LANGUAGES[currentLang].name}...`, 'system');
-
-		try {
-			switch (currentLang) {
-				case 'python':
-					await runPython(code);
-					break;
-				case 'javascript':
-					await runJavaScript(code);
-					break;
-				case 'java':
-					await runJava(code);
-					break;
-			}
-
-			const elapsed = ((performance.now() - start) / 1000).toFixed(2);
-			setStatus('ready', `Completado en ${elapsed}s`);
-			statusTime.textContent = `${elapsed}s`;
-			showToast(`Ejecución completada (${elapsed}s)`);
-		} catch {
-			const elapsed = ((performance.now() - start) / 1000).toFixed(2);
-			setStatus('error', 'Error en ejecución');
-			statusTime.textContent = `${elapsed}s (error)`;
-		} finally {
-			runBtn.disabled = false;
-		}
-	}
-
-	// ─── Event Handlers ──────────────────────────────────────
-	function setupEvents() {
-		// Language tabs
-		langTabs.forEach((tab) => {
-			tab.addEventListener('click', () => {
-				const lang = tab.dataset.lang as LanguageKey;
-				if (lang && lang !== currentLang) switchLanguage(lang);
-			});
-		});
-
-		// Snippet buttons
-		snippetBtns.forEach((btn) => {
-			btn.addEventListener('click', () => {
-				const id = btn.dataset.snippetId;
-				if (id) loadSnippet(id);
-			});
-		});
-
-		// Run button
-		runBtn.addEventListener('click', runCode);
-
-		// Clear editor
-		clearEditorBtn.addEventListener('click', () => {
-			if (codeEditor) codeEditor.setValue('');
-		});
-
-		// Clear console
-		clearConsoleBtn.addEventListener('click', clearConsole);
-
-		// Console tabs
-		consoleTabs.forEach((tab) => {
-			tab.addEventListener('click', () => {
-				const target = tab.dataset.consoleTab;
-				if (target) switchConsoleTab(target);
-			});
-		});
-
-		// Keyboard shortcut: Ctrl+Enter to run
-		document.addEventListener('keydown', (e) => {
-			if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-				e.preventDefault();
-				runCode();
-			}
-		});
-	}
-
-	// ─── Init ────────────────────────────────────────────────
-	function init() {
-		// Wait for CodeMirror to be available
-		const checkCM = () => {
-			if ((window as any).CodeMirror) {
-				initEditor();
-				setupEvents();
-				setStatus('ready');
-			} else {
-				setTimeout(checkCM, 100);
-			}
-		};
-		checkCM();
-	}
-
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', init);
-	} else {
-		init();
-	}
+  import { LANGUAGES, EXAMPLES, type LanguageKey } from "../data/codeExamples";
+
+  // ─── State ───────────────────────────────────────────────
+  let currentLang: LanguageKey = "python";
+  let codeEditor: any = null; // CodeMirror instance
+
+  // ─── DOM References ──────────────────────────────────────
+  const root = document.querySelector<HTMLElement>("[data-code-lab]")!;
+  const editorTextarea =
+    root.querySelector<HTMLTextAreaElement>("[data-code-editor]")!;
+  const runBtn = root.querySelector<HTMLButtonElement>("[data-run-code]")!;
+  const clearEditorBtn = root.querySelector<HTMLButtonElement>(
+    "[data-clear-editor]",
+  )!;
+  const clearConsoleBtn = root.querySelector<HTMLButtonElement>(
+    "[data-clear-console]",
+  )!;
+  const consoleOutput = root.querySelector<HTMLElement>(
+    '[data-console-panel="output"]',
+  )!;
+  const consoleErrors = root.querySelector<HTMLElement>(
+    '[data-console-panel="errors"]',
+  )!;
+  const consoleTabs =
+    root.querySelectorAll<HTMLButtonElement>("[data-console-tab]");
+  const langTabs = root.querySelectorAll<HTMLButtonElement>("[data-lang]");
+  const snippetBtns =
+    root.querySelectorAll<HTMLButtonElement>("[data-snippet-id]");
+  const langGroups = root.querySelectorAll<HTMLElement>("[data-lang-group]");
+
+  // Toolbar labels
+  const dnaLabel = root.querySelector<HTMLElement>("[data-dna-label]")!;
+  const langLabel = root.querySelector<HTMLElement>("[data-lang-label]")!;
+  const runtimeLabel = root.querySelector<HTMLElement>("[data-runtime-label]")!;
+
+  // Status bar
+  const statusDot = root.querySelector<HTMLElement>("[data-status-dot]")!;
+  const statusText = root.querySelector<HTMLElement>("[data-status-text]")!;
+  const statusLang = root.querySelector<HTMLElement>("[data-status-lang]")!;
+  const statusRuntime = root.querySelector<HTMLElement>(
+    "[data-status-runtime]",
+  )!;
+  const statusTime = root.querySelector<HTMLElement>("[data-status-time]")!;
+
+  // Loading overlay
+  const loadingOverlay = root.querySelector<HTMLElement>(
+    "[data-loading-overlay]",
+  )!;
+  const loadingText = root.querySelector<HTMLElement>("[data-loading-text]")!;
+
+  // Error count badge
+  const errorCountBadge =
+    root.querySelector<HTMLElement>("[data-error-count]")!;
+
+  // Toast
+  const toastEl = root.querySelector<HTMLElement>("[data-toast]")!;
+
+  // ─── Autocomplete Hints per Language ───────────────────
+  const HINTS: Record<LanguageKey, string[]> = {
+    python: [
+      "print", "input", "len", "range", "enumerate", "zip", "map", "filter",
+      "list", "dict", "tuple", "set", "import", "from", "def", "class", "return",
+      "if", "elif", "else", "for", "while", "try", "except", "finally", "with",
+      "lambda", "yield", "global", "nonlocal", "assert", "raise", "pass", "break",
+      "continue", "True", "False", "None", "and", "or", "not", "in", "is",
+      "os", "sys", "math", "random", "datetime", "json", "re", "collections",
+      "itertools", "functools", "pathlib", "typing", "dataclasses",
+      "append", "extend", "pop", "remove", "sort", "reverse", "keys", "values",
+      "items", "join", "split", "strip", "replace", "format", "startswith",
+      "endswith", "isdigit", "isalpha", "lower", "upper", "title",
+      "int", "float", "str", "bool", "bytes", "type", "isinstance", "hasattr",
+      "getattr", "setattr", "super", "property", "staticmethod", "classmethod",
+      "abs", "max", "min", "sum", "sorted", "reversed", "any", "all", "open",
+    ],
+    javascript: [
+      "console", "console.log", "console.error", "console.warn", "console.table",
+      "document", "document.getElementById", "document.querySelector",
+      "document.querySelectorAll", "document.createElement",
+      "window", "window.location", "window.localStorage", "window.sessionStorage",
+      "fetch", "Promise", "Promise.all", "Promise.resolve", "Promise.reject",
+      "setTimeout", "setInterval", "clearTimeout", "clearInterval",
+      "requestAnimationFrame", "addEventListener", "removeEventListener",
+      "Array", "Array.from", "Array.isArray", "Object", "Object.keys",
+      "Object.values", "Object.entries", "Object.assign", "Object.freeze",
+      "Map", "Set", "WeakMap", "WeakSet", "Symbol",
+      "JSON", "JSON.parse", "JSON.stringify",
+      "Math", "Math.floor", "Math.ceil", "Math.round", "Math.random",
+      "Math.max", "Math.min", "Math.abs", "Math.sqrt", "Math.pow",
+      "String", "Number", "Boolean", "Date", "RegExp", "Error",
+      "parseInt", "parseFloat", "isNaN", "isFinite", "encodeURIComponent",
+      "decodeURIComponent", "typeof", "instanceof",
+      "function", "const", "let", "var", "return", "if", "else", "for",
+      "while", "do", "switch", "case", "break", "continue", "try", "catch",
+      "finally", "throw", "new", "class", "extends", "import", "export",
+      "default", "async", "await", "yield", "this", "super",
+      "map", "filter", "reduce", "forEach", "find", "findIndex", "some",
+      "every", "includes", "indexOf", "slice", "splice", "concat", "flat",
+      "push", "pop", "shift", "unshift", "sort", "reverse", "join", "split",
+      "replace", "match", "trim", "padStart", "padEnd", "startsWith", "endsWith",
+      "length", "toString", "valueOf", "hasOwnProperty", "keys", "values",
+    ],
+    java: [
+      "System.out.println", "System.out.print", "System.out.printf",
+      "System.in", "System.err", "System.exit", "System.currentTimeMillis",
+      "Scanner", "Scanner.nextInt", "Scanner.nextLine", "Scanner.nextDouble",
+      "ArrayList", "LinkedList", "HashMap", "TreeMap", "HashSet", "TreeSet",
+      "LinkedHashMap", "LinkedHashSet", "PriorityQueue", "ArrayDeque",
+      "Stack", "Vector", "Collections", "Collections.sort", "Collections.reverse",
+      "Arrays", "Arrays.sort", "Arrays.asList", "Arrays.copyOf", "Arrays.fill",
+      "String", "String.valueOf", "String.format", "StringBuilder", "StringBuffer",
+      "Integer", "Integer.parseInt", "Integer.valueOf", "Integer.MAX_VALUE",
+      "Double", "Double.parseDouble", "Float", "Long", "Character", "Boolean",
+      "Math", "Math.abs", "Math.max", "Math.min", "Math.sqrt", "Math.pow",
+      "Math.random", "Math.floor", "Math.ceil", "Math.round", "Math.PI",
+      "Object", "Exception", "RuntimeException", "NullPointerException",
+      "IOException", "IllegalArgumentException", "IndexOutOfBoundsException",
+      "List", "Map", "Set", "Queue", "Deque", "Iterator", "Iterable",
+      "Comparable", "Comparator", "Optional", "Stream",
+      "public", "private", "protected", "static", "final", "abstract",
+      "class", "interface", "extends", "implements", "new", "this", "super",
+      "return", "if", "else", "for", "while", "do", "switch", "case",
+      "break", "continue", "try", "catch", "finally", "throw", "throws",
+      "import", "package", "void", "int", "double", "float", "long",
+      "char", "boolean", "byte", "short", "null", "true", "false",
+      "instanceof", "synchronized", "volatile", "transient", "enum", "record",
+    ],
+  };
+
+  // ─── CodeMirror Init ─────────────────────────────────────
+  function initEditor() {
+    const CM = (window as any).CodeMirror;
+    if (!CM) {
+      console.error("CodeMirror not loaded");
+      return;
+    }
+
+    // Register custom hint provider
+    CM.registerHelper("hint", "auto", (editor: any) => {
+      const cursor = editor.getCursor();
+      const line = editor.getLine(cursor.line);
+      const end = cursor.ch;
+
+      // Walk back to find the start of the current token (word + dots for chained calls)
+      let start = end;
+      while (start > 0 && /[\w.]/.test(line.charAt(start - 1))) {
+        start--;
+      }
+
+      const token = line.slice(start, end).toLowerCase();
+      if (token.length < 1) return null;
+
+      const langHints = HINTS[currentLang] || [];
+      const matches = langHints.filter((h) =>
+        h.toLowerCase().startsWith(token)
+      );
+
+      if (matches.length === 0) return null;
+
+      return {
+        list: matches,
+        from: CM.Pos(cursor.line, start),
+        to: CM.Pos(cursor.line, end),
+      };
+    });
+
+    codeEditor = CM.fromTextArea(editorTextarea, {
+      mode: LANGUAGES[currentLang].cmMode,
+      theme: "default",
+      lineNumbers: true,
+      matchBrackets: true,
+      autoCloseBrackets: true,
+      styleActiveLine: true,
+      indentUnit: 4,
+      tabSize: 4,
+      indentWithTabs: true,
+      lineWrapping: false,
+      extraKeys: { "Ctrl-Space": "autocomplete" },
+      hintOptions: { completeSingle: false },
+    });
+
+    // Trigger autocomplete on input (after a short delay)
+    codeEditor.on("inputRead", (editor: any, change: any) => {
+      if (change.origin === "+input" && /[\w.]/.test(change.text[0])) {
+        editor.showHint({ completeSingle: false });
+      }
+    });
+
+    codeEditor.setValue(LANGUAGES[currentLang].defaultCode);
+    codeEditor.setSize("100%", "100%");
+  }
+
+  // ─── Language Switching ──────────────────────────────────
+  function switchLanguage(lang: LanguageKey) {
+    currentLang = lang;
+    const config = LANGUAGES[lang];
+
+    // Update editor mode
+    if (codeEditor) {
+      codeEditor.setOption("mode", config.cmMode);
+      codeEditor.setValue(config.defaultCode);
+    }
+
+    // Update toolbar
+    dnaLabel.textContent = config.dna;
+    langLabel.textContent = config.name;
+    runtimeLabel.textContent = config.runtime;
+
+    // Update status bar
+    statusLang.textContent = config.name;
+    statusRuntime.textContent = config.runtime;
+
+    // Update tab UI
+    langTabs.forEach((tab) => {
+      const isActive = tab.dataset.lang === lang;
+      tab.classList.toggle("active", isActive);
+      tab.setAttribute("aria-selected", String(isActive));
+    });
+
+    // Show correct lang group in sidebar
+    langGroups.forEach((group) => {
+      group.classList.toggle("hidden", group.dataset.langGroup !== lang);
+    });
+
+    // Update tabpanel aria-labelledby
+    const panel = root.querySelector("#sidebar-examples");
+    if (panel) panel.setAttribute("aria-labelledby", `tab-${lang}`);
+
+    // Clear active snippet
+    snippetBtns.forEach((btn) => btn.classList.remove("active"));
+  }
+
+  // ─── Snippet Loading ─────────────────────────────────────
+  function loadSnippet(snippetId: string) {
+    for (const libs of Object.values(EXAMPLES)) {
+      for (const lib of libs) {
+        for (const snippet of lib.snippets) {
+          if (snippet.id === snippetId) {
+            if (codeEditor) codeEditor.setValue(snippet.code);
+            snippetBtns.forEach((btn) => {
+              btn.classList.toggle(
+                "active",
+                btn.dataset.snippetId === snippetId,
+              );
+            });
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  // ─── Console Helpers ─────────────────────────────────────
+  let errorCount = 0;
+
+  function getTimestamp(): string {
+    const now = new Date();
+    return now.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  }
+
+  function appendToConsole(
+    text: string,
+    type: "log" | "error" | "warn" | "info" | "system" = "log",
+  ) {
+    const panel = type === "error" ? consoleErrors : consoleOutput;
+
+    // Remove welcome message if present
+    const welcome = panel.querySelector(".console-welcome");
+    if (welcome) welcome.remove();
+
+    const line = document.createElement("div");
+    line.className = `console-line ${type}`;
+    line.innerHTML = `<span class="line-time">${getTimestamp()}</span><span class="line-content">${escapeHtml(text)}</span>`;
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+
+    if (type === "error") {
+      errorCount++;
+      errorCountBadge.textContent = String(errorCount);
+      errorCountBadge.hidden = false;
+    }
+  }
+
+  function clearConsole() {
+    consoleOutput.innerHTML = "";
+    consoleErrors.innerHTML = "";
+    errorCount = 0;
+    errorCountBadge.hidden = true;
+  }
+
+  function escapeHtml(text: string): string {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ─── Console Tab Switching ───────────────────────────────
+  function switchConsoleTab(tab: string) {
+    consoleTabs.forEach((t) => {
+      const isActive = t.dataset.consoleTab === tab;
+      t.classList.toggle("active", isActive);
+      t.setAttribute("aria-selected", String(isActive));
+    });
+
+    const panels = root.querySelectorAll<HTMLElement>("[data-console-panel]");
+    panels.forEach((panel) => {
+      panel.classList.toggle("hidden", panel.dataset.consolePanel !== tab);
+    });
+  }
+
+  // ─── Status Helpers ──────────────────────────────────────
+  function setStatus(state: "ready" | "running" | "error", text?: string) {
+    statusDot.classList.remove("running", "error");
+    if (state === "running") statusDot.classList.add("running");
+    if (state === "error") statusDot.classList.add("error");
+    statusText.textContent =
+      text ||
+      (state === "ready"
+        ? "Listo"
+        : state === "running"
+          ? "Ejecutando..."
+          : "Error");
+  }
+
+  function showLoading(text: string) {
+    loadingText.textContent = text;
+    loadingOverlay.classList.add("visible");
+  }
+
+  function hideLoading() {
+    loadingOverlay.classList.remove("visible");
+  }
+
+  // ─── Toast ───────────────────────────────────────────────
+  let toastTimeout: ReturnType<typeof setTimeout> | undefined;
+
+  function showToast(message: string, type: "success" | "error" = "success") {
+    toastEl.textContent = message;
+    toastEl.className = `lab-toast visible ${type}`;
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toastEl.classList.remove("visible");
+    }, 3000);
+  }
+
+  async function runPython(code: string) {
+  appendToConsole("Enviando Python al backend...", "system");
+
+  try {
+    const response = await fetch("http://localhost:3000/code/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language: "python",
+        code: code,
+        stdin: "",
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        typeof result === "string"
+          ? result
+          : result.error || JSON.stringify(result),
+      );
+    }
+
+    if (result.stdout) {
+      result.stdout
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line));
+    }
+
+    if (result.stderr) {
+      result.stderr
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line, "error"));
+    }
+
+    if (result.compile) {
+      result.compile
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line, "error"));
+    }
+
+    if (!result.stdout && !result.stderr && !result.compile) {
+      appendToConsole("El programa terminó sin salida.", "system");
+    }
+
+    if (result.status && result.status !== "0") {
+      throw new Error("Error de ejecución");
+    }
+  } catch (err: any) {
+    if (err.message !== "Error de ejecución") {
+      appendToConsole(`Error: ${err.message}`, "error");
+    }
+
+    throw err;
+  }
+}
+
+  // ─── Execution: JavaScript (V8 in browser) ───────────────
+  async function runJavaScript(code: string) {
+    // Override console methods to capture output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    const outputs: { text: string; type: "log" | "error" | "warn" }[] = [];
+
+    console.log = (...args: any[]) => {
+      outputs.push({ text: args.map(formatArg).join(" "), type: "log" });
+    };
+    console.error = (...args: any[]) => {
+      outputs.push({ text: args.map(formatArg).join(" "), type: "error" });
+    };
+    console.warn = (...args: any[]) => {
+      outputs.push({ text: args.map(formatArg).join(" "), type: "warn" });
+    };
+
+    try {
+      // Use async function wrapper to support top-level await
+      const asyncFn = new Function(`return (async () => { ${code} })();`);
+      await asyncFn();
+
+      outputs.forEach((o) => appendToConsole(o.text, o.type));
+    } catch (err: any) {
+      appendToConsole(err.message, "error");
+      throw err;
+    } finally {
+      console.log = originalLog;
+      console.error = originalError;
+      console.warn = originalWarn;
+    }
+  }
+
+  function formatArg(arg: any): string {
+    if (arg === null) return "null";
+    if (arg === undefined) return "undefined";
+    if (typeof arg === "object") {
+      try {
+        return JSON.stringify(arg);
+      } catch {
+        return String(arg);
+      }
+    }
+    return String(arg);
+  }
+
+  // ─── Execution: Java (Piston API) ────────────────────────
+  async function runJava(code: string) {
+  appendToConsole("Enviando Java al backend...", "system");
+
+  try {
+    const response = await fetch("http://localhost:3000/code/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language: "java",
+        code: code,
+        stdin: "",
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        typeof result === "string"
+          ? result
+          : result.error || JSON.stringify(result),
+      );
+    }
+
+    if (result.stdout) {
+      result.stdout
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line));
+    }
+
+    if (result.stderr) {
+      result.stderr
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line, "error"));
+    }
+
+    if (result.compile) {
+      result.compile
+        .split("\n")
+        .filter(Boolean)
+        .forEach((line: string) => appendToConsole(line, "error"));
+    }
+
+    if (!result.stdout && !result.stderr && !result.compile) {
+      appendToConsole("El programa terminó sin salida.", "system");
+    }
+
+    if (result.status && result.status !== "0") {
+      throw new Error("Error de ejecución");
+    }
+  } catch (err: any) {
+    if (err.message !== "Error de ejecución") {
+      appendToConsole(`Error: ${err.message}`, "error");
+    }
+
+    throw err;
+  }
+}
+
+  // ─── Run Code (dispatcher) ───────────────────────────────
+  async function runCode() {
+    if (!codeEditor) return;
+
+    const code = codeEditor.getValue().trim();
+    if (!code) {
+      showToast("El editor está vacío", "error");
+      return;
+    }
+
+    clearConsole();
+    setStatus("running");
+    runBtn.disabled = true;
+    const start = performance.now();
+
+    appendToConsole(`Ejecutando ${LANGUAGES[currentLang].name}...`, "system");
+
+    try {
+      switch (currentLang) {
+        case "python":
+          await runPython(code);
+          break;
+        case "javascript":
+          await runJavaScript(code);
+          break;
+        case "java":
+          await runJava(code);
+          break;
+      }
+
+      const elapsed = ((performance.now() - start) / 1000).toFixed(2);
+      setStatus("ready", `Completado en ${elapsed}s`);
+      statusTime.textContent = `${elapsed}s`;
+      showToast(`Ejecución completada (${elapsed}s)`);
+    } catch {
+      const elapsed = ((performance.now() - start) / 1000).toFixed(2);
+      setStatus("error", "Error en ejecución");
+      statusTime.textContent = `${elapsed}s (error)`;
+    } finally {
+      runBtn.disabled = false;
+    }
+  }
+
+  // ─── Event Handlers ──────────────────────────────────────
+  function setupEvents() {
+    // Language tabs
+    langTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const lang = tab.dataset.lang as LanguageKey;
+        if (lang && lang !== currentLang) switchLanguage(lang);
+      });
+    });
+
+    // Snippet buttons
+    snippetBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.snippetId;
+        if (id) loadSnippet(id);
+      });
+    });
+
+    // Run button
+    runBtn.addEventListener("click", runCode);
+
+    // Clear editor
+    clearEditorBtn.addEventListener("click", () => {
+      if (codeEditor) codeEditor.setValue("");
+    });
+
+    // Clear console
+    clearConsoleBtn.addEventListener("click", clearConsole);
+
+    // Console tabs
+    consoleTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const target = tab.dataset.consoleTab;
+        if (target) switchConsoleTab(target);
+      });
+    });
+
+    // Keyboard shortcut: Ctrl+Enter to run
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        runCode();
+      }
+    });
+  }
+
+  // ─── Init ────────────────────────────────────────────────
+  function init() {
+    // Wait for CodeMirror to be available
+    const checkCM = () => {
+      if ((window as any).CodeMirror) {
+        initEditor();
+        setupEvents();
+        setStatus("ready");
+      } else {
+        setTimeout(checkCM, 100);
+      }
+    };
+    checkCM();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 </script>

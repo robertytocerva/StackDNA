@@ -32,6 +32,7 @@
     "@aws-sdk/client-ssm": "3.1094.0",
     "@aws-sdk/client-sts": "3.1094.0",
     "@aws-sdk/client-xray": "3.1094.0",
+    "axios": "^1.9.0",
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",
     "express": "^5.0.0",

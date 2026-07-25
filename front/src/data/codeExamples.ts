@@ -30,7 +30,7 @@ export const LANGUAGES: Record<LanguageKey, LanguageConfig> = {
 		name: 'Python',
 		icon: '🐍',
 		dna: 'ATCG·PY',
-		runtime: 'Pyodide (WebAssembly)',
+		runtime: 'Wandbox API',
 		cmMode: 'python',
 		defaultCode: `import math
 
@@ -43,7 +43,7 @@ print("Factorial de 5:", math.factorial(5))`,
 		name: 'JavaScript',
 		icon: '⚡',
 		dna: 'JS·ATCG',
-		runtime: 'Motor V8 del navegador',
+		runtime: 'Browser Runtime',
 		cmMode: 'javascript',
 		defaultCode: `const numeros = [1, 2, 3, 4, 5];
 
@@ -63,7 +63,7 @@ console.log("Pares:", pares);`,
 		name: 'Java',
 		icon: '☕',
 		dna: 'JVM·ATCG',
-		runtime: 'Piston API (remoto)',
+		runtime: 'Wandbox API',
 		cmMode: 'text/x-java',
 		defaultCode: `public class Main {
     public static void main(String[] args) {
