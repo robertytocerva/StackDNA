@@ -1,16 +1,20 @@
 import type { Model } from './types';
 
+/**
+ * Fallback dataset when the live API is unreachable.
+ * Only includes fields available in the free tier.
+ */
 export const FALLBACK_MODELS: Model[] = [
-  { id: "claude-3-5-sonnet", name: "Claude 3.5 Sonnet", provider: "Anthropic", release: "2024-10-22", context: 200000, speed_output: 78.3, ttft: 0.71, quality: 78.3, price_input: 3.0, price_output: 15.0, mmlu: 88.7, humaneval: 92.0, math: 71.1, gpqa: 59.4, capabilities: { vision: true, tools: true, reasoning: true } },
-  { id: "gpt-4o", name: "GPT-4o", provider: "OpenAI", release: "2024-05-13", context: 128000, speed_output: 84.6, ttft: 0.46, quality: 77.5, price_input: 2.5, price_output: 10.0, mmlu: 88.7, humaneval: 90.2, math: 76.6, gpqa: 53.6, capabilities: { vision: true, tools: true, reasoning: false } },
-  { id: "o1", name: "o1", provider: "OpenAI", release: "2024-12-05", context: 200000, speed_output: 36.0, ttft: 8.5, quality: 79.0, price_input: 15.0, price_output: 60.0, mmlu: 91.8, humaneval: 92.4, math: 96.4, gpqa: 75.7, capabilities: { vision: true, tools: false, reasoning: true } },
-  { id: "o3-mini", name: "o3-mini", provider: "OpenAI", release: "2025-01-31", context: 200000, speed_output: 85.0, ttft: 1.2, quality: 77.0, price_input: 1.1, price_output: 4.4, mmlu: 86.9, humaneval: 91.0, math: 87.0, gpqa: 65.0, capabilities: { vision: false, tools: true, reasoning: true } },
-  { id: "gemini-2-pro", name: "Gemini 2.0 Pro", provider: "Google", release: "2025-01-28", context: 2000000, speed_output: 187.0, ttft: 1.12, quality: 75.8, price_input: 1.25, price_output: 5.0, mmlu: 85.9, humaneval: 84.1, math: 58.5, gpqa: 51.0, capabilities: { vision: true, tools: true, reasoning: false } },
-  { id: "gemini-2-flash", name: "Gemini 2.0 Flash", provider: "Google", release: "2025-02-05", context: 1000000, speed_output: 217.0, ttft: 0.55, quality: 75.0, price_input: 0.10, price_output: 0.40, mmlu: 83.0, humaneval: 82.0, math: 60.0, gpqa: 48.0, capabilities: { vision: true, tools: true, reasoning: false } },
-  { id: "deepseek-v3", name: "DeepSeek V3", provider: "DeepSeek", release: "2024-12-26", context: 64000, speed_output: 60.0, ttft: 0.85, quality: 75.7, price_input: 0.27, price_output: 1.10, mmlu: 88.5, humaneval: 82.6, math: 61.6, gpqa: 49.5, capabilities: { vision: false, tools: true, reasoning: false } },
-  { id: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek", release: "2025-01-20", context: 64000, speed_output: 38.0, ttft: 4.2, quality: 78.0, price_input: 0.55, price_output: 2.19, mmlu: 90.8, humaneval: 96.3, math: 90.0, gpqa: 71.5, capabilities: { vision: false, tools: false, reasoning: true } },
-  { id: "llama-3-3-70b", name: "Llama 3.3 70B", provider: "Meta", release: "2024-12-06", context: 128000, speed_output: 320.0, ttft: 0.25, quality: 73.2, price_input: 0.20, price_output: 0.20, mmlu: 86.0, humaneval: 84.0, math: 60.0, gpqa: 46.0, capabilities: { vision: false, tools: true, reasoning: false } },
-  { id: "claude-3-5-haiku", name: "Claude 3.5 Haiku", provider: "Anthropic", release: "2024-11-04", context: 200000, speed_output: 80.0, ttft: 0.55, quality: 72.6, price_input: 0.80, price_output: 4.0, mmlu: 85.0, humaneval: 88.0, math: 65.0, gpqa: 45.0, capabilities: { vision: false, tools: true, reasoning: false } },
-  { id: "mistral-large-2", name: "Mistral Large 2", provider: "Mistral", release: "2024-07-24", context: 128000, speed_output: 80.0, ttft: 0.50, quality: 73.2, price_input: 2.0, price_output: 6.0, mmlu: 84.0, humaneval: 85.0, math: 60.0, gpqa: 48.0, capabilities: { vision: false, tools: true, reasoning: false } },
-  { id: "qwen-2-5-72b", name: "Qwen 2.5 72B", provider: "Alibaba", release: "2024-11-28", context: 128000, speed_output: 70.0, ttft: 0.60, quality: 72.0, price_input: 0.35, price_output: 0.40, mmlu: 86.0, humaneval: 86.0, math: 75.0, gpqa: 45.0, capabilities: { vision: false, tools: true, reasoning: false } }
+  { id: "claude-3-5-sonnet", slug: "claude-3-5-sonnet", name: "Claude 3.5 Sonnet", provider: "Anthropic", release: "2024-10-22", speed_output: 78.3, ttft: 0.71, quality: 78.3, price_input: 3.0, price_output: 15.0 },
+  { id: "gpt-4o", slug: "gpt-4o", name: "GPT-4o", provider: "OpenAI", release: "2024-05-13", speed_output: 84.6, ttft: 0.46, quality: 77.5, price_input: 2.5, price_output: 10.0 },
+  { id: "o1", slug: "o1", name: "o1", provider: "OpenAI", release: "2024-12-05", speed_output: 36.0, ttft: 8.5, quality: 79.0, price_input: 15.0, price_output: 60.0 },
+  { id: "o3-mini", slug: "o3-mini", name: "o3-mini", provider: "OpenAI", release: "2025-01-31", speed_output: 85.0, ttft: 1.2, quality: 77.0, price_input: 1.1, price_output: 4.4 },
+  { id: "gemini-2-pro", slug: "gemini-2-0-pro", name: "Gemini 2.0 Pro", provider: "Google", release: "2025-01-28", speed_output: 187.0, ttft: 1.12, quality: 75.8, price_input: 1.25, price_output: 5.0 },
+  { id: "gemini-2-flash", slug: "gemini-2-0-flash", name: "Gemini 2.0 Flash", provider: "Google", release: "2025-02-05", speed_output: 217.0, ttft: 0.55, quality: 75.0, price_input: 0.10, price_output: 0.40 },
+  { id: "deepseek-v3", slug: "deepseek-v3", name: "DeepSeek V3", provider: "DeepSeek", release: "2024-12-26", speed_output: 60.0, ttft: 0.85, quality: 75.7, price_input: 0.27, price_output: 1.10 },
+  { id: "deepseek-r1", slug: "deepseek-r1", name: "DeepSeek R1", provider: "DeepSeek", release: "2025-01-20", speed_output: 38.0, ttft: 4.2, quality: 78.0, price_input: 0.55, price_output: 2.19 },
+  { id: "llama-3-3-70b", slug: "llama-3-3-70b", name: "Llama 3.3 70B", provider: "Meta", release: "2024-12-06", speed_output: 320.0, ttft: 0.25, quality: 73.2, price_input: 0.20, price_output: 0.20 },
+  { id: "claude-3-5-haiku", slug: "claude-3-5-haiku", name: "Claude 3.5 Haiku", provider: "Anthropic", release: "2024-11-04", speed_output: 80.0, ttft: 0.55, quality: 72.6, price_input: 0.80, price_output: 4.0 },
+  { id: "mistral-large-2", slug: "mistral-large-2", name: "Mistral Large 2", provider: "Mistral", release: "2024-07-24", speed_output: 80.0, ttft: 0.50, quality: 73.2, price_input: 2.0, price_output: 6.0 },
+  { id: "qwen-2-5-72b", slug: "qwen-2-5-72b", name: "Qwen 2.5 72B", provider: "Alibaba", release: "2024-11-28", speed_output: 70.0, ttft: 0.60, quality: 72.0, price_input: 0.35, price_output: 0.40 },
 ];

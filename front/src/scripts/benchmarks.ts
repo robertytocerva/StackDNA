@@ -1,6 +1,6 @@
 /**
  * StackADN — AI Models Benchmark
- * Client-side script: exact port from the original HTML.
+ * Client script adapted to free tier API (no benchmarks, no context, no capabilities).
  */
 
 import { fetchModels } from '../lib/benchmark/api';
@@ -22,7 +22,7 @@ function updateFreshness(isLive: boolean) {
     text.textContent = 'LIVE · ' + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   } else {
     badge.classList.add('fallback');
-    text.textContent = 'DATOS LOCALES · CORS BLOQUEADO';
+    text.textContent = 'DATOS LOCALES';
   }
 }
 
@@ -81,7 +81,6 @@ function applyFilters() {
   filteredModels.sort((a, b) => {
     switch (currentSort) {
       case 'speed': return (b.speed_output || 0) - (a.speed_output || 0);
-      case 'context': return (b.context || 0) - (a.context || 0);
       case 'price_out': return (a.price_output || 999) - (b.price_output || 999);
       case 'release': return new Date(b.release || '').getTime() - new Date(a.release || '').getTime();
       default: return (b.quality || 0) - (a.quality || 0);
@@ -111,20 +110,6 @@ function buildDnaSvg(): string {
   `;
 }
 
-// --- RENDER BENCH BAR ---
-function renderBench(name: string, val: number | null): string {
-  if (val == null) return '';
-  return `
-    <div class="bench-item">
-      <div class="bench-head">
-        <span class="bench-name">${name}</span>
-        <span class="bench-val">${val.toFixed(1)}</span>
-      </div>
-      <div class="bench-bar"><div class="bench-fill" data-w="${val}"></div></div>
-    </div>
-  `;
-}
-
 // --- RENDER STACK ---
 function renderStack() {
   const container = document.getElementById('stackContainer')!;
@@ -141,7 +126,6 @@ function renderStack() {
 
   container.innerHTML = filteredModels.map((m, idx) => {
     const seq = formatSeq(idx + 1);
-    const caps = m.capabilities || { vision: false, tools: false, reasoning: false };
     const logo = getProviderLogo(m.provider);
     return `
       <article class="stack-card" data-id="${m.id}">
@@ -157,10 +141,6 @@ function renderStack() {
                 <h2 class="model-name"><span class="provider">${m.provider}</span>${m.name}</h2>
                 <div class="model-meta">
                   <span>● ${fmt.date(m.release)}</span>
-                  <span>▣ ${fmt.ctx(m.context)} ctx</span>
-                  ${caps.vision ? '<span style="color:var(--accent-bright)">◉ vision</span>' : ''}
-                  ${caps.tools ? '<span style="color:var(--accent-bright)">⚙ tools</span>' : ''}
-                  ${caps.reasoning ? '<span style="color:var(--accent-bright)">⬡ reasoning</span>' : ''}
                 </div>
               </div>
             </div>
@@ -180,20 +160,14 @@ function renderStack() {
               <div class="metric-value">${m.ttft != null ? m.ttft.toFixed(2) : '—'}<span class="unit">s</span></div>
             </div>
             <div class="metric-box">
-              <div class="metric-label">Context</div>
-              <div class="metric-value">${fmt.ctx(m.context)}<span class="unit">tok</span></div>
+              <div class="metric-label">Precio IN</div>
+              <div class="metric-value"><span class="currency">$</span>${(m.price_input || 0).toFixed(2)}<span class="unit">/M</span></div>
             </div>
             <div class="metric-box">
               <div class="metric-label">Precio OUT</div>
               <div class="metric-value"><span class="currency">$</span>${(m.price_output || 0).toFixed(2)}<span class="unit">/M</span></div>
               <div class="bench-bar" style="margin-top:8px"><div class="bench-fill" data-w="${((m.price_output || 0) / maxPriceOut) * 100}"></div></div>
             </div>
-          </div>
-          <div class="benchmarks-row">
-            ${renderBench('MMLU', m.mmlu)}
-            ${renderBench('HumanEval', m.humaneval)}
-            ${renderBench('MATH', m.math)}
-            ${renderBench('GPQA', m.gpqa)}
           </div>
           <div class="flex justify-between items-center pt-2" style="border-top:1px solid var(--border)">
             <div class="text-[11px] mono" style="color:var(--fg-muted)">
@@ -219,14 +193,13 @@ function renderStack() {
 function openModal(id: string) {
   const m = allModels.find(x => x.id === id);
   if (!m) return;
-  const caps = m.capabilities || { vision: false, tools: false, reasoning: false };
   const card = document.getElementById('modalCard')!;
   card.innerHTML = `
     <div class="flex justify-between items-start mb-6">
       <div>
         <div class="text-xs mono uppercase tracking-widest mb-2" style="color:var(--accent-bright)">${m.provider}</div>
         <h2 class="text-3xl font-bold mb-2">${m.name}</h2>
-        <div class="text-sm mono" style="color:var(--fg-muted)">Lanzamiento: ${fmt.date(m.release)} · Contexto: ${fmt.ctx(m.context)} tokens</div>
+        <div class="text-sm mono" style="color:var(--fg-muted)">Lanzamiento: ${fmt.date(m.release)}</div>
       </div>
       <button id="closeModalBtn" class="expand-btn">✕ cerrar</button>
     </div>
@@ -234,16 +207,7 @@ function openModal(id: string) {
       <div class="metric-box"><div class="metric-label">Quality Index</div><div class="metric-value" style="font-size:24px;color:var(--accent-bright)">${m.quality?.toFixed(1) || '—'}</div></div>
       <div class="metric-box"><div class="metric-label">Throughput</div><div class="metric-value">${Math.round(m.speed_output || 0)}<span class="unit">tok/s</span></div></div>
       <div class="metric-box"><div class="metric-label">TTFT</div><div class="metric-value">${m.ttft?.toFixed(2) || '—'}<span class="unit">s</span></div></div>
-      <div class="metric-box"><div class="metric-label">Context</div><div class="metric-value">${fmt.ctx(m.context)}<span class="unit">tok</span></div></div>
-    </div>
-    <div class="mb-6">
-      <h3 class="text-sm mono uppercase tracking-widest mb-3" style="color:var(--fg-dim)">Benchmarks académicos</h3>
-      <div class="benchmarks-row">
-        ${renderBench('MMLU', m.mmlu)}
-        ${renderBench('HumanEval', m.humaneval)}
-        ${renderBench('MATH', m.math)}
-        ${renderBench('GPQA', m.gpqa)}
-      </div>
+      <div class="metric-box"><div class="metric-label">Latencia total</div><div class="metric-value">${m.ttft ? (m.ttft + 1).toFixed(2) : '—'}<span class="unit">s est.</span></div></div>
     </div>
     <div class="mb-6">
       <h3 class="text-sm mono uppercase tracking-widest mb-3" style="color:var(--fg-dim)">Pricing (por millón de tokens)</h3>
@@ -253,22 +217,9 @@ function openModal(id: string) {
         <div class="metric-box"><div class="metric-label">Ratio I/O</div><div class="metric-value">${m.price_input && m.price_output ? (m.price_output / m.price_input).toFixed(1) + '×' : '—'}</div></div>
       </div>
     </div>
-    <div>
-      <h3 class="text-sm mono uppercase tracking-widest mb-3" style="color:var(--fg-dim)">Capacidades</h3>
-      <div class="flex gap-2 flex-wrap">
-        <span class="capability-badge ${caps.vision ? '' : 'muted'}">Vision ${caps.vision ? '✓' : '✕'}</span>
-        <span class="capability-badge ${caps.tools ? '' : 'muted'}">Tools ${caps.tools ? '✓' : '✕'}</span>
-        <span class="capability-badge ${caps.reasoning ? '' : 'muted'}">Reasoning ${caps.reasoning ? '✓' : '✕'}</span>
-      </div>
-    </div>
   `;
   document.getElementById('modalOverlay')!.classList.add('active');
   document.getElementById('closeModalBtn')!.addEventListener('click', closeModal);
-  setTimeout(() => {
-    card.querySelectorAll('.bench-fill').forEach(el => {
-      (el as HTMLElement).style.width = Math.min(100, parseFloat((el as HTMLElement).dataset.w || '0')) + '%';
-    });
-  }, 100);
 }
 
 function closeModal() {
@@ -276,7 +227,7 @@ function closeModal() {
 }
 
 // --- PODIUMS 3D ---
-const OPEN_SOURCE_PROVIDERS = ['Meta', 'Mistral', 'DeepSeek', 'Alibaba', '01.AI', 'Zhipu', 'Google', 'Nvidia', 'Cohere'];
+const OPEN_SOURCE_PROVIDERS = ['Meta', 'Mistral', 'DeepSeek', 'Alibaba', '01.AI', 'Zhipu', 'Nvidia', 'Cohere'];
 
 function calcValuePerDollar(m: Model): number {
   if (!m.quality || !m.price_input || !m.price_output || m.price_input === 0) return 0;
@@ -313,11 +264,11 @@ function renderPodiums(models: Model[]) {
   const grid = document.getElementById('podiumsGrid')!;
 
   const topIntel = getTop3(models, (a, b) => (b.quality || 0) - (a.quality || 0), m => m.quality);
-  const topCode = getTop3(models, (a, b) => (b.humaneval || 0) - (a.humaneval || 0), m => m.humaneval);
   const topCheap = getTop3(models, (a, b) => (a.price_output || 999) - (b.price_output || 999), m => m.price_output);
   const topValue = getTop3(models, (a, b) => calcValuePerDollar(b) - calcValuePerDollar(a), m => calcValuePerDollar(m));
   const topOSS = getTop3(models, (a, b) => (b.quality || 0) - (a.quality || 0), m => m.quality, true);
   const topSpeed = getTop3(models, (a, b) => (b.speed_output || 0) - (a.speed_output || 0), m => m.speed_output);
+  const topLatency = getTop3(models, (a, b) => (a.ttft || 999) - (b.ttft || 999), m => m.ttft > 0 ? m.ttft : null);
 
   const podiums = [
     {
@@ -326,9 +277,9 @@ function renderPodiums(models: Model[]) {
       top3: topIntel, formatFn: (m: Model) => m.quality?.toFixed(1) || '—'
     },
     {
-      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>',
-      title: "Mejores para Código", subtitle: "Benchmark HumanEval",
-      top3: topCode, formatFn: (m: Model) => `${m.humaneval?.toFixed(1)}%`
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
+      title: "Más Rápidos", subtitle: "Tokens por segundo",
+      top3: topSpeed, formatFn: (m: Model) => `${Math.round(m.speed_output)} t/s`
     },
     {
       icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>',
@@ -336,7 +287,7 @@ function renderPodiums(models: Model[]) {
       top3: topCheap, formatFn: (m: Model) => `$${m.price_output?.toFixed(2)}`
     },
     {
-      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>',
       title: "Mejor Calidad/Precio", subtitle: "Puntos de calidad por $1",
       top3: topValue, formatFn: (m: Model) => calcValuePerDollar(m).toFixed(1)
     },
@@ -346,9 +297,9 @@ function renderPodiums(models: Model[]) {
       top3: topOSS, formatFn: (m: Model) => m.quality?.toFixed(1) || '—'
     },
     {
-      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>',
-      title: "Más Rápidos", subtitle: "Tokens por segundo",
-      top3: topSpeed, formatFn: (m: Model) => `${Math.round(m.speed_output)} t/s`
+      icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+      title: "Menor Latencia", subtitle: "Time to First Token",
+      top3: topLatency, formatFn: (m: Model) => `${m.ttft?.toFixed(2)}s`
     }
   ];
 
@@ -392,7 +343,6 @@ document.getElementById('modalOverlay')!.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeModal();
 });
-// Delegated click for expand buttons
 document.addEventListener('click', (e) => {
   const btn = (e.target as HTMLElement).closest('.expand-btn[data-expand]') as HTMLElement | null;
   if (btn) {
