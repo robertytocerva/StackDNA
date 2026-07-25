@@ -1,26 +1,18 @@
 /**
- * Model interface matching the original HTML data shape exactly.
+ * Model interface adapted to the free tier of Artificial Analysis API v2.
+ * Only includes fields available at /api/v2/language/models/free
  */
 export interface Model {
   id: string;
   name: string;
+  slug: string;
   provider: string;
   release: string;
-  context: number;
+  quality: number;
   speed_output: number;
   ttft: number;
-  quality: number;
   price_input: number;
   price_output: number;
-  mmlu: number | null;
-  humaneval: number | null;
-  math: number | null;
-  gpqa: number | null;
-  capabilities: {
-    vision: boolean;
-    tools: boolean;
-    reasoning: boolean;
-  };
 }
 
 export interface FetchResult {
@@ -28,4 +20,4 @@ export interface FetchResult {
   isLive: boolean;
 }
 
-export type SortKey = 'quality' | 'speed' | 'context' | 'price_out' | 'release';
+export type SortKey = 'quality' | 'speed' | 'price_out' | 'release';
