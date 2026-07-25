@@ -19,7 +19,7 @@ interface GithubUserResponse {
 
 async function fetchGithubUser(username: string): Promise<GithubUserResponse | null> {
 	try {
-		const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+		const response = await fetch(`https://api.github.com/users/${encodeURIComponent(username.trim())}`, {
 			headers: { Accept: 'application/vnd.github+json' },
 		});
 		if (!response.ok) return null;
@@ -29,21 +29,33 @@ async function fetchGithubUser(username: string): Promise<GithubUserResponse | n
 	}
 }
 
+/**
+ * GitHub sirve el avatar redimensionado con el parametro `s`. Pedimos una
+ * version grande porque la foto se muestra a pantalla completa.
+ */
+function largeAvatarUrl(url: string, size = 900): string {
+	try {
+		const parsed = new URL(url);
+		parsed.searchParams.set('s', String(size));
+		return parsed.toString();
+	} catch {
+		return url;
+	}
+}
+
 function applyUserToCard(card: HTMLElement, user: GithubUserResponse): void {
-	const mediaContainer = card.querySelector<HTMLElement>('[data-scroll-media]');
+	const photo = card.querySelector<HTMLImageElement>('[data-dev-photo]');
 	const placeholder = card.querySelector<HTMLElement>('[data-dev-photo-placeholder]');
 	const nameEl = card.querySelector<HTMLElement>('[data-dev-name]');
 	const bioEl = card.querySelector<HTMLElement>('[data-dev-bio]');
 	const linkEl = card.querySelector<HTMLAnchorElement>('[data-dev-link]');
 
-	if (mediaContainer && placeholder && user.avatar_url) {
-		const img = document.createElement('img');
-		img.className = 'dev-photo';
-		img.alt = '';
-		img.loading = 'lazy';
-		img.dataset.devPhoto = 'true';
-		img.src = user.avatar_url;
-		placeholder.replaceWith(img);
+	// Se reutiliza el <img> renderizado por Astro (en lugar de crear uno nuevo)
+	// para conservar los estilos con scope del componente.
+	if (photo && user.avatar_url) {
+		photo.src = largeAvatarUrl(user.avatar_url);
+		photo.hidden = false;
+		if (placeholder) placeholder.hidden = true;
 	}
 
 	if (nameEl && user.name) nameEl.textContent = user.name;

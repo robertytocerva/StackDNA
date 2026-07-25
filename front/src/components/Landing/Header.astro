@@ -4,10 +4,12 @@ import Logo from './Logo.astro';
 const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const links = [
 	{ href: homeHref('#producto'), label: 'Producto' },
+	{ href: homeHref('#about'), label: 'Acerca de' },
 	{ href: homeHref('#features'), label: 'Features' },
 	{ href: '/revision', label: 'Analizador Repositorio' },
 	{ href: '/librerias', label: 'Librerías' },
 	{ href: '/servicios', label: 'API Tester' },
+	{ href: '/benchmarks', label: 'Benchmarks' },
 	{ href: '/equipo', label: 'Equipo' },
 ];
 ---
