@@ -54,6 +54,7 @@ const initialEntriesJSON = JSON.stringify(entries).replace(/</g, '\\u003c');
 	<Header />
 	<main
 		class="library-page"
+		data-landing
 		data-library-app
 		data-page-size={String(PAGE_SIZE)}
 		data-total={String(pagination.total)}
@@ -61,16 +62,18 @@ const initialEntriesJSON = JSON.stringify(entries).replace(/</g, '\\u003c');
 	>
 		<section class="library-hero">
 			<div class="wrap library-hero-grid">
-				<div class="library-hero-copy">
-					<span class="library-eyebrow"><span class="eyebrow-dot"></span> STACKDNA / LIBRARIES</span>
-					<h1>Encuentra la pieza exacta de tu <span class="accent">stack.</span></h1>
-					<p>
+				<div class="library-hero-copy" data-reveal-group>
+					<span class="library-eyebrow" data-reveal><span class="eyebrow-dot"></span> STACKDNA / LIBRARIES</span>
+					<h1 data-reveal>Encuentra la pieza exacta de tu <span class="accent">stack.</span></h1>
+					<p data-reveal>
 						Una biblioteca curada de herramientas reales para pasar de "sé que existe" a
 						"sé cómo usarla" en menos de un minuto.
 					</p>
 				</div>
 				<div
 					class="library-signal"
+					data-reveal
+					data-reveal-from="right"
 					aria-label={`${LANGUAGES.length} lenguajes y ${pagination.total} librerías disponibles`}
 				>
 					<div class="signal-orbit signal-orbit-one"></div>
@@ -84,13 +87,13 @@ const initialEntriesJSON = JSON.stringify(entries).replace(/</g, '\\u003c');
 
 		<section class="library-workbench wrap" aria-labelledby="library-heading">
 			<div class="workbench-shell">
-				<div class="workbench-heading">
+				<div class="workbench-heading" data-reveal-group>
 					<div>
-						<span class="section-tag">Catálogo de referencia</span>
-						<h2 id="library-heading">Explora por intención, no por ruido.</h2>
-						<p>Busca una función, filtra por lenguaje y llega directo a la librería que necesitas.</p>
+						<span class="section-tag" data-reveal>Catálogo de referencia</span>
+						<h2 id="library-heading" data-reveal>Explora por intención, no por ruido.</h2>
+						<p data-reveal>Busca una función, filtra por lenguaje y llega directo a la librería que necesitas.</p>
 					</div>
-					<div class="catalog-count" aria-label={`${pagination.total} librerías indexadas`}>
+					<div class="catalog-count" data-reveal aria-label={`${pagination.total} librerías indexadas`}>
 						<strong data-total-count>{String(pagination.total).padStart(2, '0')}</strong>
 						<span>librerías<br />indexadas</span>
 					</div>
@@ -447,10 +450,15 @@ const initialEntriesJSON = JSON.stringify(entries).replace(/</g, '\\u003c');
 		updateChips();
 		updatePager();
 		if (hasUrlState || Number(app.dataset.total ?? 0) === 0) {
-			// Estado inicial vía URL, o el render del servidor falló: pedir datos al backend.
 			void load().then(openDeepLinkedCard);
 		} else {
 			openDeepLinkedCard();
 		}
 	}
+</script>
+
+<script>
+	import { initLandingScroll } from '../scripts/landingScroll';
+
+	initLandingScroll();
 </script>

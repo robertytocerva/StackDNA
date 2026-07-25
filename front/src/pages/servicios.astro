@@ -24,21 +24,21 @@ AWS_SERVICES.forEach((service) => {
 >
 	<div class="bg-noise" aria-hidden="true"></div>
 	<SiteHeader />
-	<main class="api-page" data-api-tester>
+	<main class="api-page" data-landing data-api-tester>
 		<ApiTesterHeader totalServices={AWS_SERVICES.length} methodCounts={methodCounts} />
 
 		<section class="api-workbench wrap" aria-labelledby="api-workbench-title">
 			<div class="api-workbench-shell">
-				<div class="api-workbench-heading">
+				<div class="api-workbench-heading" data-reveal-group>
 					<div>
-						<span class="section-tag">Workbench local</span>
-						<h2 id="api-workbench-title">Lee el pulso de cada endpoint.</h2>
-						<p>
+						<span class="section-tag" data-reveal>Workbench local</span>
+						<h2 id="api-workbench-title" data-reveal>Lee el pulso de cada endpoint.</h2>
+						<p data-reveal>
 							Edita el request, ejecuta una simulación segura y conserva la respuesta junto a la
 							secuencia que la generó.
 						</p>
 					</div>
-					<div class="api-workbench-code" aria-hidden="true">
+					<div class="api-workbench-code" data-reveal aria-hidden="true">
 						<span>STATE / READY</span>
 						<strong>{String(AWS_SERVICES.length).padStart(2, '0')} nodes</strong>
 					</div>
@@ -63,4 +63,10 @@ AWS_SERVICES.forEach((service) => {
 	import { initApiTester } from '../scripts/apiTester';
 
 	initApiTester();
+</script>
+
+<script>
+	import { initLandingScroll } from '../scripts/landingScroll';
+
+	initLandingScroll();
 </script>

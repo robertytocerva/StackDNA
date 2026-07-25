@@ -15,12 +15,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
  *   data-reveal-stagger         → segundos entre hijos de un grupo (default 0.09)
  */
 
-const DURATION_IN = 0.8;
-const DURATION_OUT = 0.4;
-const EASE_IN = 'power3.out'; // entrada suave (ease out)
-const EASE_OUT = 'power2.in'; // salida acelerada (ease in)
-const DEFAULT_STAGGER = 0.09;
-const DISTANCE = 44;
+const DURATION_IN = 0.6;
+const DURATION_OUT = 0.6;
+const EASE_IN = 'power3.inOut'; // entrada suave (ease in-out)
+const EASE_OUT = 'power3.inOut'; // salida suave (ease in-out)
+const DEFAULT_STAGGER = 0.12;
+const DISTANCE = 50;
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -52,9 +52,9 @@ function hiddenState(direction: Direction) {
 /** Estado de salida: se va hacia donde el scroll lo empuja. */
 function exitState(direction: Direction, sign: 1 | -1) {
 	if (direction === 'left' || direction === 'right') {
-		return { opacity: 0, x: direction === 'left' ? -DISTANCE * 0.6 : DISTANCE * 0.6, y: 0 };
+		return { opacity: 0, x: direction === 'left' ? -DISTANCE * 0.5 : DISTANCE * 0.5, y: 0 };
 	}
-	return { opacity: 0, y: sign * DISTANCE * 0.6, x: 0 };
+	return { opacity: 0, y: sign * DISTANCE * 0.5, x: 0 };
 }
 
 function collectTargets(root: ParentNode): RevealTarget[] {
@@ -111,7 +111,7 @@ export function initLandingScroll(): void {
 				y: 0,
 				duration: DURATION_IN,
 				ease: EASE_IN,
-				stagger: stagger ? (fromBottom ? stagger : -stagger) : 0,
+				stagger: stagger ? (fromBottom ? stagger : stagger * 0.7) : 0,
 				overwrite: 'auto',
 			});
 		};
@@ -121,7 +121,7 @@ export function initLandingScroll(): void {
 				...exitState(direction, sign),
 				duration: DURATION_OUT,
 				ease: EASE_OUT,
-				stagger: stagger ? stagger * 0.4 : 0,
+				stagger: stagger ? stagger * 0.5 : 0,
 				overwrite: 'auto',
 			});
 		};
