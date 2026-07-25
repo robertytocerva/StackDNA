@@ -22,7 +22,7 @@ function updateFreshness(isLive: boolean) {
     text.textContent = 'LIVE · ' + new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   } else {
     badge.classList.add('fallback');
-    text.textContent = 'DATOS LOCALES';
+    text.textContent = 'SIN CONEXIÓN';
   }
 }
 
@@ -355,6 +355,16 @@ async function init() {
   const { data, isLive } = await fetchModels();
   allModels = data;
   updateFreshness(isLive);
+
+  if (!allModels.length) {
+    document.getElementById('emptyState')!.classList.remove('hidden');
+    document.getElementById('emptyState')!.innerHTML = `
+      <div class="text-2xl mb-2">⚠</div>
+      <div>No se pudieron cargar los modelos. Verifica que el backend esté corriendo.</div>
+    `;
+    return;
+  }
+
   renderStats(allModels);
   renderProviderFilters(allModels);
   renderPodiums(allModels);

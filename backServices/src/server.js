@@ -6,6 +6,7 @@ require("dotenv").config();
 const executeRoute = require("./routes/execute");
 const codeRoute = require("./routes/code");
 const awsRoute = require("./routes/aws");
+const benchmarkRoute = require("./routes/benchmark");
 const { globalLimiter } = require("./middleware/rateLimit");
 
 const app = express();
@@ -28,6 +29,8 @@ app.use("/execute", executeRoute);
 app.use("/code", codeRoute);
 // Nuevo contrato del API Tester: POST /api/aws/call.
 app.use("/api/aws", awsRoute);
+// Benchmark: proxy a Artificial Analysis API (free tier).
+app.use("/api/benchmark", benchmarkRoute);
 
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 app.get("/", (req, res) => res.json({ message: "Backend funcionando" }));
