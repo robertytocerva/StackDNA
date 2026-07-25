@@ -1,0 +1,139 @@
+---
+/**
+ * Logo - Doble hélice de ADN animada en Canvas 2D.
+ *
+ * Soporta varias instancias en la misma página (Header y Footer): cada canvas se
+ * inicializa de forma independiente y comparten un único bucle de animación.
+ */
+interface Props {
+	width?: number;
+	height?: number;
+	/** Número de pares de bases dibujados a lo ancho. */
+	pairs?: number;
+	/** Velocidad de rotación (radianes por frame). */
+	speed?: number;
+	class?: string;
+}
+
+const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = Astro.props;
+---
+
+<span class:list={['dna-canvas-wrap', className]} aria-hidden="true">
+	<canvas
+		class="dna-helix-canvas"
+		width={width}
+		height={height}
+		style={`width:${width}px;height:${height}px`}
+		data-pairs={pairs}
+		data-speed={speed}></canvas>
+</span>
+
+<script>
+	interface HelixInstance {
+		ctx: CanvasRenderingContext2D;
+		width: number;
+		height: number;
+		pairs: number;
+		speed: number;
+		phase: number;
+	}
+
+	const PURPLE = '#a78bfa';
+	const PURPLE_DIM = 'rgba(124, 58, 237, 0.4)';
+	const WHITE = '#f5f3ff';
+	const WHITE_DIM = 'rgba(245, 243, 255, 0.3)';
+
+	function drawInstance(instance: HelixInstance) {
+		const { ctx, width, height, pairs } = instance;
+		const centerY = height / 2;
+		const amplitude = height * 0.32;
+		const spacing = width / (pairs + 1);
+
+		ctx.clearRect(0, 0, width, height);
+
+		for (let i = 0; i < pairs; i++) {
+			const x = spacing * (i + 1);
+			const angle = instance.phase + i * 0.8;
+			const y1 = centerY + Math.sin(angle) * amplitude;
+			const y2 = centerY - Math.sin(angle) * amplitude;
+			const depth = Math.cos(angle);
+
+			// Conector entre las dos cadenas.
+			ctx.beginPath();
+			ctx.moveTo(x, y1);
+			ctx.lineTo(x, y2);
+			ctx.strokeStyle = depth > 0 ? 'rgba(167,139,250,0.2)' : 'rgba(167,139,250,0.08)';
+			ctx.lineWidth = 1;
+			ctx.stroke();
+
+			// Nodo de la cadena superior.
+			ctx.beginPath();
+			ctx.arc(x, y1, Math.max(2.2 + depth * 0.8, 1.2), 0, Math.PI * 2);
+			ctx.fillStyle = depth > 0 ? PURPLE : PURPLE_DIM;
+			ctx.fill();
+
+			// Nodo de la cadena inferior.
+			ctx.beginPath();
+			ctx.arc(x, y2, Math.max(2.2 - depth * 0.8, 1.2), 0, Math.PI * 2);
+			ctx.fillStyle = depth > 0 ? WHITE_DIM : WHITE;
+			ctx.fill();
+		}
+	}
+
+	function initDNAHelix() {
+		const canvases = document.querySelectorAll<HTMLCanvasElement>('canvas.dna-helix-canvas');
+		const instances: HelixInstance[] = [];
+
+		canvases.forEach((canvas) => {
+			if (canvas.dataset.helixReady === 'true') return;
+			const ctx = canvas.getContext('2d');
+			if (!ctx) return;
+			canvas.dataset.helixReady = 'true';
+
+			instances.push({
+				ctx,
+				width: canvas.width,
+				height: canvas.height,
+				pairs: Number(canvas.dataset.pairs) || 8,
+				speed: Number(canvas.dataset.speed) || 0.02,
+				phase: 0,
+			});
+		});
+
+		if (instances.length === 0) return;
+
+		// Con movimiento reducido se dibuja un solo frame estático.
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			instances.forEach(drawInstance);
+			return;
+		}
+
+		const tick = () => {
+			for (const instance of instances) {
+				drawInstance(instance);
+				instance.phase += instance.speed;
+			}
+			requestAnimationFrame(tick);
+		};
+
+		tick();
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initDNAHelix);
+	} else {
+		initDNAHelix();
+	}
+</script>
+
+<style>
+	.dna-canvas-wrap {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.dna-helix-canvas {
+		display: block;
+	}
+</style>

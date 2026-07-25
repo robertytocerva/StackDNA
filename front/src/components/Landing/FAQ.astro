@@ -10,11 +10,11 @@ const faqs = [
 
 <section class="section-pad" id="faq">
 	<div class="wrap">
-		<div class="section-head">
+		<div class="section-head" data-reveal-group>
 			<span class="section-tag">FAQ</span>
 			<h2>Preguntas frecuentes</h2>
 		</div>
-		<div class="faq-list" data-faq-list>
+		<div class="faq-list" data-faq-list data-reveal-group data-reveal-stagger="0.06">
 			{faqs.map(([question, answer], index) => {
 				const answerId = `faq-answer-${index}`;
 				return (

@@ -2,45 +2,77 @@
 import Footer from '../components/Landing/Footer.astro';
 import Header from '../components/Landing/Header.astro';
 import FilterBar from '../components/FilterBar/FilterBar.astro';
-import LanguageSection from '../components/LanguageSection/LanguageSection.astro';
 import SearchBar from '../components/SearchBar/SearchBar.astro';
 import Layout from '../layouts/Layout.astro';
-import { libraries, type LibraryEntry } from '../data/libraries';
-import { useLibraryFilter } from '../hooks/useLibraryFilter';
+import { LANGUAGES, PAGE_SIZE, getCategories, getCategoryLabel, searchTechnologies, toCatalogEntry } from '../lib/api';
+import { renderResults } from '../lib/render';
+import type { CatalogEntry, Pagination } from '../lib/types';
 import '../styles/librerias.css';
 
-const initialFilters = useLibraryFilter(libraries, '', 'all', 'all');
-const languageOptions = initialFilters.availableLanguages.map((language) => ({
-	value: language,
-	label: language,
-	icon: libraries.find((item) => item.language === language)?.languageIcon ?? '/favicon.svg',
+// Primera carga desde el backend: GET /api/technologies + GET /api/categories.
+const [technologiesResult, categoriesResult] = await Promise.allSettled([
+	searchTechnologies({ limit: PAGE_SIZE }),
+	getCategories(),
+]);
+
+let entries: CatalogEntry[] = [];
+let pagination: Pagination = { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 };
+let apiError: string | null = null;
+
+if (technologiesResult.status === 'fulfilled') {
+	entries = (technologiesResult.value.items ?? []).map(toCatalogEntry);
+	pagination = technologiesResult.value.pagination ?? pagination;
+} else {
+	apiError = technologiesResult.reason instanceof Error ? technologiesResult.reason.message : 'No se pudo conectar con el backend';
+}
+
+const categories =
+	categoriesResult.status === 'fulfilled'
+		? categoriesResult.value.map((category) => ({
+				value: category.categoria,
+				label: getCategoryLabel(category.categoria),
+				count: Number.parseInt(category.count, 10) || 0,
+			}))
+		: [];
+
+const languageOptions = LANGUAGES.map((language) => ({
+	value: language.value,
+	label: language.label,
+	icon: language.icon,
 }));
-const totalLanguages = new Set(libraries.map((item) => item.language)).size;
-const totalLibraries = libraries.length;
-const groupedLibraries = initialFilters.filteredData.reduce<Record<string, LibraryEntry[]>>((groups, item) => {
-	(groups[item.language] ??= []).push(item);
-	return groups;
-}, {});
+
+const resultsHTML = renderResults(entries);
+// Se serializan las entradas para que el cliente pueda renderizar los snippets sin volver a pedir datos.
+const initialEntriesJSON = JSON.stringify(entries).replace(/</g, '\\u003c');
 ---
 
 <Layout
 	title="Librerías — StackDNA"
-	description="Explora ejemplos prácticos de librerías para Python, JavaScript y Java."
+	description="Explora y filtra el catálogo de librerías de Python, JavaScript y Java indexadas por StackDNA."
 >
 	<div class="bg-noise" aria-hidden="true"></div>
 	<Header />
-	<main class="library-page" data-library-app data-selected-language="all" data-selected-category="all">
+	<main
+		class="library-page"
+		data-library-app
+		data-page-size={String(PAGE_SIZE)}
+		data-total={String(pagination.total)}
+		data-pages={String(pagination.pages)}
+	>
 		<section class="library-hero">
 			<div class="wrap library-hero-grid">
 				<div class="library-hero-copy">
 					<span class="library-eyebrow"><span class="eyebrow-dot"></span> STACKDNA / LIBRARIES</span>
 					<h1>Encuentra la pieza exacta de tu <span class="accent">stack.</span></h1>
 					<p>
-						Una biblioteca curada de herramientas reales para pasar de “sé que existe” a
-						“sé cómo usarla” en menos de un minuto.
+						Una biblioteca curada de herramientas reales para pasar de "sé que existe" a
+						"sé cómo usarla" en menos de un minuto.
 					</p>
 				</div>
-				<div class="library-signal" aria-label={`${totalLanguages} lenguajes y ${totalLibraries} librerías disponibles`}>
+				<div
+					class="library-signal"
+					aria-label={`${LANGUAGES.length} lenguajes y ${pagination.total} librerías disponibles`}
+				>
 					<div class="signal-orbit signal-orbit-one"></div>
 					<div class="signal-orbit signal-orbit-two"></div>
 					<div class="signal-core"><span>DNA</span></div>
@@ -56,39 +88,49 @@ const groupedLibraries = initialFilters.filteredData.reduce<Record<string, Libra
 					<div>
 						<span class="section-tag">Catálogo de referencia</span>
 						<h2 id="library-heading">Explora por intención, no por ruido.</h2>
-						<p>Busca una función, filtra por lenguaje y llega directo a un ejemplo que puedas adaptar.</p>
+						<p>Busca una función, filtra por lenguaje y llega directo a la librería que necesitas.</p>
 					</div>
-					<div class="catalog-count" aria-label={`${totalLanguages} lenguajes y ${totalLibraries} librerías`}>
-						<strong>{String(totalLibraries).padStart(2, '0')}</strong>
+					<div class="catalog-count" aria-label={`${pagination.total} librerías indexadas`}>
+						<strong data-total-count>{String(pagination.total).padStart(2, '0')}</strong>
 						<span>librerías<br />indexadas</span>
 					</div>
 				</div>
 
-				<SearchBar resultCount={initialFilters.totalResults} />
+				<SearchBar resultCount={pagination.total} />
 				<FilterBar
 					languages={languageOptions}
-					categories={initialFilters.availableCategories}
+					categories={categories}
 					selectedLanguage="all"
 					selectedCategory="all"
 				/>
 
-				<div class="library-results" id="library-results" aria-live="polite">
-					{Object.entries(groupedLibraries).map(([language, languageLibraries]) => (
-						<LanguageSection
-							language={language}
-							libraries={languageLibraries}
-							languageIcon={languageLibraries[0]?.languageIcon ?? '/favicon.svg'}
-						/>
-					))}
-					<div class="empty-state" data-empty-state hidden>
-						<span class="empty-icon" aria-hidden="true">⌕</span>
-						<div>
-							<span class="placeholder-kicker">NO_MATCH / 404</span>
-							<p>No encontramos librerías con ese criterio.</p>
-							<span>Intenta con otro término o limpia los filtros.</span>
-						</div>
+				<div class="api-error" data-api-error hidden={!apiError} role="alert">
+					<div>
+						<p>No pudimos conectar con el catálogo de StackDNA.</p>
+						<span data-api-error-detail>{apiError ?? ''}</span>
+					</div>
+					<button class="api-retry" type="button" data-api-retry>Reintentar</button>
+				</div>
+
+				<div class="library-results" id="library-results" aria-live="polite" aria-busy="false" set:html={resultsHTML}></div>
+				<script type="application/json" data-initial-entries set:html={initialEntriesJSON}></script>
+
+				<div class="empty-state" data-empty-state hidden={entries.length > 0}>
+					<span class="empty-icon" aria-hidden="true">⌕</span>
+					<div>
+						<span class="placeholder-kicker">NO_MATCH / 404</span>
+						<p>No encontramos librerías con ese criterio.</p>
+						<span>Intenta con otro término o limpia los filtros.</span>
 					</div>
 				</div>
+
+				<nav class="pager" data-pager hidden={pagination.pages <= 1} aria-label="Paginación de resultados">
+					<button class="pager-button" type="button" data-pager-prev disabled>← Anterior</button>
+					<span class="pager-status" data-pager-status>
+						Página <strong>{pagination.page}</strong> de <strong>{Math.max(pagination.pages, 1)}</strong>
+					</span>
+					<button class="pager-button" type="button" data-pager-next disabled={pagination.pages <= 1}>Siguiente →</button>
+				</nav>
 			</div>
 		</section>
 	</main>
@@ -96,8 +138,9 @@ const groupedLibraries = initialFilters.filteredData.reduce<Record<string, Libra
 </Layout>
 
 <script>
-	import { libraries } from '../data/libraries';
-	import { useLibraryFilter } from '../hooks/useLibraryFilter';
+	import { PAGE_SIZE, getTechnology, searchTechnologies, toCatalogEntry } from '../lib/api';
+	import { renderDetailPanel, renderResults, renderSnippets } from '../lib/render';
+	import type { CatalogEntry, Pagination, Technology } from '../lib/types';
 
 	const app = document.querySelector<HTMLElement>('[data-library-app]');
 
@@ -105,72 +148,309 @@ const groupedLibraries = initialFilters.filteredData.reduce<Record<string, Libra
 		const searchInput = app.querySelector<HTMLInputElement>('[data-library-search]');
 		const clearButton = app.querySelector<HTMLButtonElement>('[data-clear-search]');
 		const resultCount = app.querySelector<HTMLElement>('[data-results-count]');
+		const totalCount = app.querySelector<HTMLElement>('[data-total-count]');
 		const emptyState = app.querySelector<HTMLElement>('[data-empty-state]');
-		const cards = Array.from(app.querySelectorAll<HTMLElement>('[data-library-card]'));
-		const languageSections = Array.from(app.querySelectorAll<HTMLElement>('[data-language-section]'));
-		let selectedLanguage = app.dataset.selectedLanguage ?? 'all';
-		let selectedCategory = app.dataset.selectedCategory ?? 'all';
+		const results = app.querySelector<HTMLElement>('#library-results');
+		const errorBanner = app.querySelector<HTMLElement>('[data-api-error]');
+		const errorDetail = app.querySelector<HTMLElement>('[data-api-error-detail]');
+		const retryButton = app.querySelector<HTMLButtonElement>('[data-api-retry]');
+		const pager = app.querySelector<HTMLElement>('[data-pager]');
+		const pagerPrev = app.querySelector<HTMLButtonElement>('[data-pager-prev]');
+		const pagerNext = app.querySelector<HTMLButtonElement>('[data-pager-next]');
+		const pagerStatus = app.querySelector<HTMLElement>('[data-pager-status]');
+
+		const state = { query: '', lang: 'all', category: 'all', page: 1 };
+		let pagination: Pagination = {
+			page: 1,
+			limit: PAGE_SIZE,
+			total: Number(app.dataset.total ?? 0),
+			pages: Number(app.dataset.pages ?? 0),
+		};
+
+		const detailCache = new Map<string, Technology>();
+		const entryMap = new Map<string, CatalogEntry>();
 		let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+		let inFlight: AbortController | undefined;
 
-		const updateResults = () => {
-			const { filteredData, totalResults } = useLibraryFilter(
-				libraries,
-				searchInput?.value ?? '',
-				selectedLanguage,
-				selectedCategory as 'all' | (typeof libraries[number]['library']['category']),
-			);
-			const resultLabel = totalResults === 1 ? 'resultado encontrado' : 'resultados encontrados';
-			const visibleIds = new Set(filteredData.map((item) => item.id));
+		function indexEntries(list: CatalogEntry[]) {
+			for (const entry of list) entryMap.set(entry.slug, entry);
+		}
 
-			if (resultCount) resultCount.textContent = `${totalResults} ${resultLabel}`;
-			if (clearButton) clearButton.hidden = (searchInput?.value.length ?? 0) === 0;
-			if (emptyState) emptyState.hidden = totalResults !== 0;
+		const initialEntriesTag = app.querySelector<HTMLScriptElement>('[data-initial-entries]');
+		if (initialEntriesTag?.textContent) {
+			try {
+				indexEntries(JSON.parse(initialEntriesTag.textContent) as CatalogEntry[]);
+			} catch {
+				/* si el JSON embebido falla, los snippets se resuelven tras el primer fetch */
+			}
+		}
 
-			cards.forEach((card) => {
-				card.hidden = !visibleIds.has(card.dataset.libraryId ?? '');
-			});
-			languageSections.forEach((section) => {
-				section.hidden = !section.querySelector('[data-library-card]:not([hidden])');
-			});
+		function readStateFromUrl(): boolean {
+			const params = new URLSearchParams(window.location.search);
+			const query = params.get('q') ?? '';
+			const lang = params.get('lang') ?? 'all';
+			const category = params.get('cat') ?? 'all';
+			const page = Number.parseInt(params.get('page') ?? '1', 10);
 
+			state.query = query;
+			state.lang = lang;
+			state.category = category;
+			state.page = Number.isFinite(page) && page > 0 ? page : 1;
+
+			if (searchInput) searchInput.value = query;
+
+			return Boolean(query) || lang !== 'all' || category !== 'all' || state.page > 1;
+		}
+
+		function syncUrl() {
+			const params = new URLSearchParams();
+			if (state.query) params.set('q', state.query);
+			if (state.lang !== 'all') params.set('lang', state.lang);
+			if (state.category !== 'all') params.set('cat', state.category);
+			if (state.page > 1) params.set('page', String(state.page));
+
+			const search = params.toString();
+			window.history.replaceState({}, '', search ? `${window.location.pathname}?${search}` : window.location.pathname);
+		}
+
+		function updateChips() {
 			app.querySelectorAll<HTMLButtonElement>('[data-filter-language]').forEach((button) => {
-				const isActive = button.dataset.filterLanguage === selectedLanguage;
+				const isActive = (button.dataset.filterLanguage ?? 'all') === state.lang;
 				button.classList.toggle('active', isActive);
 				button.setAttribute('aria-pressed', String(isActive));
 			});
 			app.querySelectorAll<HTMLButtonElement>('[data-filter-category]').forEach((button) => {
-				const isActive = button.dataset.filterCategory === selectedCategory;
+				const isActive = (button.dataset.filterCategory ?? 'all') === state.category;
 				button.classList.toggle('active', isActive);
 				button.setAttribute('aria-pressed', String(isActive));
 			});
-		};
+			if (clearButton) clearButton.hidden = state.query.length === 0;
+		}
+
+		function updatePager() {
+			if (!pager) return;
+			const pages = Math.max(pagination.pages, 1);
+			pager.hidden = pagination.pages <= 1;
+			if (pagerStatus) pagerStatus.innerHTML = `Página <strong>${pagination.page}</strong> de <strong>${pages}</strong>`;
+			if (pagerPrev) pagerPrev.disabled = pagination.page <= 1;
+			if (pagerNext) pagerNext.disabled = pagination.page >= pagination.pages;
+		}
+
+		function updateCounters() {
+			const label = pagination.total === 1 ? 'resultado encontrado' : 'resultados encontrados';
+			if (resultCount) resultCount.textContent = `${pagination.total} ${label}`;
+			if (totalCount) totalCount.textContent = String(pagination.total).padStart(2, '0');
+		}
+
+		function setLoading(loading: boolean) {
+			results?.classList.toggle('is-loading', loading);
+			results?.setAttribute('aria-busy', String(loading));
+		}
+
+		function showError(message: string | null) {
+			if (!errorBanner) return;
+			errorBanner.hidden = message === null;
+			if (errorDetail) errorDetail.textContent = message ?? '';
+		}
+
+		async function load({ scroll = false }: { scroll?: boolean } = {}) {
+			inFlight?.abort();
+			inFlight = new AbortController();
+			setLoading(true);
+
+			try {
+				const response = await searchTechnologies(
+					{
+						query: state.query,
+						lang: state.lang,
+						category: state.category,
+						page: state.page,
+						limit: PAGE_SIZE,
+					},
+					{ signal: inFlight.signal },
+				);
+
+				const entries = (response.items ?? []).map(toCatalogEntry);
+				pagination = response.pagination ?? { page: state.page, limit: PAGE_SIZE, total: entries.length, pages: 1 };
+				indexEntries(entries);
+
+				// El backend puede devolver una página vacía si el filtro cambió: volver a la 1.
+				if (entries.length === 0 && pagination.total > 0 && state.page > 1) {
+					state.page = 1;
+					syncUrl();
+					await load({ scroll });
+					return;
+				}
+
+				if (results) results.innerHTML = renderResults(entries);
+				if (emptyState) emptyState.hidden = entries.length > 0;
+				showError(null);
+				updateCounters();
+				updatePager();
+				updateChips();
+
+				if (scroll) results?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			} catch (error) {
+				if ((error as Error)?.name === 'AbortError') return;
+				showError(error instanceof Error ? error.message : 'Error desconocido');
+			} finally {
+				if (!inFlight?.signal.aborted) setLoading(false);
+			}
+		}
+
+		function applyChange(scroll = false) {
+			syncUrl();
+			updateChips();
+			void load({ scroll });
+		}
 
 		searchInput?.addEventListener('input', () => {
+			state.query = searchInput.value;
+			state.page = 1;
+			if (clearButton) clearButton.hidden = state.query.length === 0;
 			if (debounceTimer) clearTimeout(debounceTimer);
-			debounceTimer = setTimeout(updateResults, 300);
+			debounceTimer = setTimeout(() => applyChange(), 300);
+		});
+
+		searchInput?.addEventListener('keydown', (event) => {
+			if (event.key !== 'Enter') return;
+			event.preventDefault();
+			if (debounceTimer) clearTimeout(debounceTimer);
+			state.query = searchInput.value;
+			state.page = 1;
+			applyChange();
 		});
 
 		clearButton?.addEventListener('click', () => {
 			if (!searchInput) return;
 			searchInput.value = '';
 			searchInput.focus();
-			updateResults();
+			state.query = '';
+			state.page = 1;
+			applyChange();
 		});
 
 		app.querySelectorAll<HTMLButtonElement>('[data-filter-language]').forEach((button) => {
 			button.addEventListener('click', () => {
-				selectedLanguage = button.dataset.filterLanguage ?? 'all';
-				app.dataset.selectedLanguage = selectedLanguage;
-				updateResults();
+				const value = button.dataset.filterLanguage ?? 'all';
+				// Volver a pulsar el filtro activo lo desactiva.
+				state.lang = state.lang === value && value !== 'all' ? 'all' : value;
+				state.page = 1;
+				applyChange();
 			});
 		});
 
 		app.querySelectorAll<HTMLButtonElement>('[data-filter-category]').forEach((button) => {
 			button.addEventListener('click', () => {
-				selectedCategory = button.dataset.filterCategory ?? 'all';
-				app.dataset.selectedCategory = selectedCategory;
-				updateResults();
+				const value = button.dataset.filterCategory ?? 'all';
+				state.category = state.category === value && value !== 'all' ? 'all' : value;
+				state.page = 1;
+				applyChange();
 			});
 		});
+
+		pagerPrev?.addEventListener('click', () => {
+			if (state.page <= 1) return;
+			state.page -= 1;
+			applyChange(true);
+		});
+
+		pagerNext?.addEventListener('click', () => {
+			if (state.page >= pagination.pages) return;
+			state.page += 1;
+			applyChange(true);
+		});
+
+		retryButton?.addEventListener('click', () => void load());
+
+		// Detalle por librería: snippets locales + GET /api/technologies/:slug (con caché en memoria).
+		results?.addEventListener('click', async (event) => {
+			const target = event.target as HTMLElement;
+
+			const copyButton = target.closest<HTMLButtonElement>('[data-copy-code]');
+			if (copyButton) {
+				const block = copyButton.closest<HTMLElement>('[data-code-block]');
+				const source = block?.querySelector<HTMLTemplateElement>('[data-code-source]');
+				const label = copyButton.querySelector<HTMLElement>('[data-copy-label]');
+				try {
+					await navigator.clipboard.writeText(source?.content.textContent ?? source?.innerHTML ?? '');
+					copyButton.classList.add('is-copied');
+					if (label) label.textContent = '¡Copiado!';
+					window.setTimeout(() => {
+						copyButton.classList.remove('is-copied');
+						if (label) label.textContent = 'Copiar';
+					}, 2000);
+				} catch {
+					if (label) label.textContent = 'No disponible';
+				}
+				return;
+			}
+
+			const toggle = target.closest<HTMLButtonElement>('[data-detail-toggle]');
+			if (!toggle) return;
+
+			const card = toggle.closest<HTMLElement>('[data-library-card]');
+			const panel = card?.querySelector<HTMLElement>('[data-detail-panel]');
+			const slug = card?.dataset.slug;
+			if (!card || !panel || !slug) return;
+
+			if (!panel.hidden) {
+				panel.hidden = true;
+				toggle.textContent = toggle.dataset.openLabel ?? 'Ver ejemplo';
+				toggle.setAttribute('aria-expanded', 'false');
+				return;
+			}
+
+			if (!toggle.dataset.openLabel) toggle.dataset.openLabel = toggle.textContent?.trim() ?? 'Ver ejemplo';
+			panel.hidden = false;
+			toggle.textContent = 'Ocultar';
+			toggle.setAttribute('aria-expanded', 'true');
+
+			// Los snippets se resuelven en local: se pintan de inmediato.
+			if (!panel.dataset.rendered) {
+				const entry = entryMap.get(slug);
+				panel.innerHTML = `${entry ? renderSnippets(entry) : ''}<div data-detail-meta><p class="detail-loading">Cargando metadatos…</p></div>`;
+				panel.dataset.rendered = 'true';
+			}
+
+			const meta = panel.querySelector<HTMLElement>('[data-detail-meta]');
+			if (!meta || meta.dataset.loaded === 'true') return;
+
+			const cached = detailCache.get(slug);
+			if (cached) {
+				meta.innerHTML = renderDetailPanel(cached);
+				meta.dataset.loaded = 'true';
+				return;
+			}
+
+			try {
+				const tech = await getTechnology(slug);
+				detailCache.set(slug, tech);
+				meta.innerHTML = renderDetailPanel(tech);
+				meta.dataset.loaded = 'true';
+			} catch (error) {
+				meta.innerHTML = `<p class="detail-error">No se pudo cargar el detalle (${error instanceof Error ? error.message : 'error'}).</p>`;
+			}
+		});
+
+		function openDeepLinkedCard() {
+			const slug = new URLSearchParams(window.location.search).get('detail');
+			if (!slug) return;
+			const card = results?.querySelector<HTMLElement>(`[data-library-card][data-slug="${CSS.escape(slug)}"]`);
+			const toggle = card?.querySelector<HTMLButtonElement>('[data-detail-toggle]');
+			if (!toggle) return;
+			toggle.click();
+			card?.scrollIntoView({ block: 'center' });
+		}
+
+		const hasUrlState = readStateFromUrl();
+		updateChips();
+		updatePager();
+		if (hasUrlState || Number(app.dataset.total ?? 0) === 0) {
+			// Estado inicial vía URL, o el render del servidor falló: pedir datos al backend.
+			void load().then(openDeepLinkedCard);
+		} else {
+			openDeepLinkedCard();
+		}
 	}
 </script>

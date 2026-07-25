@@ -1,17 +1,21 @@
 ---
-import type { LibraryCategory } from '../../data/libraries';
-
 interface LanguageOption {
 	value: string;
 	label: string;
 	icon: string;
 }
 
+interface CategoryOption {
+	value: string;
+	label: string;
+	count?: number;
+}
+
 interface Props {
 	languages: LanguageOption[];
-	categories: LibraryCategory[];
+	categories: CategoryOption[];
 	selectedLanguage?: string;
-	selectedCategory?: LibraryCategory | 'all';
+	selectedCategory?: string;
 }
 
 const {
@@ -21,14 +25,7 @@ const {
 	selectedCategory = 'all',
 } = Astro.props;
 
-const categoryLabels: Record<LibraryCategory, string> = {
-	utilities: 'Utilities',
-	data: 'Data',
-	networking: 'Networking',
-	datetime: 'Date & time',
-	math: 'Math',
-	system: 'System',
-};
+const categoryTotal = categories.reduce((total, category) => total + (category.count ?? 0), 0);
 ---
 
 <div class="filter-bar" data-filter-component>
@@ -73,15 +70,17 @@ const categoryLabels: Record<LibraryCategory, string> = {
 				data-filter-category="all"
 			>
 				<span>Todas</span>
+				{categoryTotal > 0 && <span class="chip-count">{categoryTotal}</span>}
 			</button>
 			{categories.map((category) => (
 				<button
-					class:list={['filter-chip', { active: selectedCategory === category }]}
+					class:list={['filter-chip', { active: selectedCategory === category.value }]}
 					type="button"
-					aria-pressed={selectedCategory === category}
-					data-filter-category={category}
+					aria-pressed={selectedCategory === category.value}
+					data-filter-category={category.value}
 				>
-					<span>{categoryLabels[category]}</span>
+					<span>{category.label}</span>
+					{category.count !== undefined && <span class="chip-count">{category.count}</span>}
 				</button>
 			))}
 		</div>
@@ -176,6 +175,20 @@ const categoryLabels: Record<LibraryCategory, string> = {
 		width: 15px;
 		height: 15px;
 		object-fit: contain;
+	}
+
+	.chip-count {
+		padding: 1px 5px;
+		border-radius: 100px;
+		background: rgba(255, 255, 255, 0.06);
+		color: var(--text-faint);
+		font-family: var(--font-mono);
+		font-size: 9px;
+	}
+
+	.filter-chip.active .chip-count {
+		background: rgba(167, 139, 250, 0.18);
+		color: var(--purple-soft);
 	}
 
 	@media (max-width: 600px) {

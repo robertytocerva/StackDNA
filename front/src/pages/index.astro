@@ -13,7 +13,7 @@ import Revision from '../pages/revision.astro';
 <Layout title="StackDNA - Secuencia el ADN de tu stack" description="StackDNA escanea repositorios para mapear dependencias, arquitectura, vulnerabilidades y licencias en un reporte accionable.">
 	<div class="bg-noise" aria-hidden="true"></div>
 	<Header />
-	<main>
+	<main data-landing>
 		<Hero />
 		<About />
 		<Features />
@@ -23,3 +23,16 @@ import Revision from '../pages/revision.astro';
 	</main>
 	<Footer />
 </Layout>
+
+<script>
+	import { initLandingScroll } from '../scripts/landingScroll';
+
+	initLandingScroll();
+</script>
+
+<style>
+	/* Los desplazamientos laterales del revelado no deben generar scroll horizontal. */
+	main[data-landing] {
+		overflow-x: clip;
+	}
+</style>

@@ -1,4 +1,6 @@
 ---
+import Logo from './Logo.astro';
+
 const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const columns = [
 	{ title: 'Producto', links: [{ href: homeHref('#features'), label: 'Features' }, { href: homeHref('#precios'), label: 'Precios' }, { href: homeHref('#producto'), label: 'Documentacion' }, { href: '/librerias', label: 'Librerias' }, { href: '/servicios', label: 'API Tester' }, { href: '/terms', label: 'Terminos de uso' }] },
@@ -12,14 +14,9 @@ const columns = [
 		<div class="footer-grid">
 			<div class="footer-brand">
 				<div class="logo">
-          			<span class="logo-mark">
-            			<svg viewBox="0 0 24 24" fill="none">
-              			<path d="M6 2C6 6 18 6 18 10C18 14 6 14 6 18C6 22 18 22 18 22" stroke="url(#g2)" stroke-width="2" stroke-linecap="round"/>
-              			<defs><linearGradient id="g2" x1="0" y1="0" x2="24" y2="24"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs>
-            			</svg>
-          			</span>
-          				StackDNA
-        		</div>
+					<Logo width={46} height={24} pairs={4} class="logo-helix" />
+					StackDNA
+				</div>
 				<p>El perfil genetico de tu stack: dependencias, arquitectura y seguridad en un solo mapa.</p>
 			</div>
 			<div class="footer-links">

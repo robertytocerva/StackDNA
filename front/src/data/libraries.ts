@@ -1,4 +1,4 @@
-export type LibraryCategory = 'utilities' | 'data' | 'networking' | 'datetime' | 'math' | 'system';
+export type LibraryCategory = string;
 
 export interface LibrarySnippet {
 	title: string;
