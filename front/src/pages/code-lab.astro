@@ -143,6 +143,9 @@ import "../styles/code-lab.css";
 <script>
   import { LANGUAGES, EXAMPLES, type LanguageKey } from "../data/codeExamples";
 
+  // ─── Backend URL (configurable via .env) ─────────────────
+  const CODE_LAB_URL = (import.meta.env.PUBLIC_CODE_LAB_URL ).replace(/\/$/, '');
+
   // ─── State ───────────────────────────────────────────────
   let currentLang: LanguageKey = "python";
   let codeEditor: any = null; // CodeMirror instance
@@ -493,7 +496,7 @@ import "../styles/code-lab.css";
   appendToConsole("Enviando Python al backend...", "system");
 
   try {
-    const response = await fetch("http://localhost:3000/code/execute", {
+    const response = await fetch(`${CODE_LAB_URL}/code/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -604,7 +607,7 @@ import "../styles/code-lab.css";
   appendToConsole("Enviando Java al backend...", "system");
 
   try {
-    const response = await fetch("http://localhost:3000/code/execute", {
+    const response = await fetch(`${CODE_LAB_URL}/code/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

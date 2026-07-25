@@ -62,7 +62,7 @@ type RepoAnalysisResponse = {
 	error?: string;
 };
 
-const ENDPOINT = 'https://stackdna.onrender.com/api/repo-analyzer/analyze';
+const ENDPOINT = import.meta.env.PUBLIC_REPO_ANALYZER_URL;
 
 function escapeHtml(value: unknown): string {
 	return String(value ?? '')

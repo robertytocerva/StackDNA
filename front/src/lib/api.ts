@@ -12,7 +12,7 @@ import type {
  * URL del backend StackDNA. Se puede sobrescribir con la variable de entorno
  * PUBLIC_API_URL (debe ser PUBLIC_ para estar disponible en el navegador).
  */
-export const API_BASE = (import.meta.env.PUBLIC_API_URL ?? 'https://stackdna.onrender.com').replace(/\/$/, '');
+export const API_BASE = (import.meta.env.PUBLIC_API_URL ).replace(/\/$/, '');
 
 /** El backend valida limit entre 1 y 100 (express-validator). */
 export const MAX_LIMIT = 100;
