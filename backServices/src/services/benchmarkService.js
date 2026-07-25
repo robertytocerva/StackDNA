@@ -45,6 +45,8 @@ function normalizeModels(rawList) {
       const evals = m.evaluations || {};
       const pricing = m.pricing || {};
       const perf = m.performance || {};
+      const indexCost = m.artificial_analysis_intelligence_index_cost || {};
+      const costPerTask = indexCost.cost_per_task || {};
 
       return {
         id: m.id || m.slug || "",
@@ -55,6 +57,7 @@ function normalizeModels(rawList) {
         quality: evals.artificial_analysis_intelligence_index ?? null,
         coding_index: evals.artificial_analysis_coding_index ?? null,
         agentic_index: evals.artificial_analysis_agentic_index ?? null,
+        cost_per_task: costPerTask.total_cost ?? null,
         speed_output: perf.median_output_tokens_per_second ?? null,
         ttft: perf.median_time_to_first_token_seconds ?? null,
         ttfat: perf.median_time_to_first_answer_token_seconds ?? null,
