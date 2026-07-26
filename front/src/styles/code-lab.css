@@ -5,7 +5,8 @@
 .code-lab-page {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: calc(100vh - var(--header-h, 60px));
+	margin-top: var(--header-h, 60px);
 	overflow: hidden;
 	background: var(--bg);
 }

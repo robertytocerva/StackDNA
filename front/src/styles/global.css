@@ -18,6 +18,8 @@
 	--font-display: 'Space Grotesk', sans-serif;
 	--font-mono: 'JetBrains Mono', monospace;
 	--font-body: 'Inter', sans-serif;
+	/* Altura del header fijo — usar en padding-top de páginas que lo necesiten */
+	--header-h: 60px;
 }
 
 * {

@@ -5,6 +5,7 @@ import LabSidebar from "../components/CodeLab/LabSidebar.astro";
 import LabEditor from "../components/CodeLab/LabEditor.astro";
 import LabConsole from "../components/CodeLab/LabConsole.astro";
 import LabStatusBar from "../components/CodeLab/LabStatusBar.astro";
+import Header from "../components/Landing/Header.astro";
 import "../styles/code-lab.css";
 ---
 
@@ -13,7 +14,9 @@ import "../styles/code-lab.css";
   description="Ejecuta código Python, JavaScript y Java directamente en tu navegador con el laboratorio de código de StackDNA."
 >
   <div class="code-lab-page" data-code-lab>
+  <Header />
     <!-- Lab Header -->
+    <!--
     <header class="lab-header">
       <div class="lab-header-left">
         <a href="/" class="lab-brand" aria-label="Volver a StackDNA">
@@ -71,6 +74,7 @@ import "../styles/code-lab.css";
         </a>
       </div>
     </header>
+  -->
 
     <!-- Main Layout: Sidebar + Workspace -->
     <div class="lab-main">
