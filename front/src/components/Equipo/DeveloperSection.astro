@@ -50,7 +50,6 @@ const hasPhoto = Boolean(avatarUrl);
 		min-height: 100vh;
 		align-items: center;
 		overflow: hidden;
-		contain: layout style;
 		background: var(--bg);
 		border-top: 1px solid var(--border);
 	}
@@ -62,8 +61,6 @@ const hasPhoto = Boolean(avatarUrl);
 		bottom: -10vh;
 		left: 34%;
 		z-index: 0;
-		transform: translateZ(0);
-		will-change: transform;
 	}
 
 	/* El frame ocupa todo el alto disponible (120vh, con 10vh de sobrante
