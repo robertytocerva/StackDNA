@@ -148,7 +148,7 @@ import "../styles/code-lab.css";
   import { LANGUAGES, EXAMPLES, type LanguageKey } from "../data/codeExamples";
 
   // ─── Backend URL (configurable via .env) ─────────────────
-  const CODE_LAB_URL = (import.meta.env.PUBLIC_CODE_LAB_URL ).replace(/\/$/, '');
+  const CODE_LAB_URL = (import.meta.env.PUBLIC_CODE_LAB_URL ?? 'https://stackdna-backservices.onrender.com').replace(/\/$/, '');
 
   // ─── State ───────────────────────────────────────────────
   let currentLang: LanguageKey = "python";
