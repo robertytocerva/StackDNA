@@ -34,26 +34,46 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 			<span class="filter-index">01</span>
 			<span>Lenguaje</span>
 		</div>
-		<div class="filter-options" role="group" aria-label="Filtrar por lenguaje">
+		<div class="filter-scroller" data-filter-scroller>
 			<button
-				class:list={['filter-chip', { active: selectedLanguage === 'all' }]}
+				class="scroll-arrow scroll-arrow-prev"
 				type="button"
-				aria-pressed={selectedLanguage === 'all'}
-				data-filter-language="all"
+				data-scroll-prev
+				aria-label="Desplazar lenguajes hacia la izquierda"
+				hidden
 			>
-				<span>Todos</span>
+				<span aria-hidden="true">‹</span>
 			</button>
-			{languages.map((language: LanguageOption) => (
+			<div class="filter-options" role="group" aria-label="Filtrar por lenguaje" data-filter-track>
 				<button
-					class:list={['filter-chip', { active: selectedLanguage === language.value }]}
+					class:list={['filter-chip', { active: selectedLanguage === 'all' }]}
 					type="button"
-					aria-pressed={selectedLanguage === language.value}
-					data-filter-language={language.value}
+					aria-pressed={selectedLanguage === 'all'}
+					data-filter-language="all"
 				>
-					<img class="chip-icon" src={language.icon} alt="" loading="lazy" aria-hidden="true" />
-					<span>{language.label}</span>
+					<span>Todos</span>
 				</button>
-			))}
+				{languages.map((language: LanguageOption) => (
+					<button
+						class:list={['filter-chip', { active: selectedLanguage === language.value }]}
+						type="button"
+						aria-pressed={selectedLanguage === language.value}
+						data-filter-language={language.value}
+					>
+						<img class="chip-icon" src={language.icon} alt="" loading="lazy" aria-hidden="true" />
+						<span>{language.label}</span>
+					</button>
+				))}
+			</div>
+			<button
+				class="scroll-arrow scroll-arrow-next"
+				type="button"
+				data-scroll-next
+				aria-label="Desplazar lenguajes hacia la derecha"
+				hidden
+			>
+				<span aria-hidden="true">›</span>
+			</button>
 		</div>
 	</div>
 
@@ -62,27 +82,47 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 			<span class="filter-index">02</span>
 			<span>Categoría</span>
 		</div>
-		<div class="filter-options" role="group" aria-label="Filtrar por categoría">
+		<div class="filter-scroller" data-filter-scroller>
 			<button
-				class:list={['filter-chip', { active: selectedCategory === 'all' }]}
+				class="scroll-arrow scroll-arrow-prev"
 				type="button"
-				aria-pressed={selectedCategory === 'all'}
-				data-filter-category="all"
+				data-scroll-prev
+				aria-label="Desplazar categorías hacia la izquierda"
+				hidden
 			>
-				<span>Todas</span>
-				{categoryTotal > 0 && <span class="chip-count">{categoryTotal}</span>}
+				<span aria-hidden="true">‹</span>
 			</button>
-			{categories.map((category: CategoryOption) => (
+			<div class="filter-options" role="group" aria-label="Filtrar por categoría" data-filter-track>
 				<button
-					class:list={['filter-chip', { active: selectedCategory === category.value }]}
+					class:list={['filter-chip', { active: selectedCategory === 'all' }]}
 					type="button"
-					aria-pressed={selectedCategory === category.value}
-					data-filter-category={category.value}
+					aria-pressed={selectedCategory === 'all'}
+					data-filter-category="all"
 				>
-					<span>{category.label}</span>
-					{category.count !== undefined && <span class="chip-count">{category.count}</span>}
+					<span>Todas</span>
+					{categoryTotal > 0 && <span class="chip-count">{categoryTotal}</span>}
 				</button>
-			))}
+				{categories.map((category: CategoryOption) => (
+					<button
+						class:list={['filter-chip', { active: selectedCategory === category.value }]}
+						type="button"
+						aria-pressed={selectedCategory === category.value}
+						data-filter-category={category.value}
+					>
+						<span>{category.label}</span>
+						{category.count !== undefined && <span class="chip-count">{category.count}</span>}
+					</button>
+				))}
+			</div>
+			<button
+				class="scroll-arrow scroll-arrow-next"
+				type="button"
+				data-scroll-next
+				aria-label="Desplazar categorías hacia la derecha"
+				hidden
+			>
+				<span aria-hidden="true">›</span>
+			</button>
 		</div>
 	</div>
 </div>
@@ -126,6 +166,44 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 		font-weight: 400;
 	}
 
+	/* Contenedor del carril: posiciona las flechas y los degradados de borde
+	   sobre la pista scrolleable sin restarle ancho. */
+	.filter-scroller {
+		position: relative;
+		display: flex;
+		flex: 1;
+		min-width: 0;
+		align-items: center;
+	}
+
+	.filter-scroller::before,
+	.filter-scroller::after {
+		position: absolute;
+		z-index: 1;
+		top: 0;
+		bottom: 0;
+		width: 46px;
+		content: '';
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s ease;
+	}
+
+	.filter-scroller::before {
+		left: 0;
+		background: linear-gradient(90deg, rgba(17, 17, 25, 0.96), rgba(17, 17, 25, 0));
+	}
+
+	.filter-scroller::after {
+		right: 0;
+		background: linear-gradient(270deg, rgba(17, 17, 25, 0.96), rgba(17, 17, 25, 0));
+	}
+
+	.filter-scroller.can-scroll-start::before,
+	.filter-scroller.can-scroll-end::after {
+		opacity: 1;
+	}
+
 	.filter-options {
 		display: flex;
 		flex: 1;
@@ -133,13 +211,69 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 		align-items: center;
 		gap: 8px;
 		overflow-x: auto;
-		padding: 3px 2px;
-		scrollbar-width: none;
+		overflow-y: hidden;
+		padding: 3px 2px 9px;
 		flex-wrap: nowrap;
+		overscroll-behavior-x: contain;
+		scroll-padding-inline: 46px;
+		scrollbar-width: thin;
+		scrollbar-color: rgba(167, 139, 250, 0.34) transparent;
 	}
 
 	.filter-options::-webkit-scrollbar {
+		height: 6px;
+	}
+
+	.filter-options::-webkit-scrollbar-track {
+		border-radius: 100px;
+		background: rgba(255, 255, 255, 0.04);
+	}
+
+	.filter-options::-webkit-scrollbar-thumb {
+		border-radius: 100px;
+		background: rgba(167, 139, 250, 0.3);
+	}
+
+	.filter-options::-webkit-scrollbar-thumb:hover {
+		background: rgba(167, 139, 250, 0.55);
+	}
+
+	.scroll-arrow {
+		position: absolute;
+		z-index: 2;
+		top: 50%;
+		display: grid;
+		width: 26px;
+		height: 26px;
+		place-items: center;
+		border: 1px solid var(--border-strong);
+		border-radius: 50%;
+		background: rgba(21, 21, 31, 0.92);
+		color: var(--purple-soft);
+		font-family: var(--font-mono);
+		font-size: 15px;
+		line-height: 1;
+		cursor: pointer;
+		transform: translateY(-50%);
+		transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+	}
+
+	.scroll-arrow:hover {
+		background: rgba(124, 58, 237, 0.28);
+		border-color: var(--purple-2);
+		color: var(--white);
+	}
+
+	.scroll-arrow[hidden] {
 		display: none;
+	}
+
+	.scroll-arrow-prev {
+		left: 0;
+	}
+
+	.scroll-arrow-next {
+		right: 0;
 	}
 
 	.filter-chip {
@@ -193,12 +327,24 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 		color: var(--purple-soft);
 	}
 
+	/* En pantallas pequenas se confia en el gesto tactil: las flechas sobran y
+	   el scroll queda solo en la pista, nunca en la fila. */
+	@media (max-width: 700px) {
+		.scroll-arrow {
+			display: none;
+		}
+
+		.filter-scroller::before,
+		.filter-scroller::after {
+			width: 28px;
+		}
+	}
+
 	@media (max-width: 600px) {
 		.filter-row {
 			display: flex;
 			flex-wrap: nowrap;
 			padding: 14px 0;
-			overflow-x: auto;
 		}
 
 		.filter-heading {
@@ -208,10 +354,88 @@ const categoryTotal = categories.reduce((total: number, category: CategoryOption
 			margin-right: 12px;
 		}
 
-		.filter-options {
+		.filter-scroller {
 			flex: 1;
 			min-width: 0;
-			margin-left: 0;
 		}
 	}
 </style>
+
+<script>
+	// Carril horizontal de filtros: muestra flechas y degradados solo cuando hay
+	// contenido fuera de vista, y traduce la rueda vertical en scroll lateral.
+	const EDGE_TOLERANCE = 2;
+
+	function initFilterScroller(scroller: HTMLElement): void {
+		const track = scroller.querySelector<HTMLElement>('[data-filter-track]');
+		if (!track) return;
+
+		const prev = scroller.querySelector<HTMLButtonElement>('[data-scroll-prev]');
+		const next = scroller.querySelector<HTMLButtonElement>('[data-scroll-next]');
+
+		function update(): void {
+			const maxScroll = track.scrollWidth - track.clientWidth;
+			const overflows = maxScroll > EDGE_TOLERANCE;
+			const atStart = track.scrollLeft <= EDGE_TOLERANCE;
+			const atEnd = track.scrollLeft >= maxScroll - EDGE_TOLERANCE;
+
+			scroller.classList.toggle('can-scroll-start', overflows && !atStart);
+			scroller.classList.toggle('can-scroll-end', overflows && !atEnd);
+
+			if (prev) prev.hidden = !overflows || atStart;
+			if (next) next.hidden = !overflows || atEnd;
+		}
+
+		function scrollByPage(direction: 1 | -1): void {
+			track.scrollBy({
+				left: direction * Math.max(track.clientWidth * 0.7, 160),
+				behavior: 'smooth',
+			});
+		}
+
+		prev?.addEventListener('click', () => scrollByPage(-1));
+		next?.addEventListener('click', () => scrollByPage(1));
+
+		track.addEventListener('scroll', update, { passive: true });
+
+		// La rueda vertical desplaza el carril mientras quede recorrido; si ya
+		// esta en un extremo se deja pasar al scroll de la pagina.
+		track.addEventListener(
+			'wheel',
+			(event) => {
+				if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+
+				const maxScroll = track.scrollWidth - track.clientWidth;
+				if (maxScroll <= EDGE_TOLERANCE) return;
+
+				const goingRight = event.deltaY > 0;
+				const blocked = goingRight
+					? track.scrollLeft >= maxScroll - EDGE_TOLERANCE
+					: track.scrollLeft <= EDGE_TOLERANCE;
+				if (blocked) return;
+
+				event.preventDefault();
+				track.scrollLeft += event.deltaY;
+			},
+			{ passive: false },
+		);
+
+		// Al enfocar un chip con teclado el navegador lo trae a la vista: se
+		// recalculan los indicadores.
+		track.addEventListener('focusin', update);
+
+		if (typeof ResizeObserver !== 'undefined') {
+			const observer = new ResizeObserver(update);
+			observer.observe(track);
+			for (const chip of track.children) observer.observe(chip);
+		} else {
+			window.addEventListener('resize', update);
+		}
+
+		update();
+	}
+
+	document
+		.querySelectorAll<HTMLElement>('[data-filter-scroller]')
+		.forEach((scroller) => initFilterScroller(scroller));
+</script>
