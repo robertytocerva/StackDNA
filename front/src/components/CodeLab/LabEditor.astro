@@ -10,6 +10,9 @@
 	<div class="editor-toolbar">
 		<div class="toolbar-left">
 			<span class="toolbar-dna" aria-hidden="true" data-dna-label>ATCG·PY</span>
+			<span class="toolbar-lang-icon" data-lang-icon aria-hidden="true">
+				<img src="/pylogo.svg" width="16" height="16" alt="Python" />
+			</span>
 			<span class="toolbar-lang" data-lang-label>Python</span>
 			<span class="toolbar-runtime" data-runtime-label>Pyodide (WebAssembly)</span>
 		</div>
@@ -72,6 +75,18 @@
 		font-size: 10px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
+	}
+
+	.toolbar-lang-icon {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+
+	.toolbar-lang-icon img {
+		width: 16px;
+		height: 16px;
+		object-fit: contain;
 	}
 
 	.toolbar-lang {

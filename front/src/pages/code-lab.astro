@@ -181,6 +181,7 @@ import "../styles/code-lab.css";
   // Toolbar labels
   const dnaLabel = root.querySelector<HTMLElement>("[data-dna-label]")!;
   const langLabel = root.querySelector<HTMLElement>("[data-lang-label]")!;
+  const langIconEl = root.querySelector<HTMLImageElement>("[data-lang-icon] img");
   const runtimeLabel = root.querySelector<HTMLElement>("[data-runtime-label]")!;
 
   // Status bar
@@ -354,6 +355,17 @@ import "../styles/code-lab.css";
     dnaLabel.textContent = config.dna;
     langLabel.textContent = config.name;
     runtimeLabel.textContent = config.runtime;
+
+    // Update toolbar language icon
+    const langIcons: Record<string, string> = {
+      python: '/pylogo.svg',
+      javascript: '/jslogo.svg',
+      java: '/javalogo.svg',
+    };
+    if (langIconEl) {
+      langIconEl.src = langIcons[lang] ?? '/favicon.svg';
+      langIconEl.alt = config.name;
+    }
 
     // Update status bar
     statusLang.textContent = config.name;
