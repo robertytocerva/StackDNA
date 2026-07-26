@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="front/public/favicon.svg" alt="StackDNA Logo" width="80" />
+  <img src="front/public/LogoStackDNA.png" alt="StackDNA Logo" width="80" />
 </p>
 
 <h1 align="center">StackDNA</h1>
