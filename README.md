@@ -58,9 +58,6 @@ El proyecto nace de la necesidad de tener en un solo lugar las herramientas que 
 - [Despliegue](#-despliegue)
 - [Tecnologías utilizadas](#-tecnologías-utilizadas)
 - [Equipo](#-equipo)
-- [Cómo contribuir](#-cómo-contribuir)
-- [Licencia](#-licencia)
-
 ---
 
 ## Requisitos previos
