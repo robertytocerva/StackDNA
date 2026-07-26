@@ -5,12 +5,6 @@ const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${
 const links = [
 	{ href: homeHref('#producto'), label: 'Home' },
 	{ href: homeHref('#features'), label: 'Features' },
-	{ href: '/revision', label: 'Analizador Repositorio' },
-	{ href: '/librerias', label: 'Librerías' },
-	{ href: '/servicios', label: 'API Tester' },
-	{ href: '/benchmarks', label: 'Benchmarks' },
-	{ href: '/code-lab', label: 'CodeLab' },
-	{ href: '/equipo', label: 'Equipo' },
 	{ href: '/revision', label: 'Analizador Repositorio', toolLink: true },
 	{ href: '/librerias', label: 'Librerías', toolLink: true },
 	{ href: '/servicios', label: 'API Tester', toolLink: true },
