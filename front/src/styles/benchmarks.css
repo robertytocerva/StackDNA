@@ -188,6 +188,10 @@ body {
   background: radial-gradient(ellipse at 50% 0%, rgba(192, 192, 192, 0.5), transparent 65%);
   filter: blur(10px);
 }
+.light-bronze {
+  background: radial-gradient(ellipse at 50% 0%, rgba(205, 127, 50, 0.55), transparent 65%);
+  filter: blur(10px);
+}
 
 /* Card del modelo */
 .podium-top-card {

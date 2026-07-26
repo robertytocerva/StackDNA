@@ -433,7 +433,7 @@ function renderPodiums(models: Model[]) {
           <div class="podium-3d">
             ${renderPodiumSpot(second, 2, 'height-2', 'light-silver', p.formatFn)}
             ${renderPodiumSpot(first, 1, 'height-1', 'light-gold', p.formatFn)}
-            ${renderPodiumSpot(third, 3, 'height-3', '', p.formatFn)}
+            ${renderPodiumSpot(third, 3, 'height-3', 'light-bronze', p.formatFn)}
           </div>
         </div>
       </div>
