@@ -149,6 +149,10 @@ ul {
 	color: var(--white);
 }
 
+.nav-links a.tool-link:hover {
+	color: var(--purple-2);
+}
+
 .nav-cta {
 	padding: 9px 18px;
 	border: 1px solid var(--purple-2);
