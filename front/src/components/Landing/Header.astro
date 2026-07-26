@@ -3,8 +3,7 @@ import Logo from './Logo.astro';
 
 const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const links = [
-	{ href: homeHref('#producto'), label: 'Producto' },
-	{ href: homeHref('#about'), label: 'Acerca de' },
+	{ href: homeHref('#producto'), label: 'Home' },
 	{ href: homeHref('#features'), label: 'Features' },
 	{ href: '/revision', label: 'Analizador Repositorio' },
 	{ href: '/librerias', label: 'Librerías' },
@@ -12,17 +11,22 @@ const links = [
 	{ href: '/benchmarks', label: 'Benchmarks' },
 	{ href: '/code-lab', label: 'CodeLab' },
 	{ href: '/equipo', label: 'Equipo' },
+	{ href: '/revision', label: 'Analizador Repositorio', toolLink: true },
+	{ href: '/librerias', label: 'Librerías', toolLink: true },
+	{ href: '/servicios', label: 'API Tester', toolLink: true },
+	{ href: '/benchmarks', label: 'Benchmarks', toolLink: true },
+	{ href: '/code-lab', label: 'CodeLab', toolLink: true },
 ];
 ---
 
 <header class="site-header">
 	<nav class="site-nav" aria-label="Navegacion principal">
 		<div class="logo">
-			<Logo width={46} height={24} pairs={4} class="logo-helix" />
+			<Logo width={40} height={24} pairs={4} class="logo-helix" />
 			StackDNA
 		</div>
 		<div class="nav-links">
-			{links.map((link) => <a href={link.href}>{link.label}</a>)}
+			{links.map((link) => <a href={link.href} class={link.toolLink ? 'tool-link' : ''}>{link.label}</a>)}
 		</div>
 	</nav>
 </header>

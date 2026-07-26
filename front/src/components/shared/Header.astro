@@ -1,0 +1,10 @@
+---
+/**
+ * Header compartido — Proxy que reutiliza el header de la landing.
+ * Cualquier página puede importar este componente sin depender directamente
+ * de Landing/Header.astro. Si el header de la landing cambia, este lo refleja automáticamente.
+ */
+import LandingHeader from '../Landing/Header.astro';
+---
+
+<LandingHeader />

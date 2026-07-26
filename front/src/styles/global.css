@@ -112,7 +112,7 @@ ul {
 .logo {
 	display: flex;
 	align-items: center;
-	gap: 10px;
+	gap: 14px;
 	color: var(--white);
 	font-family: var(--font-display);
 	font-size: 19px;
@@ -147,6 +147,10 @@ ul {
 
 .nav-links a:hover {
 	color: var(--white);
+}
+
+.nav-links a.tool-link:hover {
+	color: var(--purple-2);
 }
 
 .nav-cta {
