@@ -394,12 +394,6 @@ Ambos backends usan `npm start` para producción (sin `nodemon`). Asegúrate de 
 
 ---
 
-## Licencia
-
-<!-- TODO: completar — No se encontró un archivo LICENSE en la raíz del repositorio. Se recomienda agregar una licencia (MIT, Apache 2.0, etc.) para definir los términos de uso del proyecto. -->
-
-Pendiente de definir. Consulta con los autores antes de usar este código en producción.
-
 ---
 
 ## FAQ
