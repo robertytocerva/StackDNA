@@ -25,7 +25,7 @@ const {
 	selectedCategory = 'all',
 } = Astro.props;
 
-const categoryTotal = categories.reduce((total, category) => total + (category.count ?? 0), 0);
+const categoryTotal = categories.reduce((total: number, category: CategoryOption) => total + (category.count ?? 0), 0);
 ---
 
 <div class="filter-bar" data-filter-component>
@@ -43,7 +43,7 @@ const categoryTotal = categories.reduce((total, category) => total + (category.c
 			>
 				<span>Todos</span>
 			</button>
-			{languages.map((language) => (
+			{languages.map((language: LanguageOption) => (
 				<button
 					class:list={['filter-chip', { active: selectedLanguage === language.value }]}
 					type="button"
@@ -72,7 +72,7 @@ const categoryTotal = categories.reduce((total, category) => total + (category.c
 				<span>Todas</span>
 				{categoryTotal > 0 && <span class="chip-count">{categoryTotal}</span>}
 			</button>
-			{categories.map((category) => (
+			{categories.map((category: CategoryOption) => (
 				<button
 					class:list={['filter-chip', { active: selectedCategory === category.value }]}
 					type="button"
@@ -128,12 +128,14 @@ const categoryTotal = categories.reduce((total, category) => total + (category.c
 
 	.filter-options {
 		display: flex;
+		flex: 1;
 		min-width: 0;
 		align-items: center;
 		gap: 8px;
 		overflow-x: auto;
 		padding: 3px 2px;
 		scrollbar-width: none;
+		flex-wrap: nowrap;
 	}
 
 	.filter-options::-webkit-scrollbar {
@@ -193,17 +195,23 @@ const categoryTotal = categories.reduce((total, category) => total + (category.c
 
 	@media (max-width: 600px) {
 		.filter-row {
-			display: block;
+			display: flex;
+			flex-wrap: nowrap;
 			padding: 14px 0;
+			overflow-x: auto;
 		}
 
 		.filter-heading {
 			width: auto;
-			margin-bottom: 9px;
+			flex: 0 0 auto;
+			margin-bottom: 0;
+			margin-right: 12px;
 		}
 
 		.filter-options {
-			margin-left: 18px;
+			flex: 1;
+			min-width: 0;
+			margin-left: 0;
 		}
 	}
 </style>
