@@ -1,6 +1,6 @@
 import type { Model, FetchResult } from './types';
 
-const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL || 'http://localhost:3001';
+const BACKEND_URL = import.meta.env.PUBLIC_BACKEND_URL_BENCHMARKS || 'http://localhost:3001';
 const MODELS_ENDPOINT = `${BACKEND_URL}/api/benchmark/models`;
 
 export async function fetchModels(): Promise<FetchResult> {
