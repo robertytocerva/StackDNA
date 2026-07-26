@@ -87,10 +87,31 @@ function collectTargets(root: ParentNode): RevealTarget[] {
 	return targets;
 }
 
+/** ScrollTriggers creados en la última pasada, para poder limpiarlos al renavegar. */
+let activeTriggers: ScrollTrigger[] = [];
+let navigationHookBound = false;
+
 export function initLandingScroll(): void {
 	if (typeof window === 'undefined') return;
 
-	const root = document.querySelector<HTMLElement>('[data-landing]') ?? document.body;
+	// El script de página no se reejecuta tras una navegación con ClientRouter,
+	// así que el propio módulo se engancha al ciclo de vida del router.
+	if (!navigationHookBound) {
+		navigationHookBound = true;
+		document.addEventListener('astro:page-load', buildReveals);
+	}
+
+	buildReveals();
+}
+
+function buildReveals(): void {
+	// Los triggers de la página anterior apuntan a nodos que ya no existen.
+	for (const trigger of activeTriggers) trigger.kill();
+	activeTriggers = [];
+
+	const root = document.querySelector<HTMLElement>('[data-landing]');
+	if (!root) return;
+
 	const targets = collectTargets(root);
 	if (targets.length === 0) return;
 
@@ -126,15 +147,17 @@ export function initLandingScroll(): void {
 			});
 		};
 
-		ScrollTrigger.create({
-			trigger,
-			start: 'top 88%',
-			end: 'bottom 12%',
-			onEnter: () => show(true),
-			onEnterBack: () => show(false),
-			onLeave: () => hide(-1),
-			onLeaveBack: () => hide(1),
-		});
+		activeTriggers.push(
+			ScrollTrigger.create({
+				trigger,
+				start: 'top 88%',
+				end: 'bottom 12%',
+				onEnter: () => show(true),
+				onEnterBack: () => show(false),
+				onLeave: () => hide(-1),
+				onLeaveBack: () => hide(1),
+			}),
+		);
 
 		// Lo que ya está en pantalla al cargar entra de inmediato.
 		const rect = trigger.getBoundingClientRect();

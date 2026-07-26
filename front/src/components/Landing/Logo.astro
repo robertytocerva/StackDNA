@@ -30,6 +30,7 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 
 <script>
 	interface HelixInstance {
+		canvas: HTMLCanvasElement;
 		ctx: CanvasRenderingContext2D;
 		width: number;
 		height: number;
@@ -42,6 +43,10 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 	const PURPLE_DIM = 'rgba(124, 58, 237, 0.4)';
 	const WHITE = '#f5f3ff';
 	const WHITE_DIM = 'rgba(245, 243, 255, 0.3)';
+
+	/** Canvas vivos. Se conserva entre navegaciones porque el módulo solo se evalúa una vez. */
+	let instances: HelixInstance[] = [];
+	let animating = false;
 
 	function drawInstance(instance: HelixInstance) {
 		const { ctx, width, height, pairs } = instance;
@@ -80,17 +85,21 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 		}
 	}
 
-	function initDNAHelix() {
-		const canvases = document.querySelectorAll<HTMLCanvasElement>('canvas.dna-helix-canvas');
-		const instances: HelixInstance[] = [];
+	/**
+	 * Registra los canvas presentes en el documento y descarta los que quedaron
+	 * fuera del DOM tras una view transition.
+	 */
+	function syncInstances() {
+		instances = instances.filter((instance) => instance.canvas.isConnected);
 
-		canvases.forEach((canvas) => {
-			if (canvas.dataset.helixReady === 'true') return;
+		document.querySelectorAll<HTMLCanvasElement>('canvas.dna-helix-canvas').forEach((canvas) => {
+			if (instances.some((instance) => instance.canvas === canvas)) return;
+
 			const ctx = canvas.getContext('2d');
 			if (!ctx) return;
-			canvas.dataset.helixReady = 'true';
 
 			instances.push({
+				canvas,
 				ctx,
 				width: canvas.width,
 				height: canvas.height,
@@ -99,7 +108,26 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 				phase: 0,
 			});
 		});
+	}
 
+	function tick() {
+		instances = instances.filter((instance) => instance.canvas.isConnected);
+
+		if (instances.length === 0) {
+			animating = false;
+			return;
+		}
+
+		for (const instance of instances) {
+			drawInstance(instance);
+			instance.phase += instance.speed;
+		}
+
+		requestAnimationFrame(tick);
+	}
+
+	function initDNAHelix() {
+		syncInstances();
 		if (instances.length === 0) return;
 
 		// Con movimiento reducido se dibuja un solo frame estático.
@@ -108,15 +136,9 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 			return;
 		}
 
-		const tick = () => {
-			for (const instance of instances) {
-				drawInstance(instance);
-				instance.phase += instance.speed;
-			}
-			requestAnimationFrame(tick);
-		};
-
-		tick();
+		if (animating) return;
+		animating = true;
+		requestAnimationFrame(tick);
 	}
 
 	if (document.readyState === 'loading') {
@@ -124,6 +146,10 @@ const { width = 120, height = 40, pairs = 8, speed = 0.02, class: className } = 
 	} else {
 		initDNAHelix();
 	}
+
+	// El script de un componente no se reejecuta tras una navegación con
+	// ClientRouter: hay que enganchar los canvas del DOM entrante en cada swap.
+	document.addEventListener('astro:page-load', initDNAHelix);
 </script>
 
 <style>
