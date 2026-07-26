@@ -3,9 +3,9 @@ import Logo from './Logo.astro';
 
 const homeHref = (anchor: string) => (Astro.url.pathname === '/' ? anchor : `/${anchor}`);
 const columns = [
-	{ title: 'Producto', links: [{ href: homeHref('#features'), label: 'Features' }, { href: homeHref('#precios'), label: 'Precios' }, { href: homeHref('#producto'), label: 'Documentacion' }, { href: '/librerias', label: 'Librerias' }, { href: '/servicios', label: 'API Tester' }, { href: '/terms', label: 'Terminos de uso' }] },
-	{ title: 'Compania', links: [{ href: '/equipo', label: 'Equipo' }, { href: homeHref('#producto'), label: 'Blog' }, { href: homeHref('#producto'), label: 'Carreras' }] },
-	{ title: 'Recursos', links: [{ href: homeHref('#faq'), label: 'FAQ' }, { href: homeHref('#producto'), label: 'GitHub' }, { href: homeHref('#producto'), label: 'Estado del sistema' }] },
+	{ title: 'Producto', links: [{ href: homeHref('#features'), label: 'Features' }, { href: '/librerias', label: 'Librerias' }, { href: '/servicios', label: 'API Tester' }, { href: '/terms', label: 'Terminos de uso' }] },
+	{ title: 'Compania', links: [{ href: '/equipo', label: 'Equipo' },  { href: homeHref('https://github.com/robertytocerva/StackDNA'), label: 'Documentacion' },] },
+	{ title: 'Recursos', links: [{ href: homeHref('#faq'), label: 'FAQ' }, { href: homeHref('https://github.com/robertytocerva/StackDNA'), label: 'GitHub' }] },
 ];
 ---
 

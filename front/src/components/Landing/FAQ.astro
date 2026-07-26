@@ -1,10 +1,10 @@
 ---
 const faqs = [
 	['StackDNA envia mi codigo a un servidor externo?', 'No. El escaneo corre localmente o en tu propio pipeline de CI. Solo el reporte generado, metadatos y no codigo fuente, se sincroniza con el dashboard si tu lo activas.'],
-	['Que lenguajes y frameworks soporta?', 'Node.js, Python, Go, Rust y Java de forma nativa, con soporte experimental para Ruby y PHP. Cubrimos los principales gestores de paquetes de cada ecosistema.'],
-	['Puedo bloquear un merge si el genoma empeora?', 'Si, en el plan Team puedes definir reglas de calidad de genoma, vulnerabilidades criticas o licencias prohibidas que fallan el check de CI automaticamente.'],
+	['Que lenguajes y frameworks soporta?', 'Node.js, Python y Java de forma nativa, con soporte experimental para Ruby y PHP. Cubrimos los principales gestores de paquetes de cada ecosistema.'],
+	['Que tan rapido es el escaneo?', 'El escaneo de un repositorio promedio toma menos de 30 segundos.'],
+	['Que tan seguro es el escaneo?', 'StackDNA no ejecuta tu codigo ni instala dependencias. Solo analiza los archivos de manifiesto y lockfiles para construir el mapa de dependencias y arquitectura.'],
 	['Como se compara con herramientas como Snyk o Dependabot?', 'Esas herramientas se enfocan en vulnerabilidades puntuales. StackDNA construye el mapa completo de arquitectura y dependencias, y usa ese mapa como base para la auditoria, no al reves.'],
-	['Necesito tarjeta de credito para el plan Free?', 'No. El plan Free no pide tarjeta y no expira. Solo se limita a un repositorio activo.'],
 ];
 ---
 

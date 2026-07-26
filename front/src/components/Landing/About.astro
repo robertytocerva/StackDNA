@@ -3,7 +3,7 @@ const steps = [
 	['01', 'Escanear', 'La aplicación web recorre el repositorio y detecta manifiestos, lockfiles y estructura de carpetas.'],
 	['02', 'Secuenciar', 'Cada dependencia se mapea a una capa del stack: frontend, backend, datos o infraestructura.'],
 	['03', 'Analizar', 'Se cruza contra bases de CVEs, licencias SPDX y patrones de arquitectura conocidos.'],
-	['04', 'Reportar', 'Se genera el genoma: un mapa visual y un reporte accionable, listo para PR o auditoria.'],
+	['04', 'Reportar', 'Se genera un reporte completo de dependencias, vulnerabilidades y licencias. '],
 ];
 ---
 
@@ -15,7 +15,6 @@ const steps = [
 			<div class="about-text" data-reveal-group data-reveal-from="left">
 				<p>Un repositorio crece capa sobre capa: frameworks, librerias, servicios, versiones. Con el tiempo nadie recuerda por que esta ahi cada pieza, ni que tan segura es. <strong>StackDNA convierte esa complejidad en un mapa navegable.</strong></p>
 				<p>No es un linter ni un dashboard mas. Es un motor de secuenciacion que recorre tu codigo, tus manifiestos de dependencias y tu historial de commits para construir el genoma real de tu proyecto, capa por capa.</p>
-				<p>Funciona con Node, Python, Go, Rust y Java. Se instala como CLI, corre en tu CI y expone un dashboard web para que todo el equipo lea el mismo genoma.</p>
 			</div>
 		</div>
 		<div>
