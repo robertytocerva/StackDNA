@@ -359,7 +359,7 @@ function renderPodiumSpot(model: Model | undefined, rank: number, heightClass: s
   if (!model) return `<div class="podium-spot"></div>`;
   const logo = getProviderLogo(model.provider);
   return `
-    <div class="podium-spot">
+    <div class="podium-spot" data-model-name="${model.name}">
       ${lightClass ? `<div class="light-overlay ${lightClass}"></div>` : ''}
       <div class="podium-top-card">
         <div class="rank-tag r${rank}">#${rank} LUGAR</div>
@@ -481,5 +481,37 @@ async function init() {
   renderPodiums(allModels);
   renderBarCharts();
 }
+
+// --- PODIUM TOOLTIP ---
+function initPodiumTooltip() {
+  const tooltip = document.createElement('div');
+  tooltip.className = 'podium-tooltip';
+  document.body.appendChild(tooltip);
+
+  document.addEventListener('mousemove', (e) => {
+    if (tooltip.classList.contains('visible')) {
+      tooltip.style.left = e.clientX + 12 + 'px';
+      tooltip.style.top = e.clientY - 8 + 'px';
+    }
+  });
+
+  document.addEventListener('mouseover', (e) => {
+    const spot = (e.target as HTMLElement).closest('.podium-spot') as HTMLElement | null;
+    if (spot && spot.dataset.modelName) {
+      tooltip.textContent = spot.dataset.modelName;
+      tooltip.classList.add('visible');
+    }
+  });
+
+  document.addEventListener('mouseout', (e) => {
+    const spot = (e.target as HTMLElement).closest('.podium-spot') as HTMLElement | null;
+    const related = (e as MouseEvent).relatedTarget as HTMLElement | null;
+    if (spot && (!related || !spot.contains(related))) {
+      tooltip.classList.remove('visible');
+    }
+  });
+}
+
+initPodiumTooltip();
 
 init();
