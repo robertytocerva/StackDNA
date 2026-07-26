@@ -54,15 +54,68 @@ body {
 }
 .logo-mark { display: inline-flex; align-items: center; gap: 10px; }
 .logo-helix { width: 28px; height: 28px; position: relative; }
-.logo-helix::before, .logo-helix::after {
-  content: ''; position: absolute; inset: 0;
-  border: 1.5px solid var(--accent); border-radius: 50%;
-  animation: pulse 2.4s ease-in-out infinite;
+
+/* === FRESHNESS BADGE === */
+.freshness-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: rgba(168, 85, 247, 0.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
 }
-.logo-helix::after { animation-delay: 1.2s; }
-@keyframes pulse {
-  0%, 100% { transform: scale(0.6); opacity: 0.4; }
-  50% { transform: scale(1); opacity: 1; }
+.freshness-badge:not(.fallback) .freshness-dot { background: var(--success); box-shadow: 0 0 6px var(--success); }
+.freshness-badge.fallback { border-color: rgba(239, 68, 68, 0.4); }
+.freshness-badge.fallback .freshness-dot { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: none; }
+.freshness-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* === FOOTER === */
+.bench-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4rem;
+  padding: 24px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-align: center;
+}
+.bench-footer-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--accent-dim);
+  border-radius: 6px;
+  background: rgba(168, 85, 247, 0.08);
+  color: var(--accent-bright);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.bench-footer-source:hover {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: var(--accent-bright);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.25);
 }
 
 /* === STAT CARDS === */
