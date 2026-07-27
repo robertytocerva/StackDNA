@@ -169,6 +169,13 @@ Abre [http://localhost:4321](http://localhost:4321) en tu navegador.
 2. Usa los filtros por lenguaje (JavaScript, Python, Java), tipo (API, framework, librería) o busca por nombre.
 3. Explora las fichas con estadísticas, documentación y ejemplos.
 
+4. <p align="center">
+  <img src="./docs/screenshots/librerias3.png" alt="Catálogo de librerías - Vista general con filtros por lenguaje y categoría" width="900" />
+</p>
+<p align="center">
+  <img src="./docs/screenshots/librerias4.png" alt="Catálogo de librerías - Resultados de búsqueda con fichas de tecnologías" width="900" />
+</p>
+
 ### Ejecutar código
 
 1. Abre el **Code Lab** (`/code-lab`).
