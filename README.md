@@ -334,15 +334,123 @@ StackDNA/
 
 ## Despliegue
 
-El proyecto está desplegado en [Render](https://render.com):
+El proyecto está desplegado en **Amazon Web Services (AWS)** utilizando la capa gratuita (Free Tier).
 
-| Servicio | URL de producción |
-|----------|-------------------|
-| Frontend | Astro build estático |
-| Backend principal | `https://stackdna.onrender.com` |
-| Backend servicios | `https://stackdna-backservices.onrender.com` |
+### Arquitectura de infraestructura
 
-### Desplegar manualmente
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        AWS Cloud                                 │
+│                                                                 │
+│  ┌──────────────┐     HTTPS      ┌──────────────────────────┐  │
+│  │ AWS Amplify  │ ─────────────► │  Amazon EC2 (Ubuntu)     │  │
+│  │  (Frontend)  │                │                          │  │
+│  │  Astro SSG   │                │  Nginx (Proxy inverso)   │  │
+│  └──────────────┘                │  ┌────────────────────┐  │  │
+│                                  │  │ PM2                │  │  │
+│                                  │  │ ├─ API Principal   │  │  │
+│                                  │  │ │  (puerto 3001)   │  │  │
+│                                  │  │ └─ API Servicios   │  │  │
+│                                  │  │    (puerto 3002)   │  │  │
+│                                  │  └────────────────────┘  │  │
+│                                  └────────────┬─────────────┘  │
+│                                               │                 │
+│                                               ▼                 │
+│                                  ┌──────────────────────────┐  │
+│                                  │  Amazon RDS              │  │
+│                                  │  (PostgreSQL)            │  │
+│                                  └──────────────────────────┘  │
+│                                                                 │
+│  Dominios:                                                      │
+│    sdna-bp.duckdns.org → EC2 → API Principal                   │
+│    sdna-bs.duckdns.org → EC2 → API Servicios                   │
+│  SSL: Let's Encrypt (Certbot)                                   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+| Servicio | Tecnología AWS | Descripción |
+|----------|---------------|-------------|
+| Frontend | AWS Amplify | Build estático de Astro, conectado al repo de GitHub |
+| Backend principal | Amazon EC2 (t3.micro) | Express + puerto 3001 |
+| Backend servicios | Amazon EC2 (t3.micro) | Express + puerto 3002 |
+| Base de datos | Amazon RDS | PostgreSQL (Free Tier) |
+| SSL/HTTPS | Let's Encrypt + Nginx | Certificados gratuitos con Certbot |
+| Dominios | DuckDNS | Subdominios gratuitos apuntando a la IP de EC2 |
+
+### Configuración del servidor EC2
+
+**Security Group (puertos abiertos):**
+
+| Puerto | Protocolo | Origen | Uso |
+|--------|-----------|--------|-----|
+| 22 | SSH | 0.0.0.0/0 | Administración remota |
+| 80 | HTTP | 0.0.0.0/0 | Validación de Let's Encrypt |
+| 443 | HTTPS | 0.0.0.0/0 | Tráfico seguro |
+
+**Gestión de procesos con PM2:**
+
+```bash
+# Instalación
+sudo npm install -g pm2
+
+# Inicio de las APIs
+pm2 start index.js --name "api1"
+pm2 start index.js --name "api2"
+
+# Configuración de auto-arranque (Startup)
+pm2 startup
+pm2 save
+```
+
+**Proxy inverso con Nginx** (`/etc/nginx/sites-available/default`):
+
+```nginx
+server {
+    listen 80;
+    server_name sdna-bp.duckdns.org;
+
+    location / {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+server {
+    listen 80;
+    server_name sdna-bs.duckdns.org;
+
+    location / {
+        proxy_pass http://127.0.0.1:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+**Certificados SSL con Certbot:**
+
+```bash
+sudo certbot --nginx -d sdna-bp.duckdns.org
+sudo certbot --nginx -d sdna-bs.duckdns.org
+```
+
+### Frontend en AWS Amplify
+
+1. Se conectó directamente desde el repositorio de GitHub.
+2. Se habilitó la opción **Monorepo** especificando la ruta del directorio `front/`.
+3. Se configuraron las variables de entorno en la consola de Amplify:
+   - `PUBLIC_API_URL` = `https://sdna-bp.duckdns.org`
+   - `PUBLIC_BACKEND_URL` = `https://sdna-bs.duckdns.org`
+4. Cada cambio en variables de entorno requiere un **redespliegue** (`git push` o rebuild manual desde la consola de AWS).
+
+### Desplegar localmente
 
 **Frontend:**
 
@@ -354,7 +462,7 @@ npm run preview  # Verifica el build localmente
 
 **Backends:**
 
-Ambos backends usan `npm start` para producción (sin `nodemon`). Asegúrate de configurar las variables de entorno en tu proveedor de hosting.
+Ambos backends usan `npm start` para producción (sin `nodemon`). Asegúrate de configurar las variables de entorno antes de iniciar.
 
 ---
 
