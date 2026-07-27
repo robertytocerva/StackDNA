@@ -22,6 +22,10 @@
   <a href="#-cómo-contribuir">Contribuir</a>
 </p>
 
+<p align="center">
+  <img src="./docs/screenshots/landing.png" alt="StackDNA - Página principal con visualización de hélice de ADN tecnológico" width="900" />
+</p>
+
 ---
 
 ## Descripción
@@ -155,6 +159,10 @@ Abre [http://localhost:4321](http://localhost:4321) en tu navegador.
 2. Ingresa la URL de un repositorio público de GitHub (ej. `https://github.com/expressjs/express` o simplemente `expressjs/express`).
 3. Obtén el reporte completo: metadata del repo, lenguajes, dependencias, vulnerabilidades detectadas, estructura y análisis con IA.
 
+<p align="center">
+  <img src="./docs/screenshots/analizador.jpeg" alt="Analizador de repositorios - Reporte con score de calidad, metadata y análisis con IA" width="900" />
+</p>
+
 ### Buscar tecnologías
 
 1. Ve a **Librerías** (`/librerias`).
@@ -167,17 +175,40 @@ Abre [http://localhost:4321](http://localhost:4321) en tu navegador.
 2. Selecciona el lenguaje (Python, JavaScript, Java).
 3. Escribe o carga un ejemplo y presiona ejecutar. El resultado aparece en la consola integrada.
 
+<p align="center">
+  <img src="./docs/screenshots/code_lab.png" alt="Code Lab - Editor Python con sidebar de librerías built-in y consola de salida" width="900" />
+</p>
+
 ### Probar servicios AWS
 
 1. Accede al **API Tester** (`/servicios`).
 2. Ingresa tus credenciales temporales de AWS (Access Key ID, Secret Access Key, región).
 3. Selecciona uno de los 20 servicios disponibles y ejecuta operaciones de solo lectura.
 
+<p align="center">
+  <img src="./docs/screenshots/librerias1.png" alt="Catálogo de librerías - Vista general con filtros por lenguaje y categoría" width="900" />
+</p>
+<p align="center">
+  <img src="./docs/screenshots/librerias2.png" alt="Catálogo de librerías - Resultados de búsqueda con fichas de tecnologías" width="900" />
+</p>
+
+
 ### Benchmark de modelos de IA
 
 1. Visita **Benchmarks** (`/benchmarks`).
 2. Explora la comparativa con podios 3D, estadísticas y tarjetas de cada modelo.
 3. Filtra y ordena por calidad, velocidad, latencia o precio.
+
+<p align="center">
+  <img src="./docs/screenshots/benchmarks1.png" alt="AI Benchmark - Estadísticas generales: 573 modelos, Quality Index, throughput y pricing" width="900" />
+</p>
+<p align="center">
+  <img src="./docs/screenshots/benchmarks2.png" alt="AI Benchmark - Top 3 por categoría: Inteligencia General, Más Rápidos y Más Económicos con podios 3D" width="900" />
+</p>
+<p align="center">
+  <img src="./docs/screenshots/benchmarks3.png" alt="AI Benchmark - Filtros por proveedor y gráfica de barras del ranking de inteligencia general" width="900" />
+</p>
+
 
 ---
 
